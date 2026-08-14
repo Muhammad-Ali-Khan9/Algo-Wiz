@@ -9,7 +9,7 @@ const SECTIONS = [
     id: "sorting",
     kicker: "01 — Comparison & linear",
     title: "Sorting",
-    body: "Watch bubble, merge, quick, heap, radix, and more rearrange bars step by step — comparisons, swaps, and sorted suffixes in color.",
+    body: "Watch bubble, merge, quick, Tim, bitonic, pigeonhole, and more rearrange bars step by step — comparisons, swaps, and sorted suffixes in color.",
     href: "/sorting",
     cta: "Open Sorting",
     bg: "sorting",
@@ -18,7 +18,7 @@ const SECTIONS = [
     id: "searching",
     kicker: "02 — Lookups",
     title: "Searching",
-    body: "Binary search, trees, and probes through ordered data. See how the window shrinks until the target is found — or ruled out.",
+    body: "Linear scans, binary search, and hash probes through ordered data. See how the window shrinks until the target is found — or ruled out.",
     href: null,
     cta: "Coming soon",
     bg: "searching",
@@ -40,6 +40,42 @@ const SECTIONS = [
     href: null,
     cta: "Coming soon",
     bg: "pathfinding",
+  },
+  {
+    id: "trees",
+    kicker: "05 — Hierarchies",
+    title: "Trees",
+    body: "Binary search trees, traversals, and rotations. Follow a walk down the children, watch a node light up, and see a subtree rebalance in place.",
+    href: null,
+    cta: "Coming soon",
+    bg: "trees",
+  },
+  {
+    id: "dp",
+    kicker: "06 — Overlap",
+    title: "Dynamic Programming",
+    body: "Fill a table of subproblems — knapsack, LCS, coin change — until the last cell is the answer. Overlapping work becomes a grid you can read.",
+    href: null,
+    cta: "Coming soon",
+    bg: "dp",
+  },
+  {
+    id: "backtracking",
+    kicker: "07 — Search trees",
+    title: "Backtracking",
+    body: "N-queens, permutations, and constraint paths. A candidate grows until it fails, then the walk rewinds and tries the next branch.",
+    href: null,
+    cta: "Coming soon",
+    bg: "backtracking",
+  },
+  {
+    id: "strings",
+    kicker: "08 — Patterns",
+    title: "String Algorithms",
+    body: "KMP, Rabin–Karp, and windowed matching. Watch the pattern slide along the text and skip ahead when the prefix table says it can.",
+    href: null,
+    cta: "Coming soon",
+    bg: "strings",
   },
 ] as const;
 
@@ -183,6 +219,10 @@ export function HomeHero() {
               <li>Searching</li>
               <li>Graphs</li>
               <li>Pathfinding</li>
+              <li>Trees</li>
+              <li>Dynamic Programming</li>
+              <li>Backtracking</li>
+              <li>String Algorithms</li>
             </ul>
             <p className={styles.scrollHint}>Scroll for sections</p>
           </div>

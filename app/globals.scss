@@ -17,6 +17,11 @@ html[data-theme="dark"] {
   --glow: rgb(139 92 246 / 0.28);
   --stage: #0a0a12;
   --panel-sidebar: #12121a;
+  --rail: #16121f;
+  --rail-btn: #ffffff;
+  --rail-label: #c4b4ff;
+  --rail-active: var(--accent);
+  --rail-icon: none;
   --scrollbar: #c4b4ff;
   --preloader: rgb(7 7 13 / 0.72);
   --spark: #f5d0fe;
@@ -40,6 +45,11 @@ html[data-theme="light"] {
   --glow: rgb(251 146 60 / 0.32);
   --stage: #fff1e6;
   --panel-sidebar: #fff7ed;
+  --rail: #ffedd5;
+  --rail-btn: #ffffff;
+  --rail-label: #9a5a32;
+  --rail-active: var(--accent);
+  --rail-icon: none;
   --scrollbar: #fb923c;
   --preloader: rgb(255 247 237 / 0.78);
   --spark: #fdba74;

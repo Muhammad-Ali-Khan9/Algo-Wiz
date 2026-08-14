@@ -14,7 +14,7 @@
 
 .track {
   position: relative;
-  height: calc(var(--slides, 5) * 100%);
+  height: calc(var(--slides, 9) * 100%);
 }
 
 .intro,
@@ -24,7 +24,7 @@
   isolation: isolate;
   box-sizing: border-box;
   width: 100%;
-  height: calc(100% / var(--slides, 5));
+  height: calc(100% / var(--slides, 9));
   min-height: 0;
   overflow: hidden;
   background-color: var(--background);
@@ -271,6 +271,26 @@
 .panel[data-bg="pathfinding"] .panelArt {
   -webkit-mask: url("/bg/section-pathfinding.svg") 72% 50% / 80% no-repeat;
   mask: url("/bg/section-pathfinding.svg") 72% 50% / 80% no-repeat;
+}
+
+.panel[data-bg="trees"] .panelArt {
+  -webkit-mask: url("/bg/section-trees.svg") 70% 48% / 82% no-repeat;
+  mask: url("/bg/section-trees.svg") 70% 48% / 82% no-repeat;
+}
+
+.panel[data-bg="dp"] .panelArt {
+  -webkit-mask: url("/bg/section-dp.svg") 72% 50% / 84% no-repeat;
+  mask: url("/bg/section-dp.svg") 72% 50% / 84% no-repeat;
+}
+
+.panel[data-bg="backtracking"] .panelArt {
+  -webkit-mask: url("/bg/section-backtracking.svg") 68% 50% / 86% no-repeat;
+  mask: url("/bg/section-backtracking.svg") 68% 50% / 86% no-repeat;
+}
+
+.panel[data-bg="strings"] .panelArt {
+  -webkit-mask: url("/bg/section-strings.svg") 70% 48% / 88% no-repeat;
+  mask: url("/bg/section-strings.svg") 70% 48% / 88% no-repeat;
 }
 
 .panelTitle {

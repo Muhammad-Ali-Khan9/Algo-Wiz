@@ -171,8 +171,51 @@ export function bucketSort(values: number[], bucketCount = 8): SortFrame[] {
       t.writeAt(k, value);
       const roles = t.idleRoles();
       roles[k] = "write";
-      t.push(roles, `Collect ${value} from bucket ${b}.`, {
+        t.push(roles, `Collect ${value} from bucket ${b}.`, {
         auxBuckets: bucketsFrom(buckets),
+      });
+      k += 1;
+    }
+  }
+
+  t.finish(new Set());
+  return t.frames;
+}
+
+export function pigeonholeSort(values: number[]): SortFrame[] {
+  const t = new Trace(values.slice());
+  if (t.n === 0) return t.frames;
+
+  const min = t.a.reduce((m, v) => (v < m ? v : m), t.a[0]);
+  const max = t.a.reduce((m, v) => (v > m ? v : m), t.a[0]);
+  const span = max - min + 1;
+  const holes: number[][] = Array.from({ length: span }, () => []);
+  const holeLabels = holes.map((_, i) => String(i + min));
+
+  t.push(
+    t.idleRoles(),
+    `Starting Pigeonhole Sort — ${span} holes from ${min} to ${max}.`,
+    { auxBuckets: bucketsFrom(holes, holeLabels) },
+  );
+
+  for (let i = 0; i < t.n; i += 1) {
+    const hole = t.a[i] - min;
+    holes[hole].push(t.a[i]);
+    const roles = t.idleRoles();
+    roles[i] = "key";
+    t.push(roles, `${t.a[i]} → hole ${t.a[i]}.`, {
+      auxBuckets: bucketsFrom(holes, holeLabels),
+    });
+  }
+
+  let k = 0;
+  for (let h = 0; h < span; h += 1) {
+    for (const value of holes[h]) {
+      t.writeAt(k, value);
+      const roles = t.idleRoles();
+      roles[k] = "write";
+      t.push(roles, `Collect ${value} from hole ${value}.`, {
+        auxBuckets: bucketsFrom(holes, holeLabels),
       });
       k += 1;
     }

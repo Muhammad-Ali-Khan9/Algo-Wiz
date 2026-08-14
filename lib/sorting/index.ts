@@ -7,7 +7,8 @@ import {
   selectionSort,
   shellSort,
 } from "./comparison";
-import { bucketSort, countingSort, radixSort } from "./linear";
+import { bitonicSort, introSort, stoogeSort, timSort } from "./hybrid";
+import { bucketSort, countingSort, pigeonholeSort, radixSort } from "./linear";
 import type { AlgorithmId, AlgorithmMeta, SortRunner } from "./types";
 
 export { bucketSort };
@@ -143,6 +144,71 @@ export const ALGORITHM_META: AlgorithmMeta[] = [
     usage:
       "Uniformly distributed numbers in a known interval — hashed keys, normalized scores. If the distribution clumps into one bucket, it degrades toward quadratic insertion sort.",
   },
+  {
+    id: "pigeonhole",
+    name: "Pigeonhole Sort",
+    worst: "O(n + k)",
+    average: "O(n + k)",
+    best: "O(n + k)",
+    space: "O(n + k)",
+    stable: true,
+    definition:
+      "Pigeonhole sort makes one hole for every integer from min to max, drops each value into its matching hole (preserving order inside a hole), then concatenates the holes. Unlike counting sort it stores the items themselves, not just tallies.",
+    usage:
+      "Small integer ranges where k = max − min + 1 is close to n — ranking, exam scores, dense IDs. If the range is huge compared with n, the hole table wastes space; use a comparison sort or radix instead.",
+  },
+  {
+    id: "tim",
+    name: "Tim Sort",
+    worst: "O(n log n)",
+    average: "O(n log n)",
+    best: "O(n)",
+    space: "O(n)",
+    stable: true,
+    definition:
+      "Timsort finds (or builds) short already-ordered runs, insertion-sorts them to a minimum run length, then merges those runs. This visualizer uses a teaching version: fixed minrun, insertion on each block, then bottom-up merges — not CPython’s galloping merge.",
+    usage:
+      "Python’s list.sort and Java’s Arrays.sort for objects. Excellent on real-world data that already contains runs. Prefer a simpler merge sort if you only need a stable n log n bound and do not care about nearly-sorted inputs.",
+  },
+  {
+    id: "intro",
+    name: "Intro Sort",
+    worst: "O(n log n)",
+    average: "O(n log n)",
+    best: "O(n log n)",
+    space: "O(log n)",
+    stable: false,
+    definition:
+      "Introsort starts as quicksort, switches a partition to heapsort if recursion depth exceeds about 2⌊log₂ n⌋, and finishes tiny ranges with insertion sort. That mix keeps quicksort’s typical speed and heap sort’s worst-case ceiling.",
+    usage:
+      "The usual introspective sort in C++ std::sort. Use it as a drop-in upgrade over naive quicksort when you cannot tolerate a quadratic worst case. It is not stable.",
+  },
+  {
+    id: "bitonic",
+    name: "Bitonic Sort",
+    worst: "O(n log² n)",
+    average: "O(n log² n)",
+    best: "O(n log² n)",
+    space: "O(1)",
+    stable: false,
+    definition:
+      "Bitonic sort builds bitonic sequences (one half up, the other down) and merges them with a data-independent compare-and-swap network. Merges use the greatest power of two smaller than the current length, so any n works — not only powers of two.",
+    usage:
+      "Designed for parallel hardware and sorting networks — GPUs, switching fabrics — where the comparison pattern is data-independent. On a sequential CPU it is slower than merge or heap sort; keep it here to see the network, not as a default in-memory sort.",
+  },
+  {
+    id: "stooge",
+    name: "Stooge Sort",
+    worst: "O(n^{2.71})",
+    average: "O(n^{2.71})",
+    best: "O(n^{2.71})",
+    space: "O(log n)",
+    stable: false,
+    definition:
+      "Stooge sort compares the two ends of a range and swaps them if needed, then recursively sorts the first two-thirds, the last two-thirds, and the first two-thirds again. The triple recursion on 2n/3 yields about n^{log 3 / log 1.5} ≈ n^{2.71} work.",
+    usage:
+      "A curiosity and a warning: it is slower than bubble sort for any useful n. Step through small arrays to see the overlapping 2/3 passes. Prefer insertion or any n log n algorithm for real data — large sizes here can produce a very long trace.",
+  },
 ];
 
 export const RUNNERS: Record<AlgorithmId, SortRunner> = {
@@ -156,6 +222,11 @@ export const RUNNERS: Record<AlgorithmId, SortRunner> = {
   counting: countingSort,
   radix: radixSort,
   bucket: bucketSort,
+  pigeonhole: pigeonholeSort,
+  tim: timSort,
+  intro: introSort,
+  bitonic: bitonicSort,
+  stooge: stoogeSort,
 };
 
 export function getAlgorithm(id: AlgorithmId): AlgorithmMeta {

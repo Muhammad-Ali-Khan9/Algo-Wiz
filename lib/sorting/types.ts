@@ -18,7 +18,12 @@ export type AlgorithmId =
   | "shell"
   | "counting"
   | "radix"
-  | "bucket";
+  | "bucket"
+  | "pigeonhole"
+  | "tim"
+  | "intro"
+  | "bitonic"
+  | "stooge";
 
 export interface AuxBucket {
   label: string;

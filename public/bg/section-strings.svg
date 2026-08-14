@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" fill="none">
+  <g stroke="#000" stroke-width="5" fill="none">
+    <rect x="140" y="280" width="100" height="120" rx="12"/>
+    <rect x="260" y="280" width="100" height="120" rx="12"/>
+    <rect x="380" y="280" width="100" height="120" rx="12"/>
+    <rect x="500" y="280" width="100" height="120" rx="12"/>
+    <rect x="620" y="280" width="100" height="120" rx="12"/>
+    <rect x="740" y="280" width="100" height="120" rx="12"/>
+    <rect x="860" y="280" width="100" height="120" rx="12"/>
+    <rect x="980" y="280" width="100" height="120" rx="12"/>
+    <rect x="1100" y="280" width="100" height="120" rx="12"/>
+    <rect x="1220" y="280" width="100" height="120" rx="12"/>
+    <rect x="1340" y="280" width="100" height="120" rx="12"/>
+  </g>
+  <g fill="#000">
+    <rect x="500" y="280" width="100" height="120" rx="12"/>
+    <rect x="620" y="280" width="100" height="120" rx="12"/>
+    <rect x="740" y="280" width="100" height="120" rx="12"/>
+  </g>
+  <g stroke="#000" stroke-width="5" fill="none">
+    <rect x="500" y="520" width="100" height="120" rx="12"/>
+    <rect x="620" y="520" width="100" height="120" rx="12"/>
+    <rect x="740" y="520" width="100" height="120" rx="12"/>
+  </g>
+  <path d="M550 500V420M670 500V400M790 500V420" stroke="#000" stroke-width="6" stroke-linecap="round"/>
+  <path d="M550 500l-14-22M550 500l14-22M670 500l-14-22M670 500l14-22M790 500l-14-22M790 500l14-22" stroke="#000" stroke-width="5" stroke-linecap="round"/>
+  <path d="M500 240H840" stroke="#000" stroke-width="10" stroke-linecap="round"/>
+  <rect x="180" y="680" width="36" height="80" rx="4" fill="#000"/>
+  <rect x="230" y="700" width="36" height="60" rx="4" fill="#000"/>
+  <rect x="280" y="640" width="36" height="120" rx="4" fill="#000"/>
+  <rect x="330" y="720" width="36" height="40" rx="4" fill="#000"/>
+  <rect x="380" y="660" width="36" height="100" rx="4" fill="#000"/>
+  <path d="M170 800H430" stroke="#000" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="1280" cy="680" r="70" stroke="#000" stroke-width="8" fill="none"/>
+  <path d="M1236 680h88M1280 636v88" stroke="#000" stroke-width="8" stroke-linecap="round"/>
+  <path d="M1180 780c40-90 160-90 200 0" stroke="#000" stroke-width="8" fill="none" stroke-linecap="round"/>
+</svg>
