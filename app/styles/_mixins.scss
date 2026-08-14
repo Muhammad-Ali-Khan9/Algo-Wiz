@@ -1,0 +1,159 @@
+@forward "./tokens";
+@use "./tokens" as *;
+
+@mixin flex(
+  $dir: row,
+  $gap: 0,
+  $align: stretch,
+  $justify: flex-start,
+  $wrap: nowrap
+) {
+  display: flex;
+  flex-direction: $dir;
+  align-items: $align;
+  justify-content: $justify;
+  flex-wrap: $wrap;
+  gap: $gap;
+}
+
+@mixin tw($utilities) {
+  @apply #{$utilities};
+}
+
+@mixin theme-color-shift($duration: 0.55s) {
+  transition:
+    background-color $duration ease,
+    background-image $duration ease,
+    border-color $duration ease,
+    box-shadow $duration ease,
+    color $duration ease,
+    fill $duration ease,
+    filter $duration ease;
+}
+
+@mixin glass($radius: $radius-panel) {
+  @include theme-color-shift;
+  border-radius: $radius;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.12);
+  backdrop-filter: blur(12px);
+}
+
+@mixin focus-ring {
+  &:focus-visible {
+    outline: 2px solid var(--accent-hover);
+    outline-offset: 2px;
+  }
+}
+
+@mixin control-btn($tone: "ghost") {
+  @include focus-ring;
+  @include theme-color-shift(0.18s);
+  appearance: none;
+  cursor: pointer;
+  font: inherit;
+  @apply inline-flex items-center justify-center gap-2 rounded-xl px-3.5 py-2 text-sm font-medium;
+
+  &:disabled {
+    @apply cursor-not-allowed opacity-40;
+  }
+
+  @if $tone == "primary" {
+    background: var(--accent);
+    color: #fff;
+
+    &:hover {
+      background: var(--accent-hover);
+    }
+  } @else if $tone == "danger" {
+    @include tw("bg-rose-500/15 text-rose-200");
+
+    &:hover {
+      @include tw("bg-rose-500/25");
+    }
+  } @else {
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--foreground);
+
+    &:hover {
+      background: var(--surface-strong);
+    }
+  }
+}
+
+@mixin chip {
+  @include focus-ring;
+  @include theme-color-shift(0.18s);
+  appearance: none;
+  cursor: pointer;
+  font: inherit;
+  @apply w-full rounded-xl px-3 py-2.5 text-left;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--foreground);
+
+  &:hover {
+    border-color: color-mix(in srgb, var(--accent) 40%, var(--border));
+    background: var(--surface-strong);
+  }
+}
+
+@mixin range-track {
+  @include theme-color-shift;
+  @apply h-1.5 w-full cursor-pointer appearance-none;
+  background: var(--border);
+  border-radius: 999px;
+
+  &::-webkit-slider-thumb {
+    @apply h-4 w-4 appearance-none;
+    background: var(--accent);
+    border-radius: 999px;
+    transition: background-color 0.55s ease;
+  }
+
+  &::-moz-range-thumb {
+    @apply h-4 w-4 border-0;
+    background: var(--accent);
+    border-radius: 999px;
+    transition: background-color 0.55s ease;
+  }
+}
+
+@mixin capsule-scroll-left {
+  overflow-y: auto;
+  overflow-x: hidden;
+  direction: rtl;
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar) transparent;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-button {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+
+  &::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-track {
+    margin-block: 10px;
+    background: var(--border);
+    border-radius: 999px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(--scrollbar);
+    border-radius: 999px;
+  }
+
+  > * {
+    direction: ltr;
+  }
+}

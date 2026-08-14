@@ -1,0 +1,98 @@
+@use "./styles/mixins" as *;
+
+@reference "tailwindcss";
+
+:root,
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --background: #07070d;
+  --foreground: #f4f4f5;
+  --muted: #a1a1aa;
+  --surface: rgb(255 255 255 / 0.06);
+  --surface-strong: rgb(0 0 0 / 0.22);
+  --border: rgb(255 255 255 / 0.1);
+  --accent: #8b5cf6;
+  --accent-hover: #a78bfa;
+  --accent-soft: rgb(139 92 246 / 0.22);
+  --glow: rgb(139 92 246 / 0.28);
+  --stage: #0a0a12;
+  --panel-sidebar: #12121a;
+  --scrollbar: #c4b4ff;
+  --preloader: rgb(7 7 13 / 0.72);
+  --spark: #f5d0fe;
+  --bg-glow:
+    radial-gradient(1200px 500px at 10% -10%, rgb(109 40 217 / 0.22), transparent 55%),
+    radial-gradient(900px 420px at 90% 0%, rgb(14 165 233 / 0.12), transparent 50%),
+    linear-gradient(180deg, #07070d 0%, #0b0b14 100%);
+}
+
+html[data-theme="light"] {
+  color-scheme: light;
+  --background: #fffaf5;
+  --foreground: #431407;
+  --muted: #9a5a32;
+  --surface: rgb(255 247 237 / 0.86);
+  --surface-strong: #ffedd5;
+  --border: rgb(253 186 116 / 0.5);
+  --accent: #f97316;
+  --accent-hover: #fb923c;
+  --accent-soft: rgb(251 146 60 / 0.28);
+  --glow: rgb(251 146 60 / 0.32);
+  --stage: #fff1e6;
+  --panel-sidebar: #fff7ed;
+  --scrollbar: #fb923c;
+  --preloader: rgb(255 247 237 / 0.78);
+  --spark: #fdba74;
+  --bg-glow:
+    radial-gradient(1200px 500px at 12% -8%, rgb(251 146 60 / 0.28), transparent 55%),
+    radial-gradient(900px 420px at 92% 0%, rgb(254 215 170 / 0.45), transparent 50%),
+    linear-gradient(180deg, #fffaf5 0%, #ffedd5 100%);
+}
+
+html,
+body {
+  @apply h-full;
+}
+
+html {
+  background-color: var(--background);
+  color: var(--foreground);
+  transition:
+    background-color 0.55s ease,
+    color 0.55s ease;
+}
+
+body {
+  @apply antialiased;
+  background-color: var(--background);
+  background-image: var(--bg-glow);
+  color: var(--foreground);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  transition:
+    background-color 0.55s ease,
+    background-image 0.55s ease,
+    color 0.55s ease;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.55s;
+  animation-timing-function: ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html,
+  body {
+    transition: none;
+  }
+
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 0.01ms;
+  }
+}
+
+::selection {
+  background: color-mix(in srgb, var(--accent) 40%, transparent);
+  color: #fff;
+}

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" fill="none">
+  <g stroke="#000" stroke-width="3" transform="translate(1080 80)">
+    <rect x="0" y="144" width="233" height="233"/>
+    <rect x="233" y="233" width="144" height="144"/>
+    <rect x="288" y="144" width="89" height="89"/>
+    <rect x="233" y="144" width="55" height="55"/>
+    <rect x="233" y="199" width="34" height="34"/>
+    <rect x="267" y="199" width="21" height="21"/>
+    <path d="M0 377C0 248 104 144 233 144C312 144 377 209 377 288C377 337 337 377 288 377C261 377 239 355 239 328C239 311 253 298 270 298" fill="none" stroke-width="4"/>
+  </g>
+  <g stroke="#000" stroke-width="3" fill="none" transform="translate(60 520)">
+    <circle cx="160" cy="160" r="150"/>
+    <path d="M160 10V310M10 160H310"/>
+    <path d="M160 160L268 92"/>
+    <circle cx="268" cy="92" r="6" fill="#000" stroke="none"/>
+    <path d="M160 160H268" stroke-dasharray="6 7"/>
+  </g>
+  <g stroke="#000" stroke-width="3" fill="none">
+    <path d="M90 90H210V210H90Z"/>
+    <path d="M210 90L310 40V210H210Z"/>
+    <path d="M90 210L210 320H90Z"/>
+  </g>
+</svg>

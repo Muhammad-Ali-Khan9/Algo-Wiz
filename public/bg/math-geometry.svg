@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" fill="none">
+  <g stroke="#000" fill="none" stroke-width="3">
+    <path d="M80 760L220 520L360 760Z"/>
+    <path d="M220 760V520"/>
+    <path d="M220 720H248"/>
+    <circle cx="220" cy="720" r="18"/>
+  </g>
+  <g stroke="#000" fill="none" stroke-width="2.4">
+    <circle cx="1280" cy="720" r="110"/>
+    <circle cx="1340" cy="720" r="110"/>
+    <circle cx="1310" cy="670" r="110"/>
+  </g>
+  <g fill="#000">
+    <circle cx="760" cy="70" r="4"/>
+    <circle cx="740" cy="110" r="4"/>
+    <circle cx="780" cy="110" r="4"/>
+    <circle cx="720" cy="150" r="4"/>
+    <circle cx="760" cy="150" r="4"/>
+    <circle cx="800" cy="150" r="4"/>
+    <circle cx="700" cy="190" r="4"/>
+    <circle cx="740" cy="190" r="4"/>
+    <circle cx="780" cy="190" r="4"/>
+    <circle cx="820" cy="190" r="4"/>
+    <circle cx="680" cy="230" r="4"/>
+    <circle cx="720" cy="230" r="4"/>
+    <circle cx="760" cy="230" r="4"/>
+    <circle cx="800" cy="230" r="4"/>
+    <circle cx="840" cy="230" r="4"/>
+  </g>
+  <g stroke="#000" fill="none" stroke-width="2.5">
+    <rect x="1420" y="240" width="70" height="70"/>
+    <rect x="1455" y="205" width="70" height="70"/>
+    <path d="M1420 240L1455 205M1490 240L1525 205M1490 310L1525 275M1420 310L1455 275"/>
+  </g>
+  <path d="M40 300C80 220 140 220 180 300S280 380 320 300" stroke="#000" stroke-width="3" fill="none"/>
+  <path d="M1480 820L1560 740M1480 740L1560 820" stroke="#000" stroke-width="3"/>
+  <g stroke="#000" fill="none" stroke-width="2.2">
+    <path d="M520 820H700V860H520Z"/>
+    <path d="M540 840H580M620 840H680"/>
+    <path d="M900 40L980 80L940 150L860 110Z"/>
+  </g>
+</svg>

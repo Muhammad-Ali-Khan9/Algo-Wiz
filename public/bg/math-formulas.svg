@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" fill="#000">
+  <g font-family="Georgia, 'Times New Roman', serif" font-style="italic">
+    <text x="70" y="120" font-size="42">O(n log n)</text>
+    <text x="1180" y="110" font-size="36">f(n) = Theta(n^2)</text>
+    <text x="90" y="820" font-size="34">sum i = n(n+1)/2</text>
+    <text x="1120" y="820" font-size="40">integral f(x) dx</text>
+    <text x="1280" y="430" font-size="48">pi</text>
+    <text x="70" y="430" font-size="40">lambda</text>
+    <text x="430" y="80" font-size="28">for all n in N</text>
+    <text x="980" y="250" font-size="30">a[i] &lt;= a[i+1]</text>
+    <text x="220" y="250" font-size="26">T(n) = 2T(n/2) + O(n)</text>
+    <text x="1040" y="640" font-size="28">div F = 0</text>
+    <text x="520" y="840" font-size="26">P(n) =&gt; Q(n)</text>
+    <text x="80" y="600" font-size="24">[ 1  0 ]</text>
+    <text x="86" y="628" font-size="24">[ 0  1 ]</text>
+    <text x="1360" y="260" font-size="32">inf</text>
+    <text x="1450" y="720" font-size="22">0-1-0-1</text>
+    <text x="430" y="200" font-size="22">min / max</text>
+    <text x="1180" y="520" font-size="24">n! ~ Stirling</text>
+  </g>
+</svg>

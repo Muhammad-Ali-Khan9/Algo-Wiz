@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" fill="none">
+  <g stroke="#000" stroke-width="6" fill="none">
+    <rect x="160" y="560" width="90" height="90" rx="10"/>
+    <rect x="280" y="560" width="90" height="90" rx="10"/>
+    <rect x="400" y="560" width="90" height="90" rx="10"/>
+    <rect x="520" y="560" width="90" height="90" rx="10"/>
+    <rect x="640" y="560" width="90" height="90" rx="10"/>
+    <rect x="760" y="560" width="90" height="90" rx="10"/>
+    <rect x="880" y="560" width="90" height="90" rx="10"/>
+    <rect x="1000" y="560" width="90" height="90" rx="10"/>
+    <rect x="1120" y="560" width="90" height="90" rx="10"/>
+    <rect x="1240" y="560" width="90" height="90" rx="10"/>
+  </g>
+  <rect x="760" y="560" width="90" height="90" rx="10" fill="#000"/>
+  <path d="M205 540V500H805V540M1255 540V500H805" stroke="#000" stroke-width="5" fill="none"/>
+  <path d="M205 500l-14 22M1255 500l14 22M805 500l-12 22M805 500l12 22" stroke="#000" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="800" cy="220" r="42" stroke="#000" stroke-width="6" fill="none"/>
+  <circle cx="560" cy="380" r="42" stroke="#000" stroke-width="6" fill="none"/>
+  <circle cx="1040" cy="380" r="42" stroke="#000" stroke-width="6" fill="none"/>
+  <circle cx="440" cy="520" r="28" stroke="#000" stroke-width="5" fill="none"/>
+  <circle cx="680" cy="520" r="28" stroke="#000" stroke-width="5" fill="none"/>
+  <circle cx="920" cy="520" r="28" stroke="#000" stroke-width="5" fill="none"/>
+  <circle cx="1160" cy="520" r="28" stroke="#000" stroke-width="5" fill="none"/>
+  <path d="M800 262V338M778 262L560 338M822 262L1040 338M538 422L440 492M582 422L680 492M1018 422L920 492M1062 422L1160 492" stroke="#000" stroke-width="5"/>
+  <circle cx="1320" cy="200" r="86" stroke="#000" stroke-width="8" fill="none"/>
+  <circle cx="1320" cy="200" r="28" stroke="#000" stroke-width="8" fill="none"/>
+  <path d="M1382 262l70 70" stroke="#000" stroke-width="12" stroke-linecap="round"/>
+</svg>

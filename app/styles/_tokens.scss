@@ -1,0 +1,23 @@
+$radius-shell: 1.5rem;
+$radius-panel: 1.15rem;
+$radius-chip: 0.85rem;
+$header-h: 4.25rem;
+$sidebar-w: 14.5rem;
+$nav-w: 4.75rem;
+$bar-gap: 0.35rem;
+$bar-min-h: 8px;
+$stage-h: 22rem;
+$ease-bar: 90ms linear;
+$ease-ui: 180ms ease;
+
+// 🟢 normal  🟡 compare  🔵 selected  🔴 swap  🟣 sorted
+$role-colors: (
+  idle: #22c55e,
+  compare: #eab308,
+  key: #3b82f6,
+  min: #3b82f6,
+  pivot: #3b82f6,
+  write: #3b82f6,
+  swap: #ef4444,
+  sorted: #a855f7,
+);

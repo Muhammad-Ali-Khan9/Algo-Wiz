@@ -1,0 +1,367 @@
+@use "../../app/styles/mixins" as *;
+
+@reference "tailwindcss";
+
+.page {
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar) transparent;
+}
+
+.track {
+  position: relative;
+  height: calc(var(--slides, 5) * 100%);
+}
+
+.intro,
+.panel {
+  position: sticky;
+  top: 0;
+  isolation: isolate;
+  box-sizing: border-box;
+  width: 100%;
+  height: calc(100% / var(--slides, 5));
+  min-height: 0;
+  overflow: hidden;
+  background-color: var(--background);
+  background-image: var(--bg-glow);
+  will-change: opacity;
+}
+
+.backdrop,
+.panelBackdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.bgGrid,
+.bgCurve,
+.bgFormulas,
+.bgSpiral,
+.bgSymbols,
+.bgGeometry,
+.panelArt {
+  position: absolute;
+  inset: 0;
+  background-color: var(--accent);
+  transition:
+    background-color 0.55s ease,
+    opacity 0.55s ease;
+}
+
+.bgGrid {
+  -webkit-mask: url("/bg/math-grid.svg") center / cover no-repeat;
+  mask: url("/bg/math-grid.svg") center / cover no-repeat;
+  opacity: 0.14;
+}
+
+.bgCurve {
+  -webkit-mask: url("/bg/math-curve.svg") 50% 60% / 120% no-repeat;
+  mask: url("/bg/math-curve.svg") 50% 60% / 120% no-repeat;
+  opacity: 0.18;
+}
+
+.bgFormulas {
+  -webkit-mask: url("/bg/math-formulas.svg") center / 115% auto no-repeat;
+  mask: url("/bg/math-formulas.svg") center / 115% auto no-repeat;
+  opacity: 0.15;
+}
+
+.bgSpiral {
+  -webkit-mask: url("/bg/math-spiral.svg") center / cover no-repeat;
+  mask: url("/bg/math-spiral.svg") center / cover no-repeat;
+  opacity: 0.2;
+}
+
+.bgSymbols {
+  -webkit-mask: url("/bg/math-symbols.svg") center / cover no-repeat;
+  mask: url("/bg/math-symbols.svg") center / cover no-repeat;
+  opacity: 0.2;
+}
+
+.bgGeometry {
+  -webkit-mask: url("/bg/math-geometry.svg") center / cover no-repeat;
+  mask: url("/bg/math-geometry.svg") center / cover no-repeat;
+  opacity: 0.18;
+}
+
+.bgVignette,
+.panelVignette {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(
+      ellipse 58% 52% at 50% 42%,
+      transparent 18%,
+      color-mix(in srgb, var(--background) 68%, transparent) 78%
+    );
+  transition: background 0.55s ease;
+}
+
+.panelVignette {
+  background:
+    linear-gradient(90deg, var(--background) 6%, transparent 48%, var(--background) 96%),
+    radial-gradient(ellipse 80% 70% at 70% 50%, transparent 20%, var(--background) 78%);
+}
+
+.content,
+.panelCopy {
+  position: relative;
+  z-index: 1;
+}
+
+.content {
+  @include flex($dir: column, $align: center, $justify: center, $gap: 0.85rem);
+  box-sizing: border-box;
+  height: 100%;
+  min-height: 0;
+  padding: 2.4rem 1.5rem 3.2rem;
+  overflow: auto;
+  text-align: center;
+  animation: intro-in 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.kicker {
+  @include tw("font-mono text-[0.75rem] uppercase tracking-[0.22em]");
+  color: var(--accent-hover);
+  transition: color 0.55s ease;
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(2.6rem, 7vw, 5.6rem);
+  font-weight: 700;
+  letter-spacing: -0.06em;
+  line-height: 0.95;
+  color: var(--foreground);
+  transition: color 0.55s ease;
+}
+
+.subtitle {
+  margin: 0;
+  max-width: 38rem;
+  @include tw("text-lg leading-8 sm:text-xl");
+  color: var(--muted);
+  transition: color 0.55s ease;
+}
+
+.lead {
+  margin: 0.15rem 0 0;
+  max-width: 40rem;
+  @include tw("text-sm leading-7 sm:text-base sm:leading-7");
+  color: var(--muted);
+  transition: color 0.55s ease;
+}
+
+.points {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+  width: min(56rem, 100%);
+  margin: 1.1rem 0 0;
+  padding: 0;
+  list-style: none;
+  text-align: left;
+
+  @media (max-width: 800px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.point {
+  @include glass;
+  @apply px-4 py-4;
+}
+
+.pointTitle {
+  margin: 0;
+  @apply text-sm font-semibold;
+  color: var(--foreground);
+  transition: color 0.55s ease;
+}
+
+.pointBody {
+  margin: 0.4rem 0 0;
+  @apply text-sm leading-6;
+  color: var(--muted);
+  transition: color 0.55s ease;
+}
+
+.mapLabel {
+  margin: 1.15rem 0 0;
+  @include tw("font-mono text-[0.68rem] uppercase tracking-[0.18em]");
+  color: var(--accent-hover);
+  transition: color 0.55s ease;
+}
+
+.map {
+  @include flex($gap: 0.45rem, $wrap: wrap, $justify: center);
+  margin: 0.2rem 0 0;
+  padding: 0;
+  list-style: none;
+
+  li {
+    @apply font-mono text-[0.72rem];
+    padding: 0.35rem 0.75rem;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--foreground);
+    border-radius: 999px;
+    transition:
+      background-color 0.55s ease,
+      border-color 0.55s ease,
+      color 0.55s ease;
+  }
+}
+
+.scrollHint {
+  margin: 1.35rem 0 0;
+  @include tw("font-mono text-[0.68rem] uppercase tracking-[0.2em]");
+  color: var(--muted);
+  animation: hint-pulse 2.2s ease-in-out infinite;
+}
+
+.scrollHint::after {
+  content: "";
+  display: block;
+  width: 0.7rem;
+  height: 0.7rem;
+  margin: 0.65rem auto 0;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg);
+}
+
+.panel {
+  @include flex($align: center);
+  padding: 3.5rem 6vw;
+}
+
+.panelCopy {
+  @include flex($dir: column, $align: flex-start, $gap: 1rem);
+  max-width: 34rem;
+}
+
+.panelArt {
+  opacity: 0.28;
+}
+
+.panel[data-bg="sorting"] .panelArt {
+  -webkit-mask: url("/bg/section-sorting.svg") 78% 55% / 78% no-repeat;
+  mask: url("/bg/section-sorting.svg") 78% 55% / 78% no-repeat;
+}
+
+.panel[data-bg="searching"] .panelArt {
+  -webkit-mask: url("/bg/section-searching.svg") 70% 48% / 82% no-repeat;
+  mask: url("/bg/section-searching.svg") 70% 48% / 82% no-repeat;
+}
+
+.panel[data-bg="graphs"] .panelArt {
+  -webkit-mask: url("/bg/section-graphs.svg") 68% 50% / 86% no-repeat;
+  mask: url("/bg/section-graphs.svg") 68% 50% / 86% no-repeat;
+}
+
+.panel[data-bg="pathfinding"] .panelArt {
+  -webkit-mask: url("/bg/section-pathfinding.svg") 72% 50% / 80% no-repeat;
+  mask: url("/bg/section-pathfinding.svg") 72% 50% / 80% no-repeat;
+}
+
+.panelTitle {
+  margin: 0;
+  font-size: clamp(2.4rem, 6vw, 4.6rem);
+  font-weight: 700;
+  letter-spacing: -0.05em;
+  line-height: 0.95;
+  color: var(--foreground);
+  transition: color 0.55s ease;
+}
+
+.panelBody {
+  margin: 0;
+  max-width: 32rem;
+  @include tw("text-base leading-7 sm:text-lg sm:leading-8");
+  color: var(--muted);
+  transition: color 0.55s ease;
+}
+
+.cta {
+  @include control-btn("primary");
+  @apply px-6 py-3 text-base;
+  margin-top: 0.4rem;
+  border-radius: 999px;
+}
+
+.soon {
+  @include tw("mt-1 font-mono text-[0.72rem] uppercase tracking-[0.16em]");
+  color: var(--muted);
+}
+
+:global(html[data-theme="light"]) {
+  .bgGrid {
+    opacity: 0.22;
+  }
+
+  .bgCurve,
+  .bgFormulas {
+    opacity: 0.22;
+  }
+
+  .bgSpiral,
+  .bgSymbols,
+  .bgGeometry {
+    opacity: 0.26;
+  }
+
+  .panelArt {
+    opacity: 0.34;
+  }
+}
+
+@keyframes intro-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.8rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes hint-pulse {
+  0%,
+  100% {
+    opacity: 0.45;
+    transform: translateY(0);
+  }
+
+  50% {
+    opacity: 1;
+    transform: translateY(0.35rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page {
+    scroll-behavior: auto;
+  }
+
+  .intro,
+  .panel {
+    will-change: auto;
+  }
+
+  .scrollHint,
+  .content {
+    animation: none;
+    transition: none;
+  }
+}

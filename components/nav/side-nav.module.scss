@@ -1,0 +1,135 @@
+@use "../../app/styles/mixins" as *;
+
+.rail {
+  @include flex($dir: column, $align: center, $gap: 0.7rem);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  flex: 0 0 $nav-w;
+  width: $nav-w;
+  height: 100dvh;
+  padding: 1rem 0.65rem;
+  background: #52525b;
+  box-shadow: inset -1px 0 0 rgb(0 0 0 / 0.2);
+  view-transition-name: global-rail;
+}
+
+.label {
+  margin: 0 0 0.15rem;
+  color: #d4d4d8;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.58rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.btn {
+  @include flex($align: center, $justify: center);
+  width: 2.85rem;
+  height: 2.85rem;
+  border-radius: 999px;
+  background: #3f3f46;
+  color: #e4e4e7;
+  transition:
+    background-color 160ms ease,
+    color 160ms ease,
+    transform 160ms ease;
+
+  &:hover,
+  &:focus-visible {
+    background: #ffffff;
+    color: #18181b;
+    transform: translateY(-1px);
+  }
+
+  &[data-active="true"] {
+    background: #ffffff;
+    color: #18181b;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: 2px;
+  }
+}
+
+.icon {
+  display: block;
+  filter: invert(1);
+}
+
+.btn:hover .icon,
+.btn:focus-visible .icon,
+.btn[data-active="true"] .icon {
+  filter: none;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.themeCapsule {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.18rem;
+  width: 2.6rem;
+  padding: 0.22rem;
+  border-radius: 999px;
+  background: #3f3f46;
+}
+
+.themeThumb {
+  position: absolute;
+  top: 0.22rem;
+  left: 0.22rem;
+  width: 2.16rem;
+  height: 2.16rem;
+  border-radius: 999px;
+  background: #ffffff;
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.08);
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+
+.themeCapsule[data-mode="dark"] .themeThumb {
+  transform: translateY(calc(100% + 0.18rem));
+}
+
+.themeBtn {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.16rem;
+  height: 2.16rem;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: 2px;
+  }
+}
+
+.themeIcon {
+  display: block;
+  filter: invert(1);
+  transition: filter 0.4s ease;
+}
+
+.themeBtn[data-active="true"] .themeIcon {
+  filter: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .themeThumb {
+    transition: none;
+  }
+}

@@ -1,0 +1,500 @@
+@use "../../app/styles/mixins" as *;
+
+@reference "tailwindcss";
+
+.shell {
+  position: relative;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: $sidebar-w minmax(0, 1fr);
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+  overflow: hidden;
+}
+
+.sidebar {
+  @include capsule-scroll-left;
+  @include theme-color-shift;
+  box-sizing: border-box;
+  height: 100%;
+  min-height: 0;
+  padding: 1rem 0.85rem 1rem 0.45rem;
+  border-right: 1px solid var(--border);
+  background: var(--panel-sidebar);
+}
+
+.sidebarInner {
+  @include flex($dir: column, $gap: 0.5rem);
+  min-height: 100%;
+}
+
+.sideTitle {
+  @apply px-1 pb-1 font-mono uppercase;
+  color: var(--muted);
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+}
+
+.algoBtn {
+  @include focus-ring;
+  @include theme-color-shift(0.18s);
+  appearance: none;
+  cursor: pointer;
+  font: inherit;
+  width: 100%;
+  padding: 0.55rem 0.2rem 0.55rem 0.65rem;
+  border: 0;
+  border-left: 2px solid transparent;
+  background: transparent;
+  color: var(--foreground);
+  text-align: left;
+
+  &:hover {
+    border-left-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  }
+
+  &[data-active="true"] {
+    border-left-color: var(--accent);
+    color: var(--accent-hover);
+  }
+}
+
+.algoName {
+  @apply block text-sm font-medium;
+}
+
+.algoComplex {
+  @apply mt-0.5 block font-mono;
+  color: var(--muted);
+  font-size: 0.68rem;
+}
+
+.main {
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar) transparent;
+}
+
+.page {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 1.5rem 1.75rem 3.25rem 1.25rem;
+}
+
+.header {
+  margin: 0 0 1.4rem;
+}
+
+.kicker {
+  margin: 0 0 0.35rem;
+  @apply font-mono uppercase;
+  color: var(--muted);
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  transition: color 0.55s ease;
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(1.85rem, 3.4vw, 2.6rem);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+  color: var(--foreground);
+  transition: color 0.55s ease;
+}
+
+.controls {
+  @include flex($align: center, $justify: space-between, $gap: 0.75rem, $wrap: wrap);
+  margin: 0 0 1.25rem;
+}
+
+.btnRow {
+  @include flex($gap: 0.35rem, $wrap: wrap);
+}
+
+.play {
+  @include control-btn("primary");
+}
+
+.btn {
+  @include control-btn("ghost");
+  border-color: transparent;
+  background: transparent;
+
+  &:hover {
+    background: var(--surface-strong);
+  }
+}
+
+.sliders {
+  @include flex($gap: 1rem, $wrap: wrap, $align: center);
+}
+
+.slider {
+  @include flex($dir: column, $gap: 0.35rem);
+  min-width: 10rem;
+}
+
+.sliderLabel {
+  @include flex($justify: space-between);
+  @apply font-mono uppercase;
+  color: var(--muted);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+}
+
+.range {
+  @include range-track;
+}
+
+.stageWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin: 0 0 2.4rem;
+}
+
+.stage {
+  @include theme-color-shift;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: $bar-gap;
+  min-height: 18rem;
+  height: 42vh;
+  overflow: hidden;
+  padding: 1.85rem 0 0.5rem;
+}
+
+.barCol {
+  display: flex;
+  position: relative;
+  flex: 1 1 0;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  height: 100%;
+  min-width: 6px;
+  max-width: 2.75rem;
+}
+
+.barValue {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translate(-50%, calc(-100% - 0.2rem));
+  font-family: var(--font-poppins), sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--foreground);
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.bar {
+  display: block;
+  position: relative;
+  flex: 0 0 auto;
+  width: 100%;
+  min-height: $bar-min-h;
+  border: 0;
+  border-radius: 6px 6px 2px 2px;
+  background-color: #22c55e;
+  box-shadow: 0 0 12px rgb(34 197 94 / 0.35);
+  transition:
+    height $ease-bar,
+    background-color $ease-bar,
+    box-shadow $ease-bar;
+}
+
+@each $role, $color in $role-colors {
+  .bar[data-role="#{$role}"] {
+    background-color: $color;
+  }
+
+  .swatch[data-role="#{$role}"] {
+    background-color: $color;
+  }
+}
+
+.hint {
+  @apply text-sm;
+  color: var(--muted);
+  flex: 0 0 auto;
+}
+
+.progress {
+  @apply h-1 overflow-hidden;
+  background: var(--border);
+  flex: 0 0 auto;
+  border-radius: 999px;
+}
+
+.progressFill {
+  @apply h-full;
+  background: var(--accent);
+  border-radius: 999px;
+  transition: width 80ms linear;
+}
+
+.legend {
+  @include flex($gap: 0.65rem, $wrap: wrap);
+}
+
+.legendItem {
+  @include flex($align: center, $gap: 0.4rem);
+  @apply font-mono;
+  color: var(--muted);
+  font-size: 0.7rem;
+}
+
+.swatch {
+  display: inline-block;
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: 999px;
+}
+
+.metaRow {
+  @include flex($align: center, $justify: space-between, $gap: 0.75rem, $wrap: wrap);
+}
+
+.live {
+  margin: 0;
+  @apply font-mono;
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
+.detail {
+  @include flex($dir: column, $gap: 1.5rem);
+  padding-top: 0.35rem;
+}
+
+.detailTitle {
+  margin: 0 0 0.45rem;
+  @apply font-mono uppercase;
+  color: var(--accent-hover);
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  transition: color 0.55s ease;
+}
+
+.detailBody {
+  margin: 0;
+  max-width: 42rem;
+  color: var(--muted);
+  font-size: 0.98rem;
+  line-height: 1.7;
+  transition: color 0.55s ease;
+}
+
+.complexity {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.85rem 1rem;
+  margin: 0;
+
+  @media (max-width: 700px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  dt {
+    @apply font-mono uppercase;
+    color: var(--muted);
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+  }
+
+  dd {
+    margin: 0.2rem 0 0;
+    color: var(--foreground);
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 0.95rem;
+  }
+}
+
+.aux {
+  @include flex($gap: 0.55rem, $align: flex-end);
+  @apply overflow-x-auto pb-1;
+}
+
+.bucket {
+  @include flex($dir: column, $justify: flex-end, $align: center, $gap: 0.35rem);
+  flex: 0 0 auto;
+}
+
+.bucketVessel {
+  @include theme-color-shift;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  box-sizing: border-box;
+  width: 2.7rem;
+  min-height: 7rem;
+  padding: 0.28rem 0.22rem 0.32rem;
+  border: 2px solid var(--accent);
+  border-top: 0;
+  border-radius: 0 0 0.65rem 0.65rem;
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  box-shadow: inset 0 -10px 16px color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+.bucketStack {
+  @include flex($dir: column-reverse, $gap: 0.18rem, $align: stretch);
+}
+
+.chip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 1.15rem;
+  padding: 0.08rem 0.1rem;
+  border-radius: 0.28rem;
+  background: var(--accent);
+  color: #fff;
+  font-family: var(--font-poppins), sans-serif;
+  font-size: 0.62rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.bucketLabel {
+  @apply font-mono;
+  color: var(--muted);
+  font-size: 0.65rem;
+}
+
+.preloader {
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--preloader);
+  backdrop-filter: blur(8px);
+  animation: preloader-in 0.45s ease forwards;
+}
+
+.preloader[data-exiting="true"] {
+  animation: preloader-out 0.45s ease forwards;
+}
+
+.loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.15rem;
+  height: 3.15rem;
+  animation: loader-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.preloader[data-exiting="true"] .loader {
+  animation: loader-out 0.42s ease forwards;
+}
+
+.preloader[data-exiting="false"] {
+  animation: preloader-in 0.45s ease forwards;
+}
+
+.preloader[data-exiting="false"] .loader {
+  animation: loader-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.loaderRing {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0 68%,
+    var(--accent) 78% 100%
+  );
+  -webkit-mask: radial-gradient(
+    farthest-side,
+    transparent calc(100% - 0.28rem),
+    #000 calc(100% - 0.28rem)
+  );
+  mask: radial-gradient(
+    farthest-side,
+    transparent calc(100% - 0.28rem),
+    #000 calc(100% - 0.28rem)
+  );
+  box-shadow: 0 0 18px var(--glow);
+  animation: loader-spin 0.85s linear infinite;
+}
+
+@keyframes preloader-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes preloader-out {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes loader-in {
+  from {
+    opacity: 0;
+    transform: scale(0.84);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes loader-out {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+}
+
+@keyframes loader-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bar,
+  .progressFill,
+  .loaderRing {
+    animation: none;
+    transition: none;
+  }
+
+  .preloader,
+  .loader,
+  .preloader[data-exiting="true"],
+  .preloader[data-exiting="false"] {
+    animation-duration: 0.2s;
+  }
+}

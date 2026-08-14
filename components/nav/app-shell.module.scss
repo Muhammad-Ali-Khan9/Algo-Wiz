@@ -1,0 +1,15 @@
+@use "../../app/styles/mixins" as *;
+
+.frame {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  min-height: 100%;
+}
+
+.content {
+  min-width: 0;
+  flex: 1 1 auto;
+  height: 100dvh;
+  overflow: hidden;
+}
