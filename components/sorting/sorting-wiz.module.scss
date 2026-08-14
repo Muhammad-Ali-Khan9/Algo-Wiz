@@ -340,6 +340,7 @@
   width: 2.7rem;
   min-height: 7rem;
   padding: 0.28rem 0.22rem 0.32rem;
+  overflow: hidden;
   border: 2px solid var(--accent);
   border-top: 0;
   border-radius: 0 0 0.65rem 0.65rem;
@@ -364,6 +365,8 @@
   font-size: 0.62rem;
   font-weight: 700;
   line-height: 1;
+  transform-origin: center bottom;
+  animation: chip-drop 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .bucketLabel {
@@ -483,10 +486,32 @@
   }
 }
 
+@keyframes chip-drop {
+  0% {
+    opacity: 0;
+    transform: translateY(-1.35rem) scale(0.45);
+  }
+
+  58% {
+    opacity: 1;
+    transform: translateY(0.14rem) scale(1.12);
+  }
+
+  78% {
+    transform: translateY(-0.06rem) scale(0.96);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .bar,
   .progressFill,
-  .loaderRing {
+  .loaderRing,
+  .chip {
     animation: none;
     transition: none;
   }
