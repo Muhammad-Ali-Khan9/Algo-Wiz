@@ -2,7 +2,7 @@
 
 Interactive algorithm visualizations. Watch classic computer science move — comparisons, swaps, probes, and hops — one step at a time.
 
-The first section is **sorting**. Searching, graphs, pathfinding, trees, dynamic programming, backtracking, and string algorithms are planned next.
+The first sections are **sorting** and **searching**. Graphs, pathfinding, trees, dynamic programming, backtracking, and string algorithms are planned next.
 
 ## Stack
 
@@ -35,13 +35,14 @@ The landing page is a full-viewport intro, then algorithm families as you scroll
 
 1. **Intro** — what Algorithms Wizard is, how playback works, and a map of sections. Math-themed SVG backgrounds (grid, curves, formulas, spiral, geometry) tint with the current theme.
 2. **Sorting** — live; links to `/sorting`.
-3. **Searching**, **Graphs**, **Pathfinding**, **Trees**, **Dynamic Programming**, **Backtracking**, **String Algorithms** — coming soon, each with its own background art.
+3. **Searching** — live; links to `/searching`.
+4. **Graphs**, **Pathfinding**, **Trees**, **Dynamic Programming**, **Backtracking**, **String Algorithms** — coming soon, each with its own background art.
 
 Sections **crossfade** in the same viewport as you scroll (sticky stack + scroll-linked opacity). The grey global rail stays put.
 
 ### Global chrome
 
-- **Left rail** — Home and Sorting. Follows the active theme (dark purple-black, light orange).
+- **Left rail** — Home, Sorting, and Searching. Follows the active theme (dark purple-black, light orange).
 - **Theme toggle** — capsule at the bottom of the rail: sun (light) and crescent (dark), with a circle on the active option. Choice is saved in `localStorage` (`algo-wiz-theme`).
 - **Light theme** — white and orange shades.
 - **Dark theme** — black with purple shades.
@@ -85,7 +86,7 @@ A page layout (not a dashboard of cards): algorithm list on the left, document-s
 - Bars colored by role: normal (green), comparing (yellow), selected (blue), swapping (red), sorted (purple)
 - Values sit on top of each bar (bold Poppins)
 - Live hint, progress, comparison/write counts, and step index
-- Below the run: **Definition**, **Complexity** (best / average / worst / space / stable), and **Usage** for the current algorithm
+- Below the run: **Definition**, **Complexity**, **Usage**, and **Code** (C / C++ / Python / Java / JavaScript / C# tabs)
 
 **Bucket / radix / counting / pigeonhole extras**
 
@@ -105,6 +106,37 @@ A page layout (not a dashboard of cards): algorithm list on the left, document-s
 | Right arrow   | Step ahead    |
 | Left arrow    | Step back     |
 | R             | Shuffle       |
+
+### Searching visualizer (`/searching`)
+
+Same page layout as sorting: algorithm list on the left, document-style content on the right.
+
+**Algorithms (8)**
+
+| Algorithm                | Average      | Notes                                      |
+| ------------------------ | ------------ | ------------------------------------------ |
+| Linear Search            | O(n)         | Left-to-right scan; unsorted is fine       |
+| Binary Search            | O(log n)     | Halve a sorted window                      |
+| Jump Search              | O(√n)        | Hop √n, then scan the block                |
+| Interpolation Search     | O(log log n) | Probe by value, assuming uniform keys      |
+| Exponential Search       | O(log n)     | Double the bound, then binary search       |
+| Fibonacci Search         | O(log n)     | Split with Fibonacci indexes               |
+| Ternary Search           | O(log₃ n)    | Two cuts; keep one third                   |
+| Sentinel Linear Search   | O(n)         | Plant the target at the end; no bound check |
+
+**Playback**
+
+- Play / Pause / Replay
+- Step back / Step ahead
+- Shuffle and Reset
+- **Target**, Size (8–48), and Speed sliders
+- Ordered algorithms sort the array on shuffle / when you switch to them
+
+**Visualization**
+
+- Bars colored by role: unsearched (slate), current (yellow), compared (sky), found (green), eliminated (red), search range (violet)
+- Live hint, progress, comparison/probe counts, and step index
+- Below the run: **Definition**, **Complexity** (best / average / worst / space / requires sorted), **Usage**, and **Code** (C / C++ / Python / Java / JavaScript / C# tabs)
 
 ## How sorting traces work
 
@@ -138,6 +170,7 @@ app/
   layout.tsx              Shell, fonts, theme boot script
   page.tsx                Home
   sorting/page.tsx        Sorting visualizer
+  searching/page.tsx      Searching visualizer
   globals.scss            Theme CSS variables
   styles/                 Tokens, mixins, Tailwind entry
 components/
@@ -145,7 +178,9 @@ components/
   theme/                  Light / dark provider
   home/                   Landing + section crossfade
   sorting/                Sorting page + SCSS module
-lib/sorting/              Algorithm traces
+  searching/              Searching page (shares sorting visual styles)
+lib/sorting/              Sorting traces
+lib/searching/            Searching traces
 public/
   icons/                  Nav and theme SVGs
   bg/                     Math and section background SVGs
@@ -156,13 +191,6 @@ Styles live in **SCSS modules**. Tailwind is used via `@apply` and a `tw()` mixi
 ## More to come
 
 These are sketched on the home page and intended to follow the same pattern: sidebar of algorithms, step-through playback, color roles, and definition / complexity / usage under the visualization.
-
-### Searching
-
-- Linear and binary search on a sorted array
-- Optional: interpolation search, jump search, hashing probes
-
-Show the shrinking window (low / mid / high), not just a final index.
 
 ### Graphs
 

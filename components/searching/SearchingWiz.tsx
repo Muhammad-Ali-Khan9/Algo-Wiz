@@ -1,37 +1,36 @@
 "use client";
 
 import { CodePanel } from "@/components/code/CodePanel";
-import { ALGORITHM_META, RUNNERS, bucketSort, getAlgorithm } from "@/lib/sorting";
-import { arrayMax, patternedArray, randomArray } from "@/lib/sorting/random";
-import type { AlgorithmId, BarRole } from "@/lib/sorting/types";
+import { SEARCH_META, SEARCH_RUNNERS, getSearch, needsSorted } from "@/lib/searching";
+import { pickTarget, searchArray } from "@/lib/searching/random";
+import type { ProbeRole, SearchId } from "@/lib/searching/types";
+import { arrayMax, patternedArray } from "@/lib/sorting/random";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import styles from "./sorting-wiz.module.scss";
+import styles from "@/components/sorting/sorting-wiz.module.scss";
 
 const MIN_SIZE = 8;
 const MAX_SIZE = 48;
-const MIN_BUCKETS = 1;
-const MAX_BUCKETS = 64;
+const MIN_TARGET = 8;
+const MAX_TARGET = 96;
 const DEFAULT_SIZE = 28;
 const DEFAULT_SPEED = 62;
-const DEFAULT_BUCKETS = 8;
 
-const ROLE_COLORS: Record<BarRole, string> = {
-  idle: "#22c55e",
-  compare: "#eab308",
-  key: "#3b82f6",
-  min: "#3b82f6",
-  pivot: "#3b82f6",
-  write: "#3b82f6",
-  swap: "#ef4444",
-  sorted: "#a855f7",
+const ROLE_COLORS: Record<ProbeRole, string> = {
+  unsearched: "#94A3B8",
+  current: "#FACC15",
+  compared: "#38BDF8",
+  found: "#22C55E",
+  eliminated: "#EF4444",
+  range: "#A78BFA",
 };
 
-const ROLE_LABELS: { role: BarRole; label: string }[] = [
-  { role: "idle", label: "Normal" },
-  { role: "compare", label: "Comparing" },
-  { role: "key", label: "Selected" },
-  { role: "swap", label: "Swapping" },
-  { role: "sorted", label: "Sorted" },
+const ROLE_LABELS: { role: ProbeRole; label: string }[] = [
+  { role: "unsearched", label: "Unsearched" },
+  { role: "current", label: "Current" },
+  { role: "compared", label: "Compared" },
+  { role: "found", label: "Found" },
+  { role: "eliminated", label: "Not found / Eliminated" },
+  { role: "range", label: "Search range" },
 ];
 
 const PRELOAD_FADE_MS = 450;
@@ -41,12 +40,16 @@ function delayForSpeed(speed: number) {
   return Math.round(480 * Math.pow(0.955, speed));
 }
 
-export function SortingWiz() {
-  const [algorithmId, setAlgorithmId] = useState<AlgorithmId>("bubble");
+function initialArray() {
+  return patternedArray(DEFAULT_SIZE);
+}
+
+export function SearchingWiz() {
+  const [algorithmId, setAlgorithmId] = useState<SearchId>("linear");
   const [size, setSize] = useState(DEFAULT_SIZE);
   const [speed, setSpeed] = useState(DEFAULT_SPEED);
-  const [bucketCount, setBucketCount] = useState(DEFAULT_BUCKETS);
-  const [array, setArray] = useState(() => patternedArray(DEFAULT_SIZE));
+  const [array, setArray] = useState(initialArray);
+  const [target, setTarget] = useState(() => initialArray()[Math.floor(DEFAULT_SIZE / 2)] ?? 40);
   const [index, setIndex] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [booting, setBooting] = useState(true);
@@ -56,29 +59,40 @@ export function SortingWiz() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const swapTimers = useRef<number[]>([]);
 
-  const algorithm = getAlgorithm(algorithmId);
+  const algorithm = getSearch(algorithmId);
 
-  const shuffle = useCallback((nextSize = size) => {
-    setArray(randomArray(nextSize));
-    setIndex(0);
-    setPlaying(false);
-  }, [size]);
+  const shuffle = useCallback(
+    (nextSize = size, id = algorithmId) => {
+      const next = searchArray(nextSize, needsSorted(id));
+      setArray(next);
+      setTarget(pickTarget(next));
+      setIndex(0);
+      setPlaying(false);
+    },
+    [algorithmId, size],
+  );
 
-  const selectAlgorithm = useCallback((id: AlgorithmId) => {
-    setSidebarOpen(false);
-    if (id === algorithmId) return;
-    swapTimers.current.forEach((timer) => window.clearTimeout(timer));
-    swapTimers.current = [];
-    setBusy(true);
-    setPlaying(false);
-    swapTimers.current.push(
-      window.setTimeout(() => {
-        setAlgorithmId(id);
-        setIndex(0);
-      }, 400),
-      window.setTimeout(() => setBusy(false), 850),
-    );
-  }, [algorithmId]);
+  const selectAlgorithm = useCallback(
+    (id: SearchId) => {
+      setSidebarOpen(false);
+      if (id === algorithmId) return;
+      swapTimers.current.forEach((timer) => window.clearTimeout(timer));
+      swapTimers.current = [];
+      setBusy(true);
+      setPlaying(false);
+      swapTimers.current.push(
+        window.setTimeout(() => {
+          setAlgorithmId(id);
+          setIndex(0);
+          if (needsSorted(id)) {
+            setArray((current) => current.slice().sort((a, b) => a - b));
+          }
+        }, 400),
+        window.setTimeout(() => setBusy(false), 850),
+      );
+    },
+    [algorithmId],
+  );
 
   useEffect(() => {
     const timer = window.setTimeout(() => setBooting(false), BOOT_HOLD_MS);
@@ -111,9 +125,8 @@ export function SortingWiz() {
 
   const frames = useMemo(() => {
     if (!array.length) return [];
-    if (algorithmId === "bucket") return bucketSort(array, bucketCount);
-    return RUNNERS[algorithmId](array);
-  }, [algorithmId, array, bucketCount]);
+    return SEARCH_RUNNERS[algorithmId](array, target);
+  }, [algorithmId, array, target]);
 
   const safeIndex = frames.length ? Math.min(index, frames.length - 1) : 0;
   const frame = frames[safeIndex];
@@ -195,11 +208,11 @@ export function SortingWiz() {
       <aside
         className={styles.sidebar}
         data-open={sidebarOpen}
-        aria-label="Sorting algorithms"
+        aria-label="Searching algorithms"
       >
         <div className={styles.sidebarInner}>
           <p className={styles.sideTitle}>Algorithms</p>
-          {ALGORITHM_META.map((item) => (
+          {SEARCH_META.map((item) => (
             <button
               key={item.id}
               type="button"
@@ -220,7 +233,7 @@ export function SortingWiz() {
         <div className={styles.page}>
           <header className={styles.header}>
             <div className={styles.headerCopy}>
-              <p className={styles.kicker}>Sorting</p>
+              <p className={styles.kicker}>Searching</p>
               <h1 className={styles.title}>{algorithm.name}</h1>
             </div>
             <button
@@ -277,11 +290,7 @@ export function SortingWiz() {
               >
                 Step ahead
               </button>
-              <button
-                type="button"
-                className={styles.btn}
-                onClick={() => shuffle()}
-              >
+              <button type="button" className={styles.btn} onClick={() => shuffle()}>
                 Shuffle
               </button>
               <button
@@ -297,6 +306,23 @@ export function SortingWiz() {
             </div>
 
             <div className={styles.sliders}>
+              <label className={styles.slider}>
+                <span className={styles.sliderLabel}>
+                  Target <b>{target}</b>
+                </span>
+                <input
+                  className={styles.range}
+                  type="range"
+                  min={MIN_TARGET}
+                  max={MAX_TARGET}
+                  value={target}
+                  onChange={(event) => {
+                    setTarget(Number(event.target.value));
+                    setIndex(0);
+                    setPlaying(false);
+                  }}
+                />
+              </label>
               <label className={styles.slider}>
                 <span className={styles.sliderLabel}>
                   Size <b>{size}</b>
@@ -327,32 +353,14 @@ export function SortingWiz() {
                   onChange={(event) => setSpeed(Number(event.target.value))}
                 />
               </label>
-              {algorithmId === "bucket" ? (
-                <label className={styles.slider}>
-                  <span className={styles.sliderLabel}>
-                    Buckets <b>{bucketCount}</b>
-                  </span>
-                  <input
-                    className={styles.range}
-                    type="range"
-                    min={MIN_BUCKETS}
-                    max={MAX_BUCKETS}
-                    value={bucketCount}
-                    onChange={(event) => {
-                      setBucketCount(Number(event.target.value));
-                      setIndex(0);
-                      setPlaying(false);
-                    }}
-                  />
-                </label>
-              ) : null}
             </div>
           </div>
 
           <div className={styles.stageWrap}>
             <div className={styles.stage} aria-label="Array visualization">
               {(frame?.array ?? []).map((value, barIndex) => {
-                const role = frame?.roles[barIndex] ?? "idle";
+                const role = frame?.roles[barIndex] ?? "unsearched";
+                const color = ROLE_COLORS[role];
                 return (
                   <div key={barIndex} className={styles.barCol}>
                     <div
@@ -360,7 +368,8 @@ export function SortingWiz() {
                       data-role={role}
                       style={{
                         height: `${Math.max((value / maxValue) * 100, 6)}%`,
-                        backgroundColor: ROLE_COLORS[role],
+                        backgroundColor: color,
+                        boxShadow: `0 0 12px ${color}59`,
                       }}
                       title={String(value)}
                     >
@@ -372,38 +381,10 @@ export function SortingWiz() {
             </div>
 
             <div className={styles.progress} aria-hidden="true">
-              <div
-                className={styles.progressFill}
-                style={{ width: `${progress}%` }}
-              />
+              <div className={styles.progressFill} style={{ width: `${progress}%` }} />
             </div>
 
-            <p className={styles.hint}>
-              {frame?.hint ?? "Shuffle an array to begin."}
-            </p>
-
-            {frame?.auxBuckets && frame.auxBuckets.length > 0 ? (
-              <div className={styles.aux} aria-label="Auxiliary buckets">
-                {frame.auxBuckets.map((bucket) => (
-                  <div key={bucket.label} className={styles.bucket}>
-                    <div className={styles.bucketVessel}>
-                      <div className={styles.bucketStack}>
-                        {bucket.values.map((value, valueIndex) => (
-                          <span
-                            key={`${bucket.label}-${valueIndex}`}
-                            className={styles.chip}
-                            title={String(value)}
-                          >
-                            {value}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                    <span className={styles.bucketLabel}>{bucket.label}</span>
-                  </div>
-                ))}
-              </div>
-            ) : null}
+            <p className={styles.hint}>{frame?.hint ?? "Shuffle an array to begin."}</p>
 
             <div className={styles.metaRow}>
               <div className={styles.legend}>
@@ -421,7 +402,7 @@ export function SortingWiz() {
               <p className={styles.live}>
                 Comparisons {frame?.stats.comparisons ?? 0}
                 <span aria-hidden="true"> · </span>
-                Writes {frame?.stats.writes ?? 0}
+                Probes {frame?.stats.probes ?? 0}
                 <span aria-hidden="true"> · </span>
                 Step {frames.length ? `${safeIndex + 1}/${frames.length}` : "0/0"}
               </p>
@@ -453,8 +434,8 @@ export function SortingWiz() {
                   <dd>{algorithm.space}</dd>
                 </div>
                 <div>
-                  <dt>Stable</dt>
-                  <dd>{algorithm.stable ? "Yes" : "No"}</dd>
+                  <dt>Sorted</dt>
+                  <dd>{algorithm.sortedInput ? "Yes" : "No"}</dd>
                 </div>
               </dl>
             </section>

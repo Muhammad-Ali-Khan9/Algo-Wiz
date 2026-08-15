@@ -1,17 +1,29 @@
 @use "../../app/styles/mixins" as *;
 
+.wrap {
+  position: relative;
+  z-index: 20;
+  flex: 0 0 $nav-w;
+  width: $nav-w;
+  height: 100dvh;
+}
+
 .rail {
   @include flex($dir: column, $align: center, $gap: 0.7rem);
   @include theme-color-shift;
   position: sticky;
   top: 0;
   z-index: 20;
-  flex: 0 0 $nav-w;
   width: $nav-w;
   height: 100dvh;
   padding: 1rem 0.65rem;
   background: var(--rail);
   box-shadow: inset -1px 0 0 var(--border);
+}
+
+.menuBtn,
+.scrim {
+  display: none;
 }
 
 .label {
@@ -138,11 +150,75 @@
   filter: invert(1);
 }
 
+@media (max-width: 800px) {
+  .wrap {
+    flex: 0 0 0;
+    width: 0;
+    height: 0;
+    overflow: visible;
+  }
+
+  .menuBtn {
+    @include flex($align: center, $justify: center);
+    position: fixed;
+    top: 0.7rem;
+    left: 0.7rem;
+    z-index: 40;
+    width: 2.75rem;
+    height: 2.75rem;
+    padding: 0;
+    border: 0;
+    border-radius: 999px;
+    background: var(--rail-btn);
+    box-shadow: 0 0 0 1px rgb(0 0 0 / 0.06);
+    cursor: pointer;
+
+    &:focus-visible {
+      outline: 2px solid var(--rail-active);
+      outline-offset: 2px;
+    }
+  }
+
+  .scrim {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 30;
+    border: 0;
+    background: rgb(0 0 0 / 0.45);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.22s ease;
+
+    &[data-open="true"] {
+      opacity: 1;
+      pointer-events: auto;
+    }
+  }
+
+  .rail {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 35;
+    padding-top: 4.15rem;
+    transform: translateX(-110%);
+    transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+    pointer-events: none;
+
+    &[data-open="true"] {
+      transform: translateX(0);
+      pointer-events: auto;
+    }
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .themeThumb,
   .rail,
   .btn,
-  .themeCapsule {
+  .themeCapsule,
+  .scrim {
     transition: none;
   }
 }

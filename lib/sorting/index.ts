@@ -10,6 +10,7 @@ import {
 import { bitonicSort, introSort, stoogeSort, timSort } from "./hybrid";
 import { bucketSort, countingSort, pigeonholeSort, radixSort } from "./linear";
 import type { AlgorithmId, AlgorithmMeta, SortRunner } from "./types";
+import { SORT_CODE } from "./snippets";
 
 export { bucketSort };
 
@@ -232,5 +233,5 @@ export const RUNNERS: Record<AlgorithmId, SortRunner> = {
 export function getAlgorithm(id: AlgorithmId): AlgorithmMeta {
   const meta = ALGORITHM_META.find((item) => item.id === id);
   if (!meta) throw new Error(`Unknown algorithm: ${id}`);
-  return meta;
+  return { ...meta, code: SORT_CODE[id] };
 }

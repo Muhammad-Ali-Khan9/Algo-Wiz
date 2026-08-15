@@ -24,7 +24,7 @@ const poppins = Poppins({
 export const metadata: Metadata = {
   title: "Algorithms Wizard",
   description:
-    "Interactive algorithm visualizations — start with sorting, then explore more sections.",
+    "Interactive algorithm visualizations — sorting and searching, with more sections to come.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

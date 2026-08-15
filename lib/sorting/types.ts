@@ -1,3 +1,5 @@
+import type { CodeSnippets } from "@/lib/code/languages";
+
 export type BarRole =
   | "idle"
   | "compare"
@@ -53,6 +55,7 @@ export interface AlgorithmMeta {
   stable: boolean;
   definition: string;
   usage: string;
+  code?: CodeSnippets;
 }
 
 export type SortRunner = (values: number[]) => SortFrame[];

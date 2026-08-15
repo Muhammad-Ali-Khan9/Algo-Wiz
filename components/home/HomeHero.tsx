@@ -18,9 +18,9 @@ const SECTIONS = [
     id: "searching",
     kicker: "02 — Lookups",
     title: "Searching",
-    body: "Linear scans, binary search, and hash probes through ordered data. See how the window shrinks until the target is found — or ruled out.",
-    href: null,
-    cta: "Coming soon",
+    body: "Linear scans, binary search, jump, interpolation, and more. See how the window shrinks until the target is found — or ruled out.",
+    href: "/searching",
+    cta: "Open Searching",
     bg: "searching",
   },
   {

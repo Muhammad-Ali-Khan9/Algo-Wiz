@@ -123,9 +123,11 @@
   height: 100%;
   min-height: 0;
   padding: 2.4rem 1.5rem 3.2rem;
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
   text-align: center;
   animation: intro-in 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+  justify-content: safe center;
 }
 
 .kicker {
@@ -242,11 +244,14 @@
 .panel {
   @include flex($align: center);
   padding: 3.5rem 6vw;
+  overflow: hidden;
 }
 
 .panelCopy {
   @include flex($dir: column, $align: flex-start, $gap: 1rem);
   max-width: 34rem;
+  max-height: 100%;
+  overflow: auto;
 }
 
 .panelArt {
@@ -366,6 +371,88 @@
   50% {
     opacity: 1;
     transform: translateY(0.35rem);
+  }
+}
+
+@media (max-width: 800px), (max-height: 820px) {
+  .content {
+    justify-content: flex-start;
+    gap: 0.5rem;
+    padding: 1.15rem 1rem 1.75rem;
+  }
+
+  .title {
+    font-size: clamp(1.7rem, 8.4vw, 2.45rem);
+    line-height: 1.05;
+  }
+
+  .subtitle {
+    @include tw("text-base leading-7");
+  }
+
+  .lead {
+    margin: 0;
+    @include tw("text-sm leading-6");
+  }
+
+  .points {
+    gap: 0.45rem;
+    margin: 0.55rem 0 0;
+  }
+
+  .point {
+    @apply px-3 py-3;
+  }
+
+  .mapLabel {
+    margin: 0.65rem 0 0;
+  }
+
+  .scrollHint {
+    margin: 0.85rem 0 0;
+  }
+
+  .panel {
+    align-items: flex-start;
+    padding: 1.5rem 1.15rem 2rem;
+  }
+
+  .panelTitle {
+    font-size: clamp(1.85rem, 9vw, 2.8rem);
+  }
+}
+
+@media (max-width: 800px) {
+  .panelVignette {
+    background:
+      radial-gradient(
+        ellipse 78% 70% at 50% 38%,
+        transparent 8%,
+        color-mix(in srgb, var(--background) 42%, transparent) 58%,
+        var(--background) 88%
+      );
+  }
+
+  .panelArt {
+    opacity: 0.22;
+  }
+
+  :global(html[data-theme="light"]) .panelArt {
+    opacity: 0.28;
+  }
+
+  .panel[data-bg="sorting"] .panelArt,
+  .panel[data-bg="searching"] .panelArt,
+  .panel[data-bg="graphs"] .panelArt,
+  .panel[data-bg="pathfinding"] .panelArt,
+  .panel[data-bg="trees"] .panelArt,
+  .panel[data-bg="dp"] .panelArt,
+  .panel[data-bg="backtracking"] .panelArt,
+  .panel[data-bg="strings"] .panelArt {
+    -webkit-mask-position: 50% 42%;
+    mask-position: 50% 42%;
+    -webkit-mask-size: 128%;
+    mask-size: 128%;
   }
 }
 

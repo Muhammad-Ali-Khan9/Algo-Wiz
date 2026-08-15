@@ -1,0 +1,62 @@
+@use "../../app/styles/mixins" as *;
+
+@reference "tailwindcss";
+
+.title {
+  margin: 0 0 0.45rem;
+  @apply font-mono uppercase;
+  color: var(--accent-hover);
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  transition: color 0.55s ease;
+}
+
+.tabs {
+  @include flex($gap: 0.35rem, $wrap: wrap);
+  margin: 0 0 0.65rem;
+}
+
+.tab {
+  @include focus-ring;
+  @include theme-color-shift(0.18s);
+  appearance: none;
+  cursor: pointer;
+  font: inherit;
+  padding: 0.28rem 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.72rem;
+
+  &:hover {
+    color: var(--foreground);
+    border-color: color-mix(in srgb, var(--accent) 40%, var(--border));
+  }
+
+  &[data-active="true"] {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: #fff;
+  }
+}
+
+.pre {
+  @include theme-color-shift;
+  margin: 0;
+  max-width: 52rem;
+  max-height: 28rem;
+  overflow: auto;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  background: var(--surface-strong);
+  color: var(--foreground);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.78rem;
+  line-height: 1.55;
+  white-space: pre;
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar) transparent;
+}
