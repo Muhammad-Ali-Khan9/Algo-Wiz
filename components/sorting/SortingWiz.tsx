@@ -4,6 +4,9 @@ import { CodePanel } from "@/components/code/CodePanel";
 import { ALGORITHM_META, RUNNERS, bucketSort, getAlgorithm } from "@/lib/sorting";
 import { arrayMax, patternedArray, randomArray } from "@/lib/sorting/random";
 import type { AlgorithmId, BarRole } from "@/lib/sorting/types";
+import closeIcon from "@/public/icons/close.svg";
+import listIcon from "@/public/icons/list.svg";
+import Image from "next/image";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import styles from "./sorting-wiz.module.scss";
 
@@ -227,9 +230,17 @@ export function SortingWiz() {
               type="button"
               className={styles.sidebarToggle}
               aria-expanded={sidebarOpen}
+              aria-label={sidebarOpen ? "Close algorithms" : "Open algorithms"}
               onClick={() => setSidebarOpen((value) => !value)}
             >
-              Algorithms
+              <Image
+                src={sidebarOpen ? closeIcon : listIcon}
+                alt=""
+                width={18}
+                height={18}
+                className={styles.sidebarToggleIcon}
+                unoptimized
+              />
             </button>
           </header>
 

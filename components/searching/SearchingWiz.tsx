@@ -5,6 +5,9 @@ import { SEARCH_META, SEARCH_RUNNERS, getSearch, needsSorted } from "@/lib/searc
 import { pickTarget, searchArray } from "@/lib/searching/random";
 import type { ProbeRole, SearchId } from "@/lib/searching/types";
 import { arrayMax, patternedArray } from "@/lib/sorting/random";
+import closeIcon from "@/public/icons/close.svg";
+import listIcon from "@/public/icons/list.svg";
+import Image from "next/image";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import styles from "@/components/sorting/sorting-wiz.module.scss";
 
@@ -240,9 +243,17 @@ export function SearchingWiz() {
               type="button"
               className={styles.sidebarToggle}
               aria-expanded={sidebarOpen}
+              aria-label={sidebarOpen ? "Close algorithms" : "Open algorithms"}
               onClick={() => setSidebarOpen((value) => !value)}
             >
-              Algorithms
+              <Image
+                src={sidebarOpen ? closeIcon : listIcon}
+                alt=""
+                width={18}
+                height={18}
+                className={styles.sidebarToggleIcon}
+                unoptimized
+              />
             </button>
           </header>
 

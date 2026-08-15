@@ -444,11 +444,30 @@
   }
 
   .sidebarToggle {
-    @include control-btn("ghost");
-    display: inline-flex;
-    flex: 0 0 auto;
-    margin-top: 0.15rem;
+    @include flex($align: center, $justify: center);
+    position: fixed;
+    top: 4.15rem;
+    left: 0.7rem;
+    z-index: 39;
+    width: 2.75rem;
+    height: 2.75rem;
+    padding: 0;
+    border: 0;
     border-radius: 999px;
+    background: var(--rail-btn);
+    box-shadow: 0 0 0 1px rgb(0 0 0 / 0.06);
+    cursor: pointer;
+    color: #18181b;
+
+    &:focus-visible {
+      outline: 2px solid var(--rail-active);
+      outline-offset: 2px;
+    }
+  }
+
+  .sidebarToggleIcon {
+    display: block;
+    filter: var(--rail-icon);
   }
 
   .sidebarScrim {
