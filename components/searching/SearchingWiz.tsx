@@ -214,7 +214,24 @@ export function SearchingWiz() {
         aria-label="Searching algorithms"
       >
         <div className={styles.sidebarInner}>
-          <p className={styles.sideTitle}>Algorithms</p>
+          <div className={styles.sidebarHead}>
+            <p className={styles.sideTitle}>Algorithms</p>
+            <button
+              type="button"
+              className={styles.sidebarClose}
+              aria-label="Close algorithms"
+              onClick={() => setSidebarOpen(false)}
+            >
+              <Image
+                src={closeIcon}
+                alt=""
+                width={16}
+                height={16}
+                className={styles.sidebarCloseIcon}
+                unoptimized
+              />
+            </button>
+          </div>
           {SEARCH_META.map((item) => (
             <button
               key={item.id}
@@ -246,6 +263,7 @@ export function SearchingWiz() {
               aria-label={sidebarOpen ? "Close algorithms" : "Open algorithms"}
               onClick={() => setSidebarOpen((value) => !value)}
             >
+              <span className={styles.sidebarToggleLabel}>Algorithm</span>
               <Image
                 src={sidebarOpen ? closeIcon : listIcon}
                 alt=""
@@ -378,7 +396,7 @@ export function SearchingWiz() {
                       className={styles.bar}
                       data-role={role}
                       style={{
-                        height: `${Math.max((value / maxValue) * 100, 6)}%`,
+                        ["--bar-size" as string]: `${Math.max((value / maxValue) * 100, 6)}%`,
                         backgroundColor: color,
                         boxShadow: `0 0 12px ${color}59`,
                       }}

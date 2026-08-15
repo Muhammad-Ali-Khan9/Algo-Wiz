@@ -201,7 +201,24 @@ export function SortingWiz() {
         aria-label="Sorting algorithms"
       >
         <div className={styles.sidebarInner}>
-          <p className={styles.sideTitle}>Algorithms</p>
+          <div className={styles.sidebarHead}>
+            <p className={styles.sideTitle}>Algorithms</p>
+            <button
+              type="button"
+              className={styles.sidebarClose}
+              aria-label="Close algorithms"
+              onClick={() => setSidebarOpen(false)}
+            >
+              <Image
+                src={closeIcon}
+                alt=""
+                width={16}
+                height={16}
+                className={styles.sidebarCloseIcon}
+                unoptimized
+              />
+            </button>
+          </div>
           {ALGORITHM_META.map((item) => (
             <button
               key={item.id}
@@ -233,6 +250,7 @@ export function SortingWiz() {
               aria-label={sidebarOpen ? "Close algorithms" : "Open algorithms"}
               onClick={() => setSidebarOpen((value) => !value)}
             >
+              <span className={styles.sidebarToggleLabel}>Algorithm</span>
               <Image
                 src={sidebarOpen ? closeIcon : listIcon}
                 alt=""
@@ -370,7 +388,7 @@ export function SortingWiz() {
                       className={styles.bar}
                       data-role={role}
                       style={{
-                        height: `${Math.max((value / maxValue) * 100, 6)}%`,
+                        ["--bar-size" as string]: `${Math.max((value / maxValue) * 100, 6)}%`,
                         backgroundColor: ROLE_COLORS[role],
                       }}
                       title={String(value)}

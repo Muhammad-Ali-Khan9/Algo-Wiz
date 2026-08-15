@@ -70,9 +70,6 @@ export function SideNav() {
         id="global-rail"
         className={styles.rail}
         data-open={open}
-        data-algo={
-          pathname.startsWith("/sorting") || pathname.startsWith("/searching")
-        }
         aria-label="Sections"
       >
         <p className={styles.label}>Menu</p>
