@@ -118,16 +118,22 @@
 }
 
 .content {
-  @include flex($dir: column, $align: center, $justify: center, $gap: 0.85rem);
+  @include flex($dir: column);
   box-sizing: border-box;
   height: 100%;
   min-height: 0;
-  padding: 2.4rem 1.5rem 3.2rem;
   overflow-x: hidden;
   overflow-y: auto;
+}
+
+.contentInner {
+  @include flex($dir: column, $align: center, $gap: 0.85rem);
+  box-sizing: border-box;
+  width: 100%;
+  margin-block: auto;
+  padding: 2.4rem 1.5rem 3.2rem;
   text-align: center;
   animation: intro-in 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
-  justify-content: safe center;
 }
 
 .kicker {
@@ -375,10 +381,9 @@
 }
 
 @media (max-width: 800px), (max-height: 820px) {
-  .content {
-    justify-content: flex-start;
+  .contentInner {
     gap: 0.5rem;
-    padding: 1.15rem 1rem 1.75rem;
+    padding: 1.35rem 1rem 1.75rem;
   }
 
   .title {
@@ -413,7 +418,7 @@
   }
 
   .panel {
-    align-items: flex-start;
+    align-items: center;
     padding: 1.5rem 1.15rem 2rem;
   }
 
@@ -423,6 +428,10 @@
 }
 
 @media (max-width: 800px) {
+  .contentInner {
+    padding-top: 4.35rem;
+    padding-bottom: 4.35rem;
+  }
   .panelVignette {
     background:
       radial-gradient(
@@ -467,7 +476,7 @@
   }
 
   .scrollHint,
-  .content {
+  .contentInner {
     animation: none;
     transition: none;
   }

@@ -175,6 +175,7 @@ export function HomeHero() {
             <div className={styles.bgVignette} />
           </div>
           <div className={styles.content}>
+            <div className={styles.contentInner}>
             <p className={styles.kicker}>Algorithm Visualizer</p>
             <h1 id="home-title" className={styles.title}>
               Algorithms Wizard
@@ -225,6 +226,7 @@ export function HomeHero() {
               <li>String Algorithms</li>
             </ul>
             <p className={styles.scrollHint}>Scroll for sections</p>
+            </div>
           </div>
         </section>
 
