@@ -188,6 +188,12 @@
   animation: intro-in 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
+.brandMark {
+  @include theme-color-shift;
+  @include tw("mb-1 block size-[3.25rem] shrink-0");
+  color: var(--accent);
+}
+
 .kicker {
   @include tw("font-mono text-[0.75rem] uppercase tracking-[0.22em]");
   color: var(--accent-hover);

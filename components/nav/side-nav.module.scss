@@ -18,6 +18,24 @@
   box-shadow: inset -1px 0 0 var(--border);
 }
 
+.brandLink {
+  @include focus-ring;
+  @include tw("mb-0.5 flex shrink-0 items-center justify-center no-underline");
+  color: inherit;
+
+  &:hover .brand,
+  &:focus-visible .brand {
+    color: var(--rail-active);
+    filter: brightness(1.12);
+  }
+}
+
+.brand {
+  @include theme-color-shift;
+  @include tw("block size-[1.85rem]");
+  color: var(--rail-active);
+}
+
 .menuBtn,
 .scrim {
   @include tw("hidden");

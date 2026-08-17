@@ -9,6 +9,7 @@ import pathfindingIcon from "@/public/icons/pathfinding.svg";
 import searchIcon from "@/public/icons/search.svg";
 import sortIcon from "@/public/icons/sort.svg";
 import sunIcon from "@/public/icons/sun.svg";
+import { AlgoMark } from "@/components/brand/AlgoMark";
 import { useTheme } from "@/components/theme/ThemeProvider";
 import Image from "next/image";
 import Link from "next/link";
@@ -74,6 +75,14 @@ export function SideNav() {
         data-open={open}
         aria-label="Sections"
       >
+        <Link
+          href="/"
+          className={styles.brandLink}
+          aria-label="Algorithms Wizard home"
+          title="Algorithms Wizard"
+        >
+          <AlgoMark className={styles.brand} />
+        </Link>
         <p className={styles.label}>Menu</p>
         {SECTIONS.map((section) => {
           const active =

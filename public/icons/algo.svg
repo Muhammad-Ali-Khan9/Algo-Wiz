@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" fill="none">
+  <!-- top process boxes -->
+  <rect x="16" y="2" width="16" height="6" rx="1.2" stroke="#18181b" stroke-width="1.8"/>
+  <rect x="16" y="11" width="16" height="6" rx="1.2" stroke="#18181b" stroke-width="1.8"/>
+  <path d="M24 8v3" stroke="#18181b" stroke-width="1.8" stroke-linecap="round"/>
+
+  <!-- decision diamond -->
+  <path
+    d="M24 20.5 30.5 27 24 33.5 17.5 27Z"
+    stroke="#18181b"
+    stroke-width="1.8"
+    stroke-linejoin="round"
+  />
+  <path d="M24 17v3.5" stroke="#18181b" stroke-width="1.8" stroke-linecap="round"/>
+
+  <!-- lower process -->
+  <rect x="16" y="36" width="16" height="5.5" rx="1.2" stroke="#18181b" stroke-width="1.8"/>
+  <path d="M24 33.5V36" stroke="#18181b" stroke-width="1.8" stroke-linecap="round"/>
+
+  <!-- terminal -->
+  <circle cx="24" cy="45" r="2.2" stroke="#18181b" stroke-width="1.8"/>
+  <path d="M24 41.5v1.3" stroke="#18181b" stroke-width="1.8" stroke-linecap="round"/>
+
+  <!-- side nodes -->
+  <circle cx="5.5" cy="27" r="2.4" stroke="#18181b" stroke-width="1.8"/>
+  <circle cx="42.5" cy="27" r="2.4" stroke="#18181b" stroke-width="1.8"/>
+
+  <!-- left branch: top ’ left node ’ lower process -->
+  <path
+    d="M16 5H9.5v19.6"
+    stroke="#18181b"
+    stroke-width="1.8"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  <path
+    d="M7.9 27H16"
+    stroke="#18181b"
+    stroke-width="1.8"
+    stroke-linecap="round"
+  />
+  <path
+    d="M9.5 27V38.75H16"
+    stroke="#18181b"
+    stroke-width="1.8"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+
+  <!-- dotted link diamond ’ left -->
+  <path
+    d="M17.5 27h-2.2M13.2 27h-2.2M8.9 27H7.9"
+    stroke="#18181b"
+    stroke-width="1.8"
+    stroke-linecap="round"
+  />
+
+  <!-- right branch: top ’ right node ’ join above lower process -->
+  <path
+    d="M32 5h6.5v19.6"
+    stroke="#18181b"
+    stroke-width="1.8"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  <path
+    d="M40.1 27H32"
+    stroke="#18181b"
+    stroke-width="1.8"
+    stroke-linecap="round"
+  />
+  <path
+    d="M38.5 27v7.5H32"
+    stroke="#18181b"
+    stroke-width="1.8"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+</svg>

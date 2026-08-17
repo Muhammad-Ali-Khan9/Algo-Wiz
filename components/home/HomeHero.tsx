@@ -10,6 +10,7 @@ import {
   type CSSProperties,
   type ReactNode,
 } from "react";
+import { AlgoMark } from "@/components/brand/AlgoMark";
 import styles from "./home-hero.module.scss";
 
 function IconLinkedIn() {
@@ -308,6 +309,7 @@ export function HomeHero() {
               </aside>
 
               <div className={styles.contentInner}>
+                <AlgoMark className={styles.brandMark} />
                 <p className={styles.kicker}>Algorithm Visualizer</p>
                 <h1 id="home-title" className={styles.title}>
                   Algorithms Wizard
