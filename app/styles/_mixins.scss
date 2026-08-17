@@ -1,6 +1,8 @@
 @forward "./tokens";
 @use "./tokens" as *;
 
+@reference "tailwindcss";
+
 @mixin flex($dir: row, $gap: 0, $align: stretch, $justify: flex-start, $wrap: nowrap) {
   display: flex;
   flex-direction: $dir;

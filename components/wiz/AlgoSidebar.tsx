@@ -31,11 +31,16 @@ export function AlgoSidebar({
   onSelect: (id: string) => void;
 }) {
   const groups: { label: string | null; items: AlgoListItem[] }[] = [];
+  const groupIndex = new Map<string | null, number>();
   for (const item of items) {
     const label = item.group ?? null;
-    const last = groups[groups.length - 1];
-    if (last && last.label === label) last.items.push(item);
-    else groups.push({ label, items: [item] });
+    const existing = groupIndex.get(label);
+    if (existing != null) {
+      groups[existing]!.items.push(item);
+    } else {
+      groupIndex.set(label, groups.length);
+      groups.push({ label, items: [item] });
+    }
   }
 
   return (
@@ -66,8 +71,8 @@ export function AlgoSidebar({
               />
             </button>
           </div>
-          {groups.map((group) => (
-            <div key={group.label ?? "all"} className={styles.algoGroup}>
+          {groups.map((group, index) => (
+            <div key={`${group.label ?? "all"}-${index}`} className={styles.algoGroup}>
               {group.label ? (
                 <p className={styles.algoGroupLabel}>{group.label}</p>
               ) : null}

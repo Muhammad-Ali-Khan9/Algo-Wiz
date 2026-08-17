@@ -160,8 +160,8 @@ const SECTIONS = [
     kicker: "05 — Hierarchies",
     title: "Trees",
     body: "Binary search trees, traversals, and rotations. Follow a walk down the children, watch a node light up, and see a subtree rebalance in place.",
-    href: null,
-    cta: "Coming soon",
+    href: "/trees",
+    cta: "Open Trees",
     bg: "trees",
   },
   {
