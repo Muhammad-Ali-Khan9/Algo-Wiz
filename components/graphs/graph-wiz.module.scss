@@ -11,6 +11,7 @@
 
 .graphSvg {
   @include tw("block h-full w-full");
+  overflow: visible;
 }
 
 .edge {
@@ -29,8 +30,7 @@
 
 .edgeWeightBg {
   fill: var(--stage);
-  stroke: var(--border);
-  stroke-width: 0.25;
+  stroke: none;
 }
 
 .node {

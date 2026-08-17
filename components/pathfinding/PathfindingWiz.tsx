@@ -4,22 +4,31 @@ import { CodePanel } from "@/components/code/CodePanel";
 import { AlgoSidebar, AlgoSidebarToggle } from "@/components/wiz/AlgoSidebar";
 import { WizPreloader } from "@/components/wiz/WizPreloader";
 import { BOOT_HOLD_MS, PRELOAD_FADE_MS, delayForSpeed } from "@/components/wiz/playback";
-import { generateGraph } from "@/lib/graphs";
+import { generateGraph, shuffleSeed } from "@/lib/graphs";
+import { edgeDrawGeometry } from "@/lib/graphs/edge-geometry";
+import { fitGraphViewBox, spreadNodesForRadius } from "@/lib/graphs/viewbox";
 import type { EdgeRole, GraphData, NodeRole } from "@/lib/graphs/types";
 import { PATH_META, getPathAlgo, runPathAlgo } from "@/lib/pathfinding";
 import type { PathAlgoId } from "@/lib/pathfinding/types";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  NodeCaption,
+  parseCaptionLines,
+  radiusForCaption,
+} from "@/components/graphs/NodeCaption";
 import graphStyles from "@/components/graphs/graph-wiz.module.scss";
 import styles from "@/components/wiz/wiz.module.scss";
 
 const MIN_SIZE = 5;
-const MAX_SIZE = 9;
-const MAX_SIZE_HEURISTIC = 7;
-const DEFAULT_SIZE = 6;
+const MAX_SIZE = 11;
+const MAX_SIZE_HEURISTIC = 8;
+const DEFAULT_SIZE = 7;
 const DEFAULT_SPEED = 58;
 const INITIAL_SEED = 42;
-const STEP_NORMAL = 26;
-const STEP_HEURISTIC = 52;
+const STEP_NORMAL = 30;
+const STEP_HEURISTIC = 92;
+/** Layout spacing radius for heuristic algos (display radius can grow with labels). */
+const NODE_RADIUS_HEURISTIC = 10.5;
 
 const NODE_COLORS: Record<NodeRole, string> = {
   idle: "#64748b",
@@ -66,17 +75,18 @@ export function PathfindingWiz() {
   const swapTimers = useRef<number[]>([]);
 
   const algorithm = getPathAlgo(algorithmId);
-  const spacious = algorithm.heuristic;
+  const spacious = algorithm.heuristic || Boolean(algorithm.roomy);
   const maxSize = spacious ? MAX_SIZE_HEURISTIC : MAX_SIZE;
 
   const makeGraph = useCallback(
-    (nextSize: number, seed: number, heuristic = spacious) =>
+    (nextSize: number, seed: number, roomyLayout = spacious) =>
       generateGraph(
         "random",
-        Math.min(nextSize, heuristic ? MAX_SIZE_HEURISTIC : MAX_SIZE),
+        Math.min(nextSize, roomyLayout ? MAX_SIZE_HEURISTIC : MAX_SIZE),
         seed,
         {
-          minStep: heuristic ? STEP_HEURISTIC : STEP_NORMAL,
+          minStep: roomyLayout ? STEP_HEURISTIC : STEP_NORMAL,
+          nodeRadius: roomyLayout ? NODE_RADIUS_HEURISTIC : undefined,
         },
       ),
     [spacious],
@@ -84,7 +94,7 @@ export function PathfindingWiz() {
 
   const shuffle = useCallback(
     (nextSize = size) => {
-      setGraph(makeGraph(nextSize, Date.now()));
+      setGraph(makeGraph(nextSize, shuffleSeed(nextSize * 31)));
       setIndex(0);
       setPlaying(false);
     },
@@ -102,13 +112,14 @@ export function PathfindingWiz() {
       swapTimers.current = [];
       setBusy(true);
       setPlaying(false);
-      const nextMax = nextMeta.heuristic ? MAX_SIZE_HEURISTIC : MAX_SIZE;
+      const nextRoomy = nextMeta.heuristic || Boolean(nextMeta.roomy);
+      const nextMax = nextRoomy ? MAX_SIZE_HEURISTIC : MAX_SIZE;
       const nextSize = Math.min(size, nextMax);
       swapTimers.current.push(
         window.setTimeout(() => {
           setAlgorithmId(next);
           if (nextSize !== size) setSize(nextSize);
-          setGraph(makeGraph(nextSize, Date.now(), nextMeta.heuristic));
+          setGraph(makeGraph(nextSize, shuffleSeed(nextSize * 31 + 7), nextRoomy));
           setIndex(0);
         }, 400),
         window.setTimeout(() => setBusy(false), 850),
@@ -188,8 +199,45 @@ export function PathfindingWiz() {
   const progress =
     frames.length > 1 ? Math.round((safeIndex / (frames.length - 1)) * 100) : 0;
 
-  const nodes = frame?.nodes ?? graph.nodes;
+  const rawNodes = frame?.nodes ?? graph.nodes;
   const edges = frame?.edges ?? graph.edges;
+  const nodeRadius = useMemo(() => {
+    const base = spacious
+      ? NODE_RADIUS_HEURISTIC
+      : algorithm.weighted
+        ? rawNodes.length > 8
+          ? 4.2
+          : 4.8
+        : rawNodes.length > 8
+          ? 3.4
+          : 3.8;
+    const labels = frame?.labels ?? {};
+    let radius = base;
+    for (const node of rawNodes) {
+      const metric = labels[node.id];
+      const lines = parseCaptionLines(node.label, metric).slice(0, 2);
+      radius = Math.max(
+        radius,
+        radiusForCaption(lines, {
+          minFont: spacious ? 2.7 : metric ? 2.35 : 2.35,
+          comfort: spacious ? 1.36 : 1.24,
+        }),
+      );
+    }
+    return Math.round(radius * 10) / 10;
+  }, [rawNodes, frame?.labels, spacious, algorithm.weighted]);
+  const nodes = useMemo(
+    () => spreadNodesForRadius(rawNodes, nodeRadius, spacious ? 14 : 7),
+    [rawNodes, nodeRadius, spacious],
+  );
+  const viewBox = useMemo(
+    () =>
+      fitGraphViewBox(nodes, nodeRadius, {
+        labelPad: spacious ? 4 : undefined,
+        edgePad: Math.max(10, nodeRadius + (spacious ? 7 : 4)),
+      }),
+    [nodes, nodeRadius, spacious],
+  );
 
   return (
     <div className={styles.shell}>
@@ -299,43 +347,64 @@ export function PathfindingWiz() {
               className={graphStyles.graphStage}
               aria-label="Pathfinding visualization"
             >
-              <svg className={graphStyles.graphSvg} viewBox="0 0 100 100" role="img">
+              <svg
+                className={graphStyles.graphSvg}
+                viewBox={viewBox}
+                preserveAspectRatio="xMidYMid meet"
+                role="img"
+              >
                 {edges.map((edge) => {
                   const role = frame?.edgeRoles[edge.id] ?? "idle";
                   const a = nodes[edge.u];
                   const b = nodes[edge.v];
-                  const dx = b.x - a.x;
-                  const dy = b.y - a.y;
-                  const len = Math.hypot(dx, dy) || 1;
-                  const offset = spacious ? 5.2 : 2.4;
-                  const mx = (a.x + b.x) / 2 - (dy / len) * offset;
-                  const my = (a.y + b.y) / 2 + (dx / len) * offset;
+                  const draw = edgeDrawGeometry(a, b, nodes, nodeRadius, {
+                    showWeight: algorithm.weighted,
+                    badgeR: spacious ? 2.45 : 1.8,
+                  });
+                  const stroke = EDGE_COLORS[role];
+                  const strokeWidth = role === "idle" ? 0.45 : 0.9;
+                  const opacity = role === "rejected" ? 0.4 : 0.95;
                   return (
                     <g key={edge.id}>
-                      <line
-                        className={graphStyles.edge}
-                        x1={a.x}
-                        y1={a.y}
-                        x2={b.x}
-                        y2={b.y}
-                        stroke={EDGE_COLORS[role]}
-                        strokeWidth={role === "idle" ? 0.45 : 0.9}
-                        opacity={role === "rejected" ? 0.4 : 0.95}
-                      />
+                      {draw.segments.map((seg, segIndex) =>
+                        seg.kind === "line" ? (
+                          <line
+                            key={segIndex}
+                            className={graphStyles.edge}
+                            x1={seg.x1}
+                            y1={seg.y1}
+                            x2={seg.x2}
+                            y2={seg.y2}
+                            stroke={stroke}
+                            strokeWidth={strokeWidth}
+                            opacity={opacity}
+                          />
+                        ) : (
+                          <path
+                            key={segIndex}
+                            className={graphStyles.edge}
+                            d={seg.d}
+                            stroke={stroke}
+                            strokeWidth={strokeWidth}
+                            opacity={opacity}
+                          />
+                        ),
+                      )}
                       {algorithm.weighted ? (
                         <g>
                           <circle
-                            cx={mx}
-                            cy={my}
-                            r={spacious ? 2.3 : 1.7}
+                            cx={draw.mx}
+                            cy={draw.my}
+                            r={draw.badgeR}
                             className={graphStyles.edgeWeightBg}
                           />
                           <text
                             className={graphStyles.edgeWeight}
-                            x={mx}
-                            y={my + 0.75}
+                            x={draw.mx}
+                            y={draw.my}
                             textAnchor="middle"
-                            fontSize={spacious ? 2.4 : 2.1}
+                            dominantBaseline="middle"
+                            fontSize={spacious ? 2.35 : 2.1}
                           >
                             {edge.weight}
                           </text>
@@ -348,61 +417,24 @@ export function PathfindingWiz() {
                   const role = frame?.nodeRoles[node.id] ?? "idle";
                   const color = NODE_COLORS[role];
                   const metric = frame?.labels[node.id];
-                  const metricLines = metric?.split("|").filter(Boolean) ?? [];
-                  const radius = spacious ? 8.2 : nodes.length > 8 ? 2.6 : 3;
                   return (
                     <g key={node.id}>
                       <circle
                         className={graphStyles.node}
                         cx={node.x}
                         cy={node.y}
-                        r={radius}
+                        r={nodeRadius}
                         fill={color}
                         stroke="#0f172a"
                         strokeWidth={0.35}
                       />
-                      {spacious && metric ? (
-                        metricLines.map((line, lineIndex) => {
-                          const lineCount = metricLines.length;
-                          const startY = node.y - ((lineCount - 1) * 2.45) / 2;
-                          return (
-                            <text
-                              key={`${node.id}-${line}`}
-                              className={graphStyles.nodeMetric}
-                              x={node.x}
-                              y={startY + lineIndex * 2.45}
-                              textAnchor="middle"
-                              dominantBaseline="middle"
-                              fontSize={line === "∞" ? 3.1 : 2.25}
-                            >
-                              {line}
-                            </text>
-                          );
-                        })
-                      ) : (
-                        <>
-                          <text
-                            className={graphStyles.nodeLabel}
-                            x={node.x}
-                            y={node.y + 0.75}
-                            textAnchor="middle"
-                            fontSize={2.4}
-                          >
-                            {node.label}
-                          </text>
-                          {metric ? (
-                            <text
-                              className={graphStyles.distLabel}
-                              x={node.x}
-                              y={node.y - radius - 1.6}
-                              textAnchor="middle"
-                              fontSize={2}
-                            >
-                              {metric}
-                            </text>
-                          ) : null}
-                        </>
-                      )}
+                      <NodeCaption
+                        x={node.x}
+                        y={node.y}
+                        radius={nodeRadius}
+                        idLabel={node.label}
+                        metric={metric}
+                      />
                     </g>
                   );
                 })}

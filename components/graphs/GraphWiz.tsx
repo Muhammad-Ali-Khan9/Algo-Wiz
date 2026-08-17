@@ -10,7 +10,10 @@ import {
   generateGraph,
   getGraphAlgo,
   runGraphAlgo,
+  shuffleSeed,
 } from "@/lib/graphs";
+import { edgeDrawGeometry } from "@/lib/graphs/edge-geometry";
+import { fitGraphViewBox } from "@/lib/graphs/viewbox";
 import type {
   EdgeRole,
   GraphAlgoId,
@@ -20,12 +23,13 @@ import type {
 } from "@/lib/graphs/types";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { GraphTypeSelect } from "./GraphTypeSelect";
+import { NodeCaption, parseCaptionLines, radiusForCaption } from "./NodeCaption";
 import graphStyles from "./graph-wiz.module.scss";
 import styles from "@/components/wiz/wiz.module.scss";
 
 const MIN_SIZE = 5;
-const MAX_SIZE = 9;
-const DEFAULT_SIZE = 6;
+const MAX_SIZE = 11;
+const DEFAULT_SIZE = 7;
 const DEFAULT_SPEED = 58;
 const INITIAL_SEED = 42;
 const STEP_NORMAL = 26;
@@ -85,7 +89,7 @@ export function GraphWiz() {
 
   const shuffle = useCallback(
     (nextSize = size, kind = graphKind) => {
-      setGraph(makeGraph(nextSize, Date.now(), kind));
+      setGraph(makeGraph(nextSize, shuffleSeed(nextSize * 17 + kind.length), kind));
       setIndex(0);
       setPlaying(false);
     },
@@ -187,6 +191,23 @@ export function GraphWiz() {
 
   const nodes = frame?.nodes ?? graph.nodes;
   const edges = frame?.edges ?? graph.edges;
+  const nodeRadius = useMemo(() => {
+    const base = nodes.length > 8 ? 3.4 : 3.8;
+    const labels = frame?.labels ?? {};
+    let radius = base;
+    for (const node of nodes) {
+      const lines = parseCaptionLines(node.label, labels[node.id]);
+      radius = Math.max(
+        radius,
+        radiusForCaption(lines, {
+          minFont: labels[node.id] ? 2.2 : 2.35,
+          comfort: 1.22,
+        }),
+      );
+    }
+    return Math.round(radius * 10) / 10;
+  }, [nodes, frame?.labels]);
+  const viewBox = useMemo(() => fitGraphViewBox(nodes, nodeRadius), [nodes, nodeRadius]);
 
   return (
     <div className={styles.shell}>
@@ -308,43 +329,64 @@ export function GraphWiz() {
 
           <div className={styles.stageWrap}>
             <div className={graphStyles.graphStage} aria-label="Graph visualization">
-              <svg className={graphStyles.graphSvg} viewBox="0 0 100 100" role="img">
+              <svg
+                className={graphStyles.graphSvg}
+                viewBox={viewBox}
+                preserveAspectRatio="xMidYMid meet"
+                role="img"
+              >
                 {edges.map((edge) => {
                   const role = frame?.edgeRoles[edge.id] ?? "idle";
                   const a = nodes[edge.u];
                   const b = nodes[edge.v];
-                  const dx = b.x - a.x;
-                  const dy = b.y - a.y;
-                  const len = Math.hypot(dx, dy) || 1;
-                  const offset = 2.4;
-                  const mx = (a.x + b.x) / 2 - (dy / len) * offset;
-                  const my = (a.y + b.y) / 2 + (dx / len) * offset;
+                  const draw = edgeDrawGeometry(a, b, nodes, nodeRadius, {
+                    showWeight: algorithm.weighted,
+                    badgeR: 1.75,
+                  });
+                  const stroke = EDGE_COLORS[role];
+                  const strokeWidth = role === "idle" ? 0.45 : 0.9;
+                  const opacity = role === "rejected" ? 0.4 : 0.95;
                   return (
                     <g key={edge.id}>
-                      <line
-                        className={graphStyles.edge}
-                        x1={a.x}
-                        y1={a.y}
-                        x2={b.x}
-                        y2={b.y}
-                        stroke={EDGE_COLORS[role]}
-                        strokeWidth={role === "idle" ? 0.45 : 0.9}
-                        opacity={role === "rejected" ? 0.4 : 0.95}
-                      />
+                      {draw.segments.map((seg, segIndex) =>
+                        seg.kind === "line" ? (
+                          <line
+                            key={segIndex}
+                            className={graphStyles.edge}
+                            x1={seg.x1}
+                            y1={seg.y1}
+                            x2={seg.x2}
+                            y2={seg.y2}
+                            stroke={stroke}
+                            strokeWidth={strokeWidth}
+                            opacity={opacity}
+                          />
+                        ) : (
+                          <path
+                            key={segIndex}
+                            className={graphStyles.edge}
+                            d={seg.d}
+                            stroke={stroke}
+                            strokeWidth={strokeWidth}
+                            opacity={opacity}
+                          />
+                        ),
+                      )}
                       {algorithm.weighted ? (
                         <g>
                           <circle
-                            cx={mx}
-                            cy={my}
-                            r={1.7}
+                            cx={draw.mx}
+                            cy={draw.my}
+                            r={draw.badgeR}
                             className={graphStyles.edgeWeightBg}
                           />
                           <text
                             className={graphStyles.edgeWeight}
-                            x={mx}
-                            y={my + 0.75}
+                            x={draw.mx}
+                            y={draw.my}
                             textAnchor="middle"
-                            fontSize={2.1}
+                            dominantBaseline="middle"
+                            fontSize={2.05}
                           >
                             {edge.weight}
                           </text>
@@ -357,38 +399,24 @@ export function GraphWiz() {
                   const role = frame?.nodeRoles[node.id] ?? "idle";
                   const color = NODE_COLORS[role];
                   const metric = frame?.labels[node.id];
-                  const radius = nodes.length > 8 ? 2.6 : 3;
                   return (
                     <g key={node.id}>
                       <circle
                         className={graphStyles.node}
                         cx={node.x}
                         cy={node.y}
-                        r={radius}
+                        r={nodeRadius}
                         fill={color}
                         stroke="#0f172a"
                         strokeWidth={0.35}
                       />
-                      <text
-                        className={graphStyles.nodeLabel}
+                      <NodeCaption
                         x={node.x}
-                        y={node.y + 0.75}
-                        textAnchor="middle"
-                        fontSize={2.4}
-                      >
-                        {node.label}
-                      </text>
-                      {metric ? (
-                        <text
-                          className={graphStyles.distLabel}
-                          x={node.x}
-                          y={node.y - radius - 1.6}
-                          textAnchor="middle"
-                          fontSize={2}
-                        >
-                          {metric}
-                        </text>
-                      ) : null}
+                        y={node.y}
+                        radius={nodeRadius}
+                        idLabel={node.label}
+                        metric={metric}
+                      />
                     </g>
                   );
                 })}

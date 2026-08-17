@@ -22,6 +22,7 @@ export interface PathMeta {
   space: string;
   weighted: boolean;
   heuristic: boolean;
+  roomy?: boolean;
   available: boolean;
   definition: string;
   usage: string;

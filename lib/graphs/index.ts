@@ -21,7 +21,7 @@ import type { GraphAlgoId, GraphMeta, GraphRunner } from "./types";
 
 export type { GraphAlgoId, GraphData, GraphFrame, GraphKind, GraphMeta } from "./types";
 export { GRAPH_KINDS } from "./types";
-export { generateGraph, randomGraph } from "./random";
+export { generateGraph, randomGraph, shuffleSeed } from "./random";
 
 export const GRAPH_META: GraphMeta[] = [
   {
