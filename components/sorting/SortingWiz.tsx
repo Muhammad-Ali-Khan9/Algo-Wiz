@@ -1,16 +1,9 @@
 "use client";
 
 import { CodePanel } from "@/components/code/CodePanel";
-import {
-  AlgoSidebar,
-  AlgoSidebarToggle,
-} from "@/components/wiz/AlgoSidebar";
+import { AlgoSidebar, AlgoSidebarToggle } from "@/components/wiz/AlgoSidebar";
 import { WizPreloader } from "@/components/wiz/WizPreloader";
-import {
-  BOOT_HOLD_MS,
-  PRELOAD_FADE_MS,
-  delayForSpeed,
-} from "@/components/wiz/playback";
+import { BOOT_HOLD_MS, PRELOAD_FADE_MS, delayForSpeed } from "@/components/wiz/playback";
 import { ALGORITHM_META, RUNNERS, bucketSort, getAlgorithm } from "@/lib/sorting";
 import { arrayMax, patternedArray, randomArray } from "@/lib/sorting/random";
 import type { AlgorithmId, BarRole } from "@/lib/sorting/types";
@@ -61,27 +54,33 @@ export function SortingWiz() {
 
   const algorithm = getAlgorithm(algorithmId);
 
-  const shuffle = useCallback((nextSize = size) => {
-    setArray(randomArray(nextSize));
-    setIndex(0);
-    setPlaying(false);
-  }, [size]);
+  const shuffle = useCallback(
+    (nextSize = size) => {
+      setArray(randomArray(nextSize));
+      setIndex(0);
+      setPlaying(false);
+    },
+    [size],
+  );
 
-  const selectAlgorithm = useCallback((id: AlgorithmId) => {
-    setSidebarOpen(false);
-    if (id === algorithmId) return;
-    swapTimers.current.forEach((timer) => window.clearTimeout(timer));
-    swapTimers.current = [];
-    setBusy(true);
-    setPlaying(false);
-    swapTimers.current.push(
-      window.setTimeout(() => {
-        setAlgorithmId(id);
-        setIndex(0);
-      }, 400),
-      window.setTimeout(() => setBusy(false), 850),
-    );
-  }, [algorithmId]);
+  const selectAlgorithm = useCallback(
+    (id: AlgorithmId) => {
+      setSidebarOpen(false);
+      if (id === algorithmId) return;
+      swapTimers.current.forEach((timer) => window.clearTimeout(timer));
+      swapTimers.current = [];
+      setBusy(true);
+      setPlaying(false);
+      swapTimers.current.push(
+        window.setTimeout(() => {
+          setAlgorithmId(id);
+          setIndex(0);
+        }, 400),
+        window.setTimeout(() => setBusy(false), 850),
+      );
+    },
+    [algorithmId],
+  );
 
   useEffect(() => {
     const timer = window.setTimeout(() => setBooting(false), BOOT_HOLD_MS);
@@ -240,11 +239,7 @@ export function SortingWiz() {
               >
                 Step ahead
               </button>
-              <button
-                type="button"
-                className={styles.btn}
-                onClick={() => shuffle()}
-              >
+              <button type="button" className={styles.btn} onClick={() => shuffle()}>
                 Shuffle
               </button>
               <button
@@ -335,15 +330,10 @@ export function SortingWiz() {
             </div>
 
             <div className={styles.progress} aria-hidden="true">
-              <div
-                className={styles.progressFill}
-                style={{ width: `${progress}%` }}
-              />
+              <div className={styles.progressFill} style={{ width: `${progress}%` }} />
             </div>
 
-            <p className={styles.hint}>
-              {frame?.hint ?? "Shuffle an array to begin."}
-            </p>
+            <p className={styles.hint}>{frame?.hint ?? "Shuffle an array to begin."}</p>
 
             {frame?.auxBuckets && frame.auxBuckets.length > 0 ? (
               <div className={styles.aux} aria-label="Auxiliary buckets">

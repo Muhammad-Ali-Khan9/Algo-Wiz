@@ -1,14 +1,7 @@
 import type { CodeSnippets } from "@/lib/code/languages";
 
 export type BarRole =
-  | "idle"
-  | "compare"
-  | "swap"
-  | "sorted"
-  | "pivot"
-  | "key"
-  | "min"
-  | "write";
+  "idle" | "compare" | "swap" | "sorted" | "pivot" | "key" | "min" | "write";
 
 export type AlgorithmId =
   | "bubble"

@@ -6,11 +6,7 @@ import {
 } from "@/lib/graphs/trace";
 import type { GraphData, GraphFrame, NodeRole } from "@/lib/graphs/types";
 
-function euclid(
-  nodes: GraphData["nodes"],
-  a: number,
-  b: number,
-) {
+function euclid(nodes: GraphData["nodes"], a: number, b: number) {
   return Math.hypot(nodes[a].x - nodes[b].x, nodes[a].y - nodes[b].y);
 }
 
@@ -96,12 +92,10 @@ export function dijkstra(graph: GraphData): GraphFrame[] {
       const consider = baseRoles();
       consider[u] = "current";
       t.relax();
-      t.push(
-        consider,
-        edgeRoles,
-        `Relax ${u} → ${to} (w=${weight}).`,
-        { labels: labels(), frontier: open() },
-      );
+      t.push(consider, edgeRoles, `Relax ${u} → ${to} (w=${weight}).`, {
+        labels: labels(),
+        frontier: open(),
+      });
 
       const next = dist[u] + weight;
       if (next < dist[to]) {
@@ -112,23 +106,19 @@ export function dijkstra(graph: GraphData): GraphFrame[] {
         treeEdges[edgeId] = "tree";
         const updated = baseRoles();
         updated[u] = "current";
-        t.push(
-          updated,
-          treeEdges,
-          `Update dist[${to}] = ${next}.`,
-          { labels: labels(), frontier: open() },
-        );
+        t.push(updated, treeEdges, `Update dist[${to}] = ${next}.`, {
+          labels: labels(),
+          frontier: open(),
+        });
       } else {
         const rejected = t.idleEdgeRoles();
         rejected[edgeId] = "rejected";
         const rolesReject = baseRoles();
         rolesReject[u] = "current";
-        t.push(
-          rolesReject,
-          rejected,
-          `No improvement for ${to}.`,
-          { labels: labels(), frontier: open() },
-        );
+        t.push(rolesReject, rejected, `No improvement for ${to}.`, {
+          labels: labels(),
+          frontier: open(),
+        });
       }
     }
   }

@@ -463,9 +463,7 @@ export function degreeInOut(graph: GraphData): GraphFrame[] {
   const outdeg = new Array(nodes.length).fill(0);
 
   const labels = () =>
-    Object.fromEntries(
-      nodes.map((_, id) => [id, `↓${indeg[id]}/↑${outdeg[id]}`]),
-    );
+    Object.fromEntries(nodes.map((_, id) => [id, `↓${indeg[id]}/↑${outdeg[id]}`]));
 
   t.push(
     rolesFromState(nodes.length, { start }),
@@ -483,9 +481,7 @@ export function degreeInOut(graph: GraphData): GraphFrame[] {
     t.push(
       rolesFromState(nodes.length, {
         current: edge.u,
-        visited: nodes.map(
-          (_, i) => indeg[i] > 0 || outdeg[i] > 0,
-        ),
+        visited: nodes.map((_, i) => indeg[i] > 0 || outdeg[i] > 0),
         start,
       }),
       edgeRoles,
@@ -572,9 +568,7 @@ export function graphColoring(graph: GraphData): GraphFrame[] {
       rolesFromState(nodes.length, {
         visited: color.map((c) => c >= 0),
         current: u,
-        done: new Set(
-          color.map((v, id) => (v >= 0 ? id : -1)).filter((id) => id >= 0),
-        ),
+        done: new Set(color.map((v, id) => (v >= 0 ? id : -1)).filter((id) => id >= 0)),
         start,
       }),
       paintEdges(t, treeEdges),

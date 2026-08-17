@@ -1,12 +1,7 @@
 import type { CodeSnippets } from "@/lib/code/languages";
 
 export type ProbeRole =
-  | "unsearched"
-  | "current"
-  | "compared"
-  | "found"
-  | "eliminated"
-  | "range";
+  "unsearched" | "current" | "compared" | "found" | "eliminated" | "range";
 
 export type SearchId =
   | "linear"

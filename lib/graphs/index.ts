@@ -19,13 +19,7 @@ import { GRAPH_CODE } from "./snippets";
 import { bfs, dfs } from "./traversal";
 import type { GraphAlgoId, GraphMeta, GraphRunner } from "./types";
 
-export type {
-  GraphAlgoId,
-  GraphData,
-  GraphFrame,
-  GraphKind,
-  GraphMeta,
-} from "./types";
+export type { GraphAlgoId, GraphData, GraphFrame, GraphKind, GraphMeta } from "./types";
 export { GRAPH_KINDS } from "./types";
 export { generateGraph, randomGraph } from "./random";
 
@@ -77,7 +71,8 @@ export const GRAPH_META: GraphMeta[] = [
     available: true,
     definition:
       "Partition an undirected graph into maximal connected subgraphs by flooding from unvisited vertices.",
-    usage: "Clustering, island counting, and preprocessing before per-component algorithms.",
+    usage:
+      "Clustering, island counting, and preprocessing before per-component algorithms.",
     code: GRAPH_CODE.components,
   },
   {

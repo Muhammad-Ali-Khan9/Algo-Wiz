@@ -1,7 +1,12 @@
 import { SearchTrace } from "./trace";
 import type { ProbeRole, SearchFrame } from "./types";
 
-function windowRoles(t: SearchTrace, lo: number, hi: number, extras?: Record<number, ProbeRole>) {
+function windowRoles(
+  t: SearchTrace,
+  lo: number,
+  hi: number,
+  extras?: Record<number, ProbeRole>,
+) {
   const roles = t.idleRoles();
   t.markOutside(roles, lo, hi);
   t.markRange(roles, lo, hi);
@@ -14,21 +19,14 @@ function windowRoles(t: SearchTrace, lo: number, hi: number, extras?: Record<num
   return roles;
 }
 
-function binaryRange(
-  t: SearchTrace,
-  lo0: number,
-  hi0: number,
-): number | null {
+function binaryRange(t: SearchTrace, lo0: number, hi0: number): number | null {
   let lo = lo0;
   let hi = hi0;
 
   while (lo <= hi) {
     const mid = lo + Math.floor((hi - lo) / 2);
     const roles = windowRoles(t, lo, hi, { [mid]: "current" });
-    t.probe(
-      roles,
-      `Mid ${t.a[mid]} at ${mid} vs ${t.target}. Window [${lo}…${hi}].`,
-    );
+    t.probe(roles, `Mid ${t.a[mid]} at ${mid} vs ${t.target}. Window [${lo}…${hi}].`);
 
     if (t.a[mid] === t.target) return mid;
     if (t.a[mid] < t.target) {
@@ -65,10 +63,7 @@ export function jumpSearch(values: number[], target: number): SearchFrame[] {
   }
 
   const stepSize = Math.max(1, Math.floor(Math.sqrt(t.n)));
-  t.push(
-    t.idleRoles(),
-    `Starting Jump Search — blocks of ${stepSize} for ${target}.`,
-  );
+  t.push(t.idleRoles(), `Starting Jump Search — blocks of ${stepSize} for ${target}.`);
 
   let prev = 0;
   let step = stepSize;
@@ -134,9 +129,7 @@ export function interpolationSearch(values: number[], target: number): SearchFra
 
     const span = t.a[hi] - t.a[lo];
     const pos =
-      span === 0
-        ? lo
-        : lo + Math.floor(((target - t.a[lo]) * (hi - lo)) / span);
+      span === 0 ? lo : lo + Math.floor(((target - t.a[lo]) * (hi - lo)) / span);
     const clamped = Math.min(hi, Math.max(lo, pos));
 
     const roles = windowRoles(t, lo, hi, { [clamped]: "current" });

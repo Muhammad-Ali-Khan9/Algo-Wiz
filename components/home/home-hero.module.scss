@@ -83,12 +83,11 @@
 .bgVignette,
 .panelVignette {
   @include tw("absolute inset-0");
-  background:
-    radial-gradient(
-      ellipse 58% 52% at 50% 42%,
-      transparent 18%,
-      color-mix(in srgb, var(--background) 68%, transparent) 78%
-    );
+  background: radial-gradient(
+    ellipse 58% 52% at 50% 42%,
+    transparent 18%,
+    color-mix(in srgb, var(--background) 68%, transparent) 78%
+  );
   transition: background 0.55s ease;
 }
 
@@ -104,17 +103,23 @@
 }
 
 .content {
-  @include tw("box-border flex h-full min-h-0 flex-col overflow-x-hidden overflow-y-auto");
+  @include tw(
+    "box-border flex h-full min-h-0 flex-col overflow-x-hidden overflow-y-auto"
+  );
 }
 
 .introLayout {
-  @include tw("box-border my-auto w-full max-w-none items-center gap-x-5 px-[1.1rem] py-6");
+  @include tw(
+    "box-border my-auto w-full max-w-none items-center gap-x-5 px-[1.1rem] py-6"
+  );
   display: grid;
   grid-template-columns: 1fr minmax(0, 52rem) 1fr;
 }
 
 .portrait {
-  @include tw("col-start-1 flex w-full max-w-80 flex-col items-center gap-[0.45rem] justify-self-start text-center");
+  @include tw(
+    "col-start-1 flex w-full max-w-80 flex-col items-center gap-[0.45rem] justify-self-start text-center"
+  );
   animation: intro-in 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
@@ -135,7 +140,9 @@
 }
 
 .portraitName {
-  @include tw("mt-[0.35rem] mb-0 text-[1.1rem] font-bold leading-[1.2] tracking-[-0.02em]");
+  @include tw(
+    "mt-[0.35rem] mb-0 text-[1.1rem] font-bold leading-[1.2] tracking-[-0.02em]"
+  );
   font-family: var(--font-poppins), sans-serif;
   color: var(--foreground);
   transition: color 0.55s ease;
@@ -153,7 +160,9 @@
 }
 
 .socialBtn {
-  @include tw("flex size-[3.15rem] cursor-pointer items-center justify-center border-0 bg-transparent p-0");
+  @include tw(
+    "flex size-[3.15rem] cursor-pointer items-center justify-center border-0 bg-transparent p-0"
+  );
   border-radius: 999px;
   color: var(--accent);
   transition:
@@ -206,7 +215,9 @@
 }
 
 .points {
-  @include tw("mt-[1.1rem] mb-0 grid w-full max-w-[56rem] list-none grid-cols-1 gap-3 p-0 text-left md:grid-cols-3");
+  @include tw(
+    "mt-[1.1rem] mb-0 grid w-full max-w-[56rem] list-none grid-cols-1 gap-3 p-0 text-left md:grid-cols-3"
+  );
 }
 
 .point {
@@ -233,7 +244,9 @@
 }
 
 .map {
-  @include tw("mt-[0.2rem] mb-0 flex list-none flex-wrap justify-center gap-[0.45rem] p-0");
+  @include tw(
+    "mt-[0.2rem] mb-0 flex list-none flex-wrap justify-center gap-[0.45rem] p-0"
+  );
 
   li {
     @include tw("px-3 py-[0.35rem] font-mono text-[0.72rem]");
@@ -256,7 +269,9 @@
 
 .scrollHint::after {
   content: "";
-  @include tw("mx-auto mt-[0.65rem] block size-[0.7rem] rotate-45 border-r-2 border-b-2 border-current");
+  @include tw(
+    "mx-auto mt-[0.65rem] block size-[0.7rem] rotate-45 border-r-2 border-b-2 border-current"
+  );
 }
 
 .scrollHintMobile {
@@ -470,13 +485,12 @@
   }
 
   .panelVignette {
-    background:
-      radial-gradient(
-        ellipse 78% 70% at 50% 38%,
-        transparent 8%,
-        color-mix(in srgb, var(--background) 42%, transparent) 58%,
-        var(--background) 88%
-      );
+    background: radial-gradient(
+      ellipse 78% 70% at 50% 38%,
+      transparent 8%,
+      color-mix(in srgb, var(--background) 42%, transparent) 58%,
+      var(--background) 88%
+    );
   }
 
   .panelArt {

@@ -62,12 +62,10 @@ export function SideNav() {
           unoptimized
         />
       </button>
-      <button
-        type="button"
+      <div
         className={styles.scrim}
         data-open={open}
-        tabIndex={-1}
-        aria-hidden="true"
+        aria-hidden={!open}
         onClick={() => setOpen(false)}
       />
       <nav
@@ -79,9 +77,7 @@ export function SideNav() {
         <p className={styles.label}>Menu</p>
         {SECTIONS.map((section) => {
           const active =
-            section.href === "/"
-              ? pathname === "/"
-              : pathname.startsWith(section.href);
+            section.href === "/" ? pathname === "/" : pathname.startsWith(section.href);
 
           return (
             <Link

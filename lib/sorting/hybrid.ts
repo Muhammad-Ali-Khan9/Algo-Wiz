@@ -148,10 +148,7 @@ export function timSort(values: number[]): SortFrame[] {
   if (t.n === 0) return t.frames;
 
   const run = Math.max(2, Math.min(8, t.n));
-  t.push(
-    t.idleRoles(),
-    `Starting Tim Sort — insertion runs of ${run}, then merges.`,
-  );
+  t.push(t.idleRoles(), `Starting Tim Sort — insertion runs of ${run}, then merges.`);
 
   for (let start = 0; start < t.n; start += run) {
     const end = Math.min(start + run - 1, t.n - 1);
@@ -299,10 +296,7 @@ export function bitonicSort(values: number[]): SortFrame[] {
     sort(lo + mid, count - mid, up);
     const mark = t.idleRoles();
     fillRange(mark, lo, lo + count - 1, "key");
-    t.push(
-      mark,
-      `Bitonic merge [${lo}…${lo + count - 1}] ${up ? "up" : "down"}.`,
-    );
+    t.push(mark, `Bitonic merge [${lo}…${lo + count - 1}] ${up ? "up" : "down"}.`);
     bitonicMerge(lo, count, up);
   };
 

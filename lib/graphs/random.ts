@@ -14,10 +14,7 @@ function dist(a: GraphNode, b: GraphNode) {
 }
 
 function weightBetween(a: GraphNode, b: GraphNode, rand: () => number, scale = 1) {
-  return Math.max(
-    1,
-    Math.round((dist(a, b) / 9) * scale + 1 + rand() * 4),
-  );
+  return Math.max(1, Math.round((dist(a, b) / 9) * scale + 1 + rand() * 4));
 }
 
 function gridShape(n: number, rand: () => number): { cols: number; rows: number } {
@@ -131,19 +128,9 @@ function placeOnGrid(
   return { nodes, at, cols: useCols, rows: useRows };
 }
 
-function randomLatticeGraph(
-  n: number,
-  rand: () => number,
-  minStep: number,
-): GraphData {
+function randomLatticeGraph(n: number, rand: () => number, minStep: number): GraphData {
   const shape = gridShape(n, rand);
-  const { nodes, at, cols, rows } = placeOnGrid(
-    n,
-    shape.cols,
-    shape.rows,
-    rand,
-    minStep,
-  );
+  const { nodes, at, cols, rows } = placeOnGrid(n, shape.cols, shape.rows, rand, minStep);
   const pairs: [number, number][] = [];
 
   for (let r = 0; r < rows; r += 1) {
@@ -268,8 +255,7 @@ function treeGraph(n: number, rand: () => number, minStep: number): GraphData {
 
   const place = (u: number, x0: number, x1: number) => {
     xs[u] = (x0 + x1) / 2;
-    ys[u] =
-      maxDepth === 0 ? (top + bottom) / 2 : top + (depth[u]! / maxDepth) * spanY;
+    ys[u] = maxDepth === 0 ? (top + bottom) / 2 : top + (depth[u]! / maxDepth) * spanY;
     const kids = children[u]!;
     if (!kids.length) return;
     let cursor = x0;
@@ -304,9 +290,7 @@ function treeGraph(n: number, rand: () => number, minStep: number): GraphData {
 
   const leaves = nodes.map((_, i) => i).filter((i) => children[i]!.length === 0);
   const start = 0;
-  const goal =
-    leaves[Math.floor(rand() * leaves.length)] ??
-    Math.max(1, n - 1);
+  const goal = leaves[Math.floor(rand() * leaves.length)] ?? Math.max(1, n - 1);
 
   return {
     nodes,
@@ -346,10 +330,7 @@ function cycleGraph(n: number, rand: () => number, minStep: number): GraphData {
       label: String(i),
     };
   });
-  const pairs: [number, number][] = Array.from({ length: n }, (_, i) => [
-    i,
-    (i + 1) % n,
-  ]);
+  const pairs: [number, number][] = Array.from({ length: n }, (_, i) => [i, (i + 1) % n]);
   return { nodes, edges: buildEdges(nodes, pairs, rand), ...pickEndpoints(n, rand) };
 }
 

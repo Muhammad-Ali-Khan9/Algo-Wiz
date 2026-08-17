@@ -44,14 +44,14 @@ export function topoKahn(graph: GraphData): GraphFrame[] {
 
   const order: number[] = [];
   const placed = new Set<number>();
-  const queue = indeg
-    .map((d, id) => (d === 0 ? id : -1))
-    .filter((id) => id >= 0);
+  const queue = indeg.map((d, id) => (d === 0 ? id : -1)).filter((id) => id >= 0);
   const remaining = indeg.slice();
   const treeEdges = new Set<number>();
 
   const degLabels = () =>
-    Object.fromEntries(remaining.map((d, id) => [id, placed.has(id) ? `#${order.indexOf(id)}` : `in${d}`]));
+    Object.fromEntries(
+      remaining.map((d, id) => [id, placed.has(id) ? `#${order.indexOf(id)}` : `in${d}`]),
+    );
 
   t.push(
     rolesFromState(nodes.length, { frontier: queue, start }),
@@ -113,9 +113,7 @@ export function topoKahn(graph: GraphData): GraphFrame[] {
   }
 
   if (order.length !== nodes.length) {
-    const leftover = nodes
-      .map((_, i) => i)
-      .filter((i) => !placed.has(i));
+    const leftover = nodes.map((_, i) => i).filter((i) => !placed.has(i));
     const nodeRoles = t.idleNodeRoles();
     for (const id of placed) nodeRoles[id] = "path";
     for (const id of leftover) nodeRoles[id] = "visited";

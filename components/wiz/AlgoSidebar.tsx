@@ -40,12 +40,10 @@ export function AlgoSidebar({
 
   return (
     <>
-      <button
-        type="button"
+      <div
         className={styles.sidebarScrim}
         data-open={open}
-        tabIndex={-1}
-        aria-hidden="true"
+        aria-hidden={!open}
         onClick={onClose}
       />
       <aside className={styles.sidebar} data-open={open} aria-label={title}>
@@ -87,9 +85,7 @@ export function AlgoSidebar({
                   >
                     <span className={styles.algoName}>
                       {item.name}
-                      {!available ? (
-                        <span className={styles.algoSoon}>Soon</span>
-                      ) : null}
+                      {!available ? <span className={styles.algoSoon}>Soon</span> : null}
                     </span>
                     <span className={styles.algoComplex}>
                       Avg {item.average} · Worst {item.worst}

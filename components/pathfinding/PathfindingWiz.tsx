@@ -1,23 +1,12 @@
 "use client";
 
 import { CodePanel } from "@/components/code/CodePanel";
-import {
-  AlgoSidebar,
-  AlgoSidebarToggle,
-} from "@/components/wiz/AlgoSidebar";
+import { AlgoSidebar, AlgoSidebarToggle } from "@/components/wiz/AlgoSidebar";
 import { WizPreloader } from "@/components/wiz/WizPreloader";
-import {
-  BOOT_HOLD_MS,
-  PRELOAD_FADE_MS,
-  delayForSpeed,
-} from "@/components/wiz/playback";
+import { BOOT_HOLD_MS, PRELOAD_FADE_MS, delayForSpeed } from "@/components/wiz/playback";
 import { generateGraph } from "@/lib/graphs";
 import type { EdgeRole, GraphData, NodeRole } from "@/lib/graphs/types";
-import {
-  PATH_META,
-  getPathAlgo,
-  runPathAlgo,
-} from "@/lib/pathfinding";
+import { PATH_META, getPathAlgo, runPathAlgo } from "@/lib/pathfinding";
 import type { PathAlgoId } from "@/lib/pathfinding/types";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import graphStyles from "@/components/graphs/graph-wiz.module.scss";
@@ -82,9 +71,14 @@ export function PathfindingWiz() {
 
   const makeGraph = useCallback(
     (nextSize: number, seed: number, heuristic = spacious) =>
-      generateGraph("random", Math.min(nextSize, heuristic ? MAX_SIZE_HEURISTIC : MAX_SIZE), seed, {
-        minStep: heuristic ? STEP_HEURISTIC : STEP_NORMAL,
-      }),
+      generateGraph(
+        "random",
+        Math.min(nextSize, heuristic ? MAX_SIZE_HEURISTIC : MAX_SIZE),
+        seed,
+        {
+          minStep: heuristic ? STEP_HEURISTIC : STEP_NORMAL,
+        },
+      ),
     [spacious],
   );
 
@@ -150,10 +144,7 @@ export function PathfindingWiz() {
     return () => window.clearTimeout(timer);
   }, [preloaderActive]);
 
-  const frames = useMemo(
-    () => runPathAlgo(algorithmId, graph),
-    [algorithmId, graph],
-  );
+  const frames = useMemo(() => runPathAlgo(algorithmId, graph), [algorithmId, graph]);
 
   const safeIndex = frames.length ? Math.min(index, frames.length - 1) : 0;
   const frame = frames[safeIndex];
@@ -262,11 +253,7 @@ export function PathfindingWiz() {
               >
                 Step
               </button>
-              <button
-                type="button"
-                className={styles.btn}
-                onClick={() => shuffle()}
-              >
+              <button type="button" className={styles.btn} onClick={() => shuffle()}>
                 Shuffle
               </button>
             </div>
@@ -308,12 +295,11 @@ export function PathfindingWiz() {
           </div>
 
           <div className={styles.stageWrap}>
-            <div className={graphStyles.graphStage} aria-label="Pathfinding visualization">
-              <svg
-                className={graphStyles.graphSvg}
-                viewBox="0 0 100 100"
-                role="img"
-              >
+            <div
+              className={graphStyles.graphStage}
+              aria-label="Pathfinding visualization"
+            >
+              <svg className={graphStyles.graphSvg} viewBox="0 0 100 100" role="img">
                 {edges.map((edge) => {
                   const role = frame?.edgeRoles[edge.id] ?? "idle";
                   const a = nodes[edge.u];
@@ -363,11 +349,7 @@ export function PathfindingWiz() {
                   const color = NODE_COLORS[role];
                   const metric = frame?.labels[node.id];
                   const metricLines = metric?.split("|").filter(Boolean) ?? [];
-                  const radius = spacious
-                    ? 8.2
-                    : nodes.length > 8
-                      ? 2.6
-                      : 3;
+                  const radius = spacious ? 8.2 : nodes.length > 8 ? 2.6 : 3;
                   return (
                     <g key={node.id}>
                       <circle
@@ -428,23 +410,15 @@ export function PathfindingWiz() {
             </div>
 
             <div className={styles.progress} aria-hidden="true">
-              <div
-                className={styles.progressFill}
-                style={{ width: `${progress}%` }}
-              />
+              <div className={styles.progressFill} style={{ width: `${progress}%` }} />
             </div>
 
-            <p className={styles.hint}>
-              {frame?.hint ?? "Shuffle a graph to begin."}
-            </p>
+            <p className={styles.hint}>{frame?.hint ?? "Shuffle a graph to begin."}</p>
 
             {(frame?.frontier?.length ?? 0) > 0 ? (
               <div className={graphStyles.frontierStrip} aria-label="Frontier">
                 {frame!.frontier.map((id, chipIndex) => (
-                  <span
-                    key={`${id}-${chipIndex}`}
-                    className={graphStyles.frontierChip}
-                  >
+                  <span key={`${id}-${chipIndex}`} className={graphStyles.frontierChip}>
                     {id}
                   </span>
                 ))}
@@ -464,9 +438,8 @@ export function PathfindingWiz() {
                 ))}
               </div>
               <p className={styles.live}>
-                Visits {frame?.stats.visits ?? 0} · Relaxes{" "}
-                {frame?.stats.relaxes ?? 0} · Step {frames.length ? safeIndex + 1 : 0}/
-                {frames.length}
+                Visits {frame?.stats.visits ?? 0} · Relaxes {frame?.stats.relaxes ?? 0} ·
+                Step {frames.length ? safeIndex + 1 : 0}/{frames.length}
               </p>
             </div>
           </div>

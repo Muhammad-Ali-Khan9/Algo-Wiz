@@ -1,16 +1,9 @@
 "use client";
 
 import { CodePanel } from "@/components/code/CodePanel";
-import {
-  AlgoSidebar,
-  AlgoSidebarToggle,
-} from "@/components/wiz/AlgoSidebar";
+import { AlgoSidebar, AlgoSidebarToggle } from "@/components/wiz/AlgoSidebar";
 import { WizPreloader } from "@/components/wiz/WizPreloader";
-import {
-  BOOT_HOLD_MS,
-  PRELOAD_FADE_MS,
-  delayForSpeed,
-} from "@/components/wiz/playback";
+import { BOOT_HOLD_MS, PRELOAD_FADE_MS, delayForSpeed } from "@/components/wiz/playback";
 import { SEARCH_META, SEARCH_RUNNERS, getSearch, needsSorted } from "@/lib/searching";
 import { pickTarget, searchArray } from "@/lib/searching/random";
 import type { ProbeRole, SearchId } from "@/lib/searching/types";
@@ -52,7 +45,9 @@ export function SearchingWiz() {
   const [size, setSize] = useState(DEFAULT_SIZE);
   const [speed, setSpeed] = useState(DEFAULT_SPEED);
   const [array, setArray] = useState(initialArray);
-  const [target, setTarget] = useState(() => initialArray()[Math.floor(DEFAULT_SIZE / 2)] ?? 40);
+  const [target, setTarget] = useState(
+    () => initialArray()[Math.floor(DEFAULT_SIZE / 2)] ?? 40,
+  );
   const [index, setIndex] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [booting, setBooting] = useState(true);

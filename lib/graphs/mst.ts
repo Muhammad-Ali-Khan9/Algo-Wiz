@@ -53,16 +53,10 @@ export function prim(graph: GraphData): GraphFrame[] {
     return roles;
   };
 
-  t.push(
-    baseRoles(),
-    edgePaint(),
-    `Prim MST growing from ${start}.`,
-  );
+  t.push(baseRoles(), edgePaint(), `Prim MST growing from ${start}.`);
 
   for (let step = 1; step < nodes.length; step += 1) {
-    let best:
-      | { to: number; weight: number; edgeId: number; from: number }
-      | null = null;
+    let best: { to: number; weight: number; edgeId: number; from: number } | null = null;
 
     for (let u = 0; u < nodes.length; u += 1) {
       if (!inMst[u]) continue;
@@ -74,11 +68,7 @@ export function prim(graph: GraphData): GraphFrame[] {
         roles[u] = "current";
         roles[to] = "frontier";
         t.relax();
-        t.push(
-          roles,
-          consider,
-          `Candidate cut edge ${u} — ${to} (w=${weight}).`,
-        );
+        t.push(roles, consider, `Candidate cut edge ${u} — ${to} (w=${weight}).`);
         if (!best || weight < best.weight) {
           best = { to, weight, edgeId, from: u };
         }
@@ -155,19 +145,11 @@ export function kruskal(graph: GraphData): GraphFrame[] {
       t.visit();
       const accepted = edgePaint();
       accepted[edge.id] = "tree";
-      t.push(
-        nodePaint(),
-        accepted,
-        `Accept edge ${edge.u} — ${edge.v} into the MST.`,
-      );
+      t.push(nodePaint(), accepted, `Accept edge ${edge.u} — ${edge.v} into the MST.`);
     } else {
       const rejected = edgePaint();
       rejected[edge.id] = "rejected";
-      t.push(
-        nodePaint(),
-        rejected,
-        `Reject ${edge.u} — ${edge.v} — would form a cycle.`,
-      );
+      t.push(nodePaint(), rejected, `Reject ${edge.u} — ${edge.v} — would form a cycle.`);
     }
 
     if (treeEdges.size === nodes.length - 1) break;

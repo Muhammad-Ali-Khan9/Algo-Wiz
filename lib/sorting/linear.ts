@@ -26,16 +26,12 @@ export function countingSort(values: number[]): SortFrame[] {
     count[t.a[i] - offset] += 1;
     const roles = t.idleRoles();
     roles[i] = "key";
-    t.push(
-      roles,
-      `Count ${t.a[i]} → ${count[t.a[i] - offset]}.`,
-      {
-        auxBuckets: count.map((c, idx) => ({
-          label: String(idx + offset),
-          values: Array.from({ length: c }, () => idx + offset),
-        })),
-      },
-    );
+    t.push(roles, `Count ${t.a[i]} → ${count[t.a[i] - offset]}.`, {
+      auxBuckets: count.map((c, idx) => ({
+        label: String(idx + offset),
+        values: Array.from({ length: c }, () => idx + offset),
+      })),
+    });
   }
 
   for (let i = 1; i < span; i += 1) {
@@ -60,7 +56,10 @@ export function countingSort(values: number[]): SortFrame[] {
     roles[i] = "key";
     t.push(roles, `Place ${value} into output slot ${pos}.`, {
       auxBuckets: [
-        { label: "output", values: output.filter((v) => v !== 0 || output.indexOf(v) <= pos) },
+        {
+          label: "output",
+          values: output.filter((v) => v !== 0 || output.indexOf(v) <= pos),
+        },
       ],
     });
   }
@@ -171,7 +170,7 @@ export function bucketSort(values: number[], bucketCount = 8): SortFrame[] {
       t.writeAt(k, value);
       const roles = t.idleRoles();
       roles[k] = "write";
-        t.push(roles, `Collect ${value} from bucket ${b}.`, {
+      t.push(roles, `Collect ${value} from bucket ${b}.`, {
         auxBuckets: bucketsFrom(buckets),
       });
       k += 1;

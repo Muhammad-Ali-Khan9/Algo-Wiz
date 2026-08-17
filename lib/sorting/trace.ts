@@ -14,11 +14,7 @@ export class Trace {
     return Array.from({ length: this.n }, () => "idle");
   }
 
-  push(
-    roles: BarRole[],
-    hint: string,
-    extra?: { auxBuckets?: AuxBucket[] },
-  ): void {
+  push(roles: BarRole[], hint: string, extra?: { auxBuckets?: AuxBucket[] }): void {
     this.frames.push({
       array: this.a.slice(),
       roles: roles.slice(),

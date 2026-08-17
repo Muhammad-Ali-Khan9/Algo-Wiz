@@ -2,13 +2,28 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useCallback, useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type ReactNode,
+} from "react";
 import styles from "./home-hero.module.scss";
 
 function IconLinkedIn() {
   return (
     <svg viewBox="0 0 24 24" width="30" height="30" fill="none" aria-hidden="true">
-      <rect x="3.2" y="3.2" width="17.6" height="17.6" rx="2.4" stroke="currentColor" strokeWidth="1.8" />
+      <rect
+        x="3.2"
+        y="3.2"
+        width="17.6"
+        height="17.6"
+        rx="2.4"
+        stroke="currentColor"
+        strokeWidth="1.8"
+      />
       <path
         d="M8.1 10.2V17.5M8.1 7.35v.05M16.2 17.5v-4.05c0-2.15-1.15-3.15-2.7-3.15-1.25 0-1.85.7-2.2 1.4V10.2H8.1"
         stroke="currentColor"
@@ -37,7 +52,15 @@ function IconGitHub() {
 function IconInstagram() {
   return (
     <svg viewBox="0 0 24 24" width="30" height="30" fill="none" aria-hidden="true">
-      <rect x="3.5" y="3.5" width="17" height="17" rx="5" stroke="currentColor" strokeWidth="1.8" />
+      <rect
+        x="3.5"
+        y="3.5"
+        width="17"
+        height="17"
+        rx="5"
+        stroke="currentColor"
+        strokeWidth="1.8"
+      />
       <circle cx="12" cy="12" r="4.1" stroke="currentColor" strokeWidth="1.8" />
       <circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" />
     </svg>
@@ -47,7 +70,15 @@ function IconInstagram() {
 function IconGmail() {
   return (
     <svg viewBox="0 0 24 24" width="30" height="30" fill="none" aria-hidden="true">
-      <rect x="3.2" y="5.2" width="17.6" height="13.6" rx="2.2" stroke="currentColor" strokeWidth="1.8" />
+      <rect
+        x="3.2"
+        y="5.2"
+        width="17.6"
+        height="13.6"
+        rx="2.2"
+        stroke="currentColor"
+        strokeWidth="1.8"
+      />
       <path
         d="m4.4 7.4 7.6 6.1 7.6-6.1"
         stroke="currentColor"
@@ -271,8 +302,8 @@ export function HomeHero() {
                 />
                 <p className={styles.portraitName}>Muhammad Ali Khan</p>
                 <p className={styles.portraitBio}>
-                  A CS grad from GIKI, working as an associate software engineer
-                  in the industry.
+                  A CS grad from GIKI, working as an associate software engineer in the
+                  industry.
                 </p>
               </aside>
 
@@ -283,14 +314,14 @@ export function HomeHero() {
                 </h1>
                 <p className={styles.subtitle}>
                   A visual lab for classic computer science. Instead of reading
-                  pseudocode, you watch the data move — one comparison, swap, probe,
-                  or hop at a time.
+                  pseudocode, you watch the data move — one comparison, swap, probe, or
+                  hop at a time.
                 </p>
                 <p className={styles.lead}>
-                  Play a run at speed, pause when something interesting happens, or
-                  step backward and forward through the exact operations. Counts,
-                  complexity bounds, and color-coded roles stay on screen so the
-                  algorithm&apos;s decisions are readable, not just animated.
+                  Play a run at speed, pause when something interesting happens, or step
+                  backward and forward through the exact operations. Counts, complexity
+                  bounds, and color-coded roles stay on screen so the algorithm&apos;s
+                  decisions are readable, not just animated.
                 </p>
                 <ul className={styles.points}>
                   <li className={styles.point}>
@@ -303,15 +334,15 @@ export function HomeHero() {
                   <li className={styles.point}>
                     <p className={styles.pointTitle}>State in color</p>
                     <p className={styles.pointBody}>
-                      Idle, comparing, selected, swapping, and sorted each keep a
-                      role color, so you can see why a value moved.
+                      Idle, comparing, selected, swapping, and sorted each keep a role
+                      color, so you can see why a value moved.
                     </p>
                   </li>
                   <li className={styles.point}>
                     <p className={styles.pointTitle}>Complexity in view</p>
                     <p className={styles.pointBody}>
-                      Best, worst, and average bounds sit beside live comparison and
-                      write counts as the trace plays.
+                      Best, worst, and average bounds sit beside live comparison and write
+                      counts as the trace plays.
                     </p>
                   </li>
                 </ul>

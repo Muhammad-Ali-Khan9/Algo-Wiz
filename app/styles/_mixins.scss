@@ -1,13 +1,7 @@
 @forward "./tokens";
 @use "./tokens" as *;
 
-@mixin flex(
-  $dir: row,
-  $gap: 0,
-  $align: stretch,
-  $justify: flex-start,
-  $wrap: nowrap
-) {
+@mixin flex($dir: row, $gap: 0, $align: stretch, $justify: flex-start, $wrap: nowrap) {
   display: flex;
   flex-direction: $dir;
   align-items: $align;

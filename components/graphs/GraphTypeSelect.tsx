@@ -43,11 +43,7 @@ export function GraphTypeSelect({
   }, [open]);
 
   return (
-    <div
-      ref={rootRef}
-      className={styles.typeSelectWrap}
-      data-open={open}
-    >
+    <div ref={rootRef} className={styles.typeSelectWrap} data-open={open}>
       <button
         type="button"
         className={styles.typeSelect}

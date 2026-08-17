@@ -1,15 +1,27 @@
 # Algorithms Wizard
 
-Interactive algorithm visualizations. Watch classic computer science move — comparisons, swaps, probes, and hops — one step at a time.
+Interactive algorithm visualizations. Watch classic computer science move — comparisons, swaps, probes, hops, and edge relaxations — one step at a time.
 
-The first sections are **sorting** and **searching**. Graphs, pathfinding, trees, dynamic programming, backtracking, and string algorithms are planned next.
+**Live sections:** Sorting · Searching · Graphs · Pathfinding  
+**Planned:** Trees · Dynamic Programming · Backtracking · String Algorithms
+
+Deployed example: [algorithm-visualizer-rho-three.vercel.app](https://algorithm-visualizer-rho-three.vercel.app)
+
+---
 
 ## Stack
 
-- [Next.js](https://nextjs.org) 16 (App Router) + React 19
-- TypeScript
-- Sass modules with Tailwind CSS v4 (`@apply`, mixins, tokens)
-- No extra state library — local React state and a small theme context
+| Layer     | Choice                                                           |
+| --------- | ---------------------------------------------------------------- |
+| Framework | [Next.js](https://nextjs.org) 16 (App Router) + React 19         |
+| Language  | TypeScript                                                       |
+| Styles    | Sass modules + Tailwind CSS v4 (`@apply`, mixins, CSS variables) |
+| State     | Local React state + a small theme context                        |
+| Tooling   | ESLint, Prettier, Husky, lint-staged                             |
+
+No Redux / Zustand — each visualizer owns its playback state.
+
+---
 
 ## Getting started
 
@@ -20,232 +32,306 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
-| Script        | Purpose              |
-| ------------- | -------------------- |
-| `npm run dev`   | Local development  |
-| `npm run build` | Production build   |
-| `npm run start` | Serve the build    |
-| `npm run lint`  | ESLint             |
+| Script                 | Purpose                                         |
+| ---------------------- | ----------------------------------------------- |
+| `npm run dev`          | Local development (Turbopack)                   |
+| `npm run build`        | Production build                                |
+| `npm run start`        | Serve the production build                      |
+| `npm run lint`         | ESLint                                          |
+| `npm run format`       | Format the repo with Prettier                   |
+| `npm run format:check` | Check Prettier without writing                  |
+| `npm run prepare`      | Install Husky git hooks (runs on `npm install`) |
 
-## What’s in the app today
+### Git hooks
 
-### Home
+- **Pre-commit** (Husky + lint-staged): runs Prettier on staged `js/ts/json/md/scss/css/yml` files.
+- Config: `.prettierrc.json`, `.prettierignore`, `lint-staged` in `package.json`.
+- ESLint is configured with `eslint-config-prettier` so lint and format do not fight.
 
-The landing page is a full-viewport intro, then algorithm families as you scroll:
+---
 
-1. **Intro** — what Algorithms Wizard is, how playback works, and a map of sections. Math-themed SVG backgrounds (grid, curves, formulas, spiral, geometry) tint with the current theme.
-2. **Sorting** — live; links to `/sorting`.
-3. **Searching** — live; links to `/searching`.
-4. **Graphs**, **Pathfinding**, **Trees**, **Dynamic Programming**, **Backtracking**, **String Algorithms** — coming soon, each with its own background art.
+## What’s in the app
 
-Sections **crossfade** in the same viewport as you scroll (sticky stack + scroll-linked opacity). The grey global rail stays put.
+### Home (`/`)
+
+Full-viewport intro, then algorithm families as you scroll:
+
+1. **Intro** — product pitch, Made By, socials, map of sections. Math-themed SVG backgrounds tint with the theme.
+2. **Sorting** → `/sorting`
+3. **Searching** → `/searching`
+4. **Graphs** → `/graphs`
+5. **Pathfinding** → `/pathfinding`
+6. **Trees**, **Dynamic Programming**, **Backtracking**, **String Algorithms** — coming soon
+
+Sections **crossfade** in the same viewport (sticky stack + scroll-linked opacity). The global rail stays fixed.
 
 ### Global chrome
 
-- **Left rail** — Home, Sorting, and Searching. Follows the active theme (dark purple-black, light orange).
-- **Theme toggle** — capsule at the bottom of the rail: sun (light) and crescent (dark), with a circle on the active option. Choice is saved in `localStorage` (`algo-wiz-theme`).
-- **Light theme** — white and orange shades.
-- **Dark theme** — black with purple shades.
+- **Left rail** — Home, Sorting, Searching, Graphs, Pathfinding. Theme-aware icons (dark purple-black / light orange).
+- **Theme toggle** — capsule at the bottom of the rail (sun / moon). Saved in `localStorage` (`algo-wiz-theme`).
+- **Boot script** — applies the saved theme before paint to avoid a flash of the wrong palette.
 
-A small script runs before paint so the saved theme does not flash the wrong colors.
+Mobile: hamburger opens the rail as an overlay; each wiz page also has an **Algorithm** drawer for the algo list.
 
-### Sorting visualizer (`/sorting`)
+---
 
-A page layout (not a dashboard of cards): algorithm list on the left, document-style content on the right.
+## Sorting (`/sorting`)
 
-**Algorithms (15)**
+Sidebar of algorithms + document-style stage on the right.
 
-| Algorithm        | Average       | Notes                                      |
-| ---------------- | ------------- | ------------------------------------------ |
-| Bubble Sort      | O(n²)         | Adjacent swaps; early exit if no swaps     |
-| Selection Sort   | O(n²)         | Few writes; always quadratic               |
-| Insertion Sort   | O(n²)         | Fast on nearly-sorted / small n            |
-| Merge Sort       | O(n log n)    | Stable, extra linear memory                |
-| Quick Sort       | O(n log n)    | In-place average case                      |
-| Heap Sort        | O(n log n)    | Worst-case n log n, O(1) extra space       |
-| Shell Sort       | ~O(n^1.25)    | Gapped insertion                           |
-| Counting Sort    | O(n + k)      | Integer keys in a small range              |
-| Radix Sort       | O(d·(n+k))    | LSD digit buckets                          |
-| Bucket Sort      | O(n + k)      | Range buckets + insertion; **bucket count is adjustable** |
-| Pigeonhole Sort  | O(n + k)      | One hole per integer from min to max       |
-| Tim Sort         | O(n log n)    | Teaching Timsort: minrun + merges          |
-| Intro Sort       | O(n log n)    | Quicksort with heap/insertion fallbacks    |
-| Bitonic Sort     | O(n log² n)   | Sorting network; works for any length      |
-| Stooge Sort      | O(n^{2.71})   | Recurse on overlapping 2/3 ranges          |
+### Algorithms (15)
 
-**Playback**
+| Algorithm       | Average     | Notes                                                  |
+| --------------- | ----------- | ------------------------------------------------------ |
+| Bubble Sort     | O(n²)       | Adjacent swaps; early exit if no swaps                 |
+| Selection Sort  | O(n²)       | Few writes; always quadratic                           |
+| Insertion Sort  | O(n²)       | Fast on nearly-sorted / small n                        |
+| Merge Sort      | O(n log n)  | Stable, extra linear memory                            |
+| Quick Sort      | O(n log n)  | In-place average case                                  |
+| Heap Sort       | O(n log n)  | Worst-case n log n, O(1) extra space                   |
+| Shell Sort      | ~O(n^1.25)  | Gapped insertion                                       |
+| Counting Sort   | O(n + k)    | Integer keys in a small range                          |
+| Radix Sort      | O(d·(n+k))  | LSD digit buckets                                      |
+| Bucket Sort     | O(n + k)    | Range buckets + insertion; **bucket count adjustable** |
+| Pigeonhole Sort | O(n + k)    | One hole per integer from min to max                   |
+| Tim Sort        | O(n log n)  | Teaching Timsort: minrun + merges                      |
+| Intro Sort      | O(n log n)  | Quicksort with heap/insertion fallbacks                |
+| Bitonic Sort    | O(n log² n) | Sorting network; any length                            |
+| Stooge Sort     | O(n^{2.71}) | Recurse on overlapping 2/3 ranges                      |
 
-- Play / Pause / Replay
-- Step back / Step ahead
-- Shuffle and Reset
-- Size (8–48) and Speed sliders
-- **Buckets** slider (1–64) when Bucket Sort is selected
+### Controls & visuals
 
-**Visualization**
+- Play / Pause / Replay, Step back / Step, Shuffle, Reset
+- Size (8–48), Speed; **Buckets** (1–64) for Bucket Sort
+- Bar roles: normal, comparing, selected, swapping, sorted
+- Auxiliary open containers for counting / radix / bucket / pigeonhole
+- Definition · Complexity · Usage · **Code** (C, C++, Python, Java, JavaScript, C#)
 
-- Bars colored by role: normal (green), comparing (yellow), selected (blue), swapping (red), sorted (purple)
-- Values sit on top of each bar (bold Poppins)
-- Live hint, progress, comparison/write counts, and step index
-- Below the run: **Definition**, **Complexity**, **Usage**, and **Code** (C / C++ / Python / Java / JavaScript / C# tabs)
+### Keyboard (focus not in an input)
 
-**Bucket / radix / counting / pigeonhole extras**
+| Key   | Action                |
+| ----- | --------------------- |
+| Space | Play / pause / replay |
+| →     | Step ahead            |
+| ←     | Step back             |
+| R     | Shuffle               |
 
-- Auxiliary structures render as **open containers**
-- New entries **drop in** with a short pop (existing items stay still)
+---
 
-**Preloader**
+## Searching (`/searching`)
 
-- Centered spinning circular bar
-- Fades in and out on first load and when switching algorithms
+Same chrome pattern as sorting.
 
-**Keyboard** (when focus is not in an input)
+### Algorithms (8)
 
-| Key           | Action        |
-| ------------- | ------------- |
-| Space         | Play / pause  |
-| Right arrow   | Step ahead    |
-| Left arrow    | Step back     |
-| R             | Shuffle       |
+| Algorithm              | Average      | Notes               |
+| ---------------------- | ------------ | ------------------- |
+| Linear Search          | O(n)         | Unsorted OK         |
+| Binary Search          | O(log n)     | Sorted window       |
+| Jump Search            | O(√n)        | Hop √n, then scan   |
+| Interpolation Search   | O(log log n) | Value-based probe   |
+| Exponential Search     | O(log n)     | Bound, then binary  |
+| Fibonacci Search       | O(log n)     | Fibonacci splits    |
+| Ternary Search         | O(log₃ n)    | Two cuts            |
+| Sentinel Linear Search | O(n)         | Sentinel at the end |
 
-### Searching visualizer (`/searching`)
+Ordered algorithms sort the array on shuffle / when selected. Target, size, and speed are adjustable.
 
-Same page layout as sorting: algorithm list on the left, document-style content on the right.
+---
 
-**Algorithms (8)**
+## Graphs (`/graphs`)
 
-| Algorithm                | Average      | Notes                                      |
-| ------------------------ | ------------ | ------------------------------------------ |
-| Linear Search            | O(n)         | Left-to-right scan; unsorted is fine       |
-| Binary Search            | O(log n)     | Halve a sorted window                      |
-| Jump Search              | O(√n)        | Hop √n, then scan the block                |
-| Interpolation Search     | O(log log n) | Probe by value, assuming uniform keys      |
-| Exponential Search       | O(log n)     | Double the bound, then binary search       |
-| Fibonacci Search         | O(log n)     | Split with Fibonacci indexes               |
-| Ternary Search           | O(log₃ n)    | Two cuts; keep one third                   |
-| Sentinel Linear Search   | O(n)         | Plant the target at the end; no bound check |
+Node–edge canvas (SVG viewBox) with playback, frontier chips, edge weights when relevant, and multi-language code panels.
 
-**Playback**
+### Graph types (generator)
 
-- Play / Pause / Replay
-- Step back / Step ahead
-- Shuffle and Reset
-- **Target**, Size (8–48), and Speed sliders
-- Ordered algorithms sort the array on shuffle / when you switch to them
+| Type      | Shape                             |
+| --------- | --------------------------------- |
+| Random    | Lattice with sparse diagonals     |
+| Complete  | Every pair linked                 |
+| Bipartite | Two columns, cross edges          |
+| Tree      | Hierarchical layout (root on top) |
+| DAG       | Left-to-right acyclic arcs        |
+| Cycle     | Ring                              |
+| Grid      | Orthogonal grid                   |
 
-**Visualization**
+Shuffle regenerates structure, weights, and start/goal from a new seed.
 
-- Bars colored by role: unsearched (slate), current (yellow), compared (sky), found (green), eliminated (red), search range (violet)
-- Live hint, progress, comparison/probe counts, and step index
-- Below the run: **Definition**, **Complexity** (best / average / worst / space / requires sorted), **Usage**, and **Code** (C / C++ / Python / Java / JavaScript / C# tabs)
+### Algorithms
 
-## How sorting traces work
+Grouped in the sidebar. All listed below are **playable**.
 
-Each algorithm is a **runner** that yields an array of frames — not a live mutation of the React tree during the sort.
+#### Traversal
+
+| Algorithm | Notes                                 |
+| --------- | ------------------------------------- |
+| BFS       | Layer by layer from start toward goal |
+| DFS       | Stack / deep-first exploration        |
+
+#### Connectivity & Components
+
+| Algorithm                    | Notes                                   |
+| ---------------------------- | --------------------------------------- |
+| Connected Components         | Undirected floods; labels `C0`, `C1`, … |
+| SCC — Kosaraju               | Finish times, then transpose DFS        |
+| SCC — Tarjan                 | Discovery / low-link; pop SCCs          |
+| Cycle Detection — Undirected | Back edge to a non-parent               |
+| Cycle Detection — Directed   | White / gray / black DFS                |
+
+#### Minimum Spanning Tree
+
+| Algorithm | Notes                                     |
+| --------- | ----------------------------------------- |
+| Prim      | Grow MST from a seed by lightest cut edge |
+| Kruskal   | Sort edges + union–find                   |
+
+#### Ordering
+
+| Algorithm               | Notes                   |
+| ----------------------- | ----------------------- |
+| Topological Sort — Kahn | Peel in-degree 0        |
+| Topological Sort — DFS  | Reverse finishing times |
+
+#### Graph Analysis
+
+| Algorithm              | Notes                       |
+| ---------------------- | --------------------------- |
+| Bipartite Check        | 2-color A / B               |
+| Bridge Finding         | `low[child] > disc[u]`      |
+| Articulation Points    | Root / low-link conditions  |
+| Degree Calculation     | Undirected degree sequence  |
+| In-degree / Out-degree | Directed `↓` / `↑`          |
+| Graph Coloring         | Greedy colors `c0`, `c1`, … |
+
+Node colors: idle, frontier, current, visited, path / MST, start, goal. Edge roles: idle, consider, tree, path, rejected.
+
+---
+
+## Pathfinding (`/pathfinding`)
+
+Same graph canvas pattern, focused on **shortest / best route from A to B**.
+
+### Live algorithms
+
+| Group      | Algorithm | Notes                                          |
+| ---------- | --------- | ---------------------------------------------- |
+| Unweighted | BFS       | Shortest hop-path                              |
+| Weighted   | Dijkstra  | Non-negative weights                           |
+| Heuristic  | A*        | `g` / `h` inside larger nodes; ∞ until reached |
+
+### Catalogued (Soon)
+
+Bidirectional BFS · Bellman–Ford · Floyd–Warshall · Greedy Best-First · Bidirectional Dijkstra · Bidirectional A*
+
+A* uses a larger node spacing and shows heuristic metrics inside nodes. Edge weight badges appear on weighted algorithms.
+
+---
+
+## How traces work
+
+Algorithms are **runners**: pure functions that build an array of frames ahead of time. The UI only indexes into that list.
 
 ```
-lib/sorting/
-  types.ts        Frame, roles, algorithm metadata
-  trace.ts        Shared recorder (compares, swaps, writes, hints)
-  comparison.ts   Bubble, selection, insertion, merge, quick, heap, shell
-  linear.ts       Counting, radix, bucket, pigeonhole
-  hybrid.ts       Tim, intro, bitonic, stooge
-  random.ts       Shuffle / patterned arrays
-  index.ts        Metadata, runners, definitions, usage copy
+Frame → snapshot of nodes/edges (or bars)
+      → roles per node / edge (or index)
+      → optional labels (distances, components, g/h, …)
+      → frontier list
+      → hint string
+      → visit / relax (or compare / write) stats
 ```
 
-A frame holds:
+```
+lib/sorting/     comparison, linear, hybrid runners + trace
+lib/searching/   linear + ordered search runners + trace
+lib/graphs/      traversal, connectivity, mst, ordering, analysis, random
+lib/pathfinding/ shortest (Dijkstra, A*) + reuses graph types / BFS
+```
 
-- the array snapshot
-- a role per index (idle, compare, swap, sorted, pivot/key/min/write)
-- a human-readable hint
-- comparison / write stats
-- optional auxiliary buckets
+Playback is speed-gated `setTimeout` stepping; Space / arrows / `R` match sorting.
 
-The UI steps through that list at the chosen speed.
+Shared wiz chrome lives under `components/wiz/` (sidebar, preloader, playback helpers, SCSS shell).
+
+---
 
 ## Project layout
 
 ```
 app/
-  layout.tsx              Shell, fonts, theme boot script
-  page.tsx                Home
-  sorting/page.tsx        Sorting visualizer
-  searching/page.tsx      Searching visualizer
-  globals.scss            Theme CSS variables
-  styles/                 Tokens, mixins, Tailwind entry
+  layout.tsx                 Shell, fonts, theme boot script
+  page.tsx                   Home
+  sorting/page.tsx
+  searching/page.tsx
+  graphs/page.tsx
+  pathfinding/page.tsx
+  globals.scss               Theme CSS variables
+  styles/                    Tokens, mixins, Tailwind entry
 components/
-  nav/                    App shell + global rail
-  theme/                  Light / dark provider
-  home/                   Landing + section crossfade
-  sorting/                Sorting page + SCSS module
-  searching/              Searching page (shares sorting visual styles)
-lib/sorting/              Sorting traces
-lib/searching/            Searching traces
+  nav/                       App shell + global rail
+  theme/                     Light / dark provider
+  home/                      Landing + section crossfade
+  sorting/ · searching/
+  graphs/                    GraphWiz, GraphTypeSelect, SCSS
+  pathfinding/               PathfindingWiz
+  code/                      CodePanel (language tabs + Prettier-styled UI)
+  wiz/                       Shared shell, AlgoSidebar, preloader, playback
+lib/
+  sorting/ · searching/
+  graphs/                    Types, generators, runners, snippets
+  pathfinding/               Path meta, Dijkstra / A*, snippets
+  code/                      Multi-language snippet helpers
 public/
-  icons/                  Nav and theme SVGs
-  bg/                     Math and section background SVGs
+  icons/                     Nav + section icons
+  bg/                        Home section backgrounds
+.husky/                      Git hooks
+.prettierrc.json
+eslint.config.mjs
 ```
 
-Styles live in **SCSS modules**. Tailwind is used via `@apply` and a `tw()` mixin for utilities that need `/` or `:`. Theme colors go through CSS variables (`--accent`, `--background`, …) so Sass `@apply` of custom tokens does not drop styles.
+Styles: **SCSS modules**. Prefer `@include tw("…")` / `@apply` for utilities; keep theme colors as `var(--accent)`, `var(--muted)`, etc. Avoid `@apply rounded-full` — use `border-radius: 999px`.
+
+---
 
 ## More to come
 
-These are sketched on the home page and intended to follow the same pattern: sidebar of algorithms, step-through playback, color roles, and definition / complexity / usage under the visualization.
-
-### Graphs
-
-- BFS and DFS on an undirected / directed graph
-- Weighted searches (Dijkstra, optionally Bellman–Ford)
-- Frontier vs visited vs current edge, with a small adjacency drawing
-
-### Pathfinding
-
-- Grid with walls, start, and goal
-- Dijkstra and A* (and a greedy baseline for contrast)
-- Expand cells, then paint the reconstructed path
+Same pattern as live sections: algo sidebar, step playback, color roles, definition / complexity / usage / code.
 
 ### Trees
 
-- Binary search tree insert / find
-- Preorder, inorder, postorder, and level-order walks
-- Optional: AVL or red-black rotations
-
-Highlight the current node and the path from the root, not only the final shape.
+- BST insert / find; preorder / inorder / postorder / level-order
+- Optional AVL or red-black rotations
 
 ### Dynamic Programming
 
-- 1D and 2D tables (knapsack, LCS, coin change)
-- Fill order, reuse of overlapping subproblems
-- Highlight the recurrence’s dependencies, then the reconstructed answer
+- 1D / 2D tables (knapsack, LCS, coin change)
+- Highlight dependencies, then reconstruct the answer
 
 ### Backtracking
 
-- N-queens, permutations / subsets, maze-style constraints
-- Grow a candidate, mark a dead end, rewind
-- Show the implicit search tree beside the board or list
+- N-queens, permutations / subsets
+- Grow, fail, rewind — show the search tree
 
 ### String Algorithms
 
-- KMP (pattern, prefix table, skip)
-- Rabin–Karp rolling hash
-- Optional: Z-algorithm or naive vs optimized window
+- KMP, Rabin–Karp; optional Z-algorithm
 
 ### Later ideas
 
-- Linked-list and tree rotations as first-class visuals
 - Shareable URL state (algorithm, size, seed, speed)
-- A short “why this comparison happened” aside tied to the current frame
-- Tests for runners (frame invariants: permutation preserved, sorted suffix grows, etc.)
+- Tests for runners (frame invariants)
+- True grid-maze pathfinding UI (walls + cells) in addition to abstract graphs
 
-Nav entries for the coming-soon families should appear on the global rail when those routes exist.
+---
 
 ## Notes for contributors
 
-- Prefer **CSS variables** over hardcoded violet/zinc in modules so light and dark stay in sync.
-- Do not `@apply` custom theme tokens (for example `text-ink-muted`) in Sass — those rules can vanish after compilation. Use `color: var(--muted)` or core utilities (`text-zinc-400`) instead.
-- Avoid `@apply rounded-full` in this setup; use `border-radius: 999px`.
-- The global sidebar follows the active theme (purple-black in dark, orange in light).
-- Sorting content should stay **zoneless** (no glass dashboard cards). The algorithm list sidebar is the exception.
+- Prefer **CSS variables** over hardcoded violet / zinc so light and dark stay in sync.
+- Do not `@apply` custom theme tokens (e.g. `text-ink-muted`) in Sass — use `color: var(--muted)` instead.
+- Run `npm run format` before large PRs; pre-commit already formats staged files.
+- Keep wiz pages **document-like** (not a dashboard of cards). The algorithm list sidebar is the intentional exception.
+- Graph / pathfinding runners should stay pure: input graph → frames, no DOM.
+- When adding an algorithm: metadata + runner + snippets + wire into `*_META` / `*_RUNNERS`.
+
+---
 
 ## License
 

@@ -1,9 +1,4 @@
-import {
-  GraphTrace,
-  adjacency,
-  paintTerminal,
-  reconstructPath,
-} from "./trace";
+import { GraphTrace, adjacency, paintTerminal, reconstructPath } from "./trace";
 import type { GraphData, GraphFrame, NodeRole } from "./types";
 
 export function bfs(graph: GraphData): GraphFrame[] {
@@ -60,12 +55,9 @@ export function bfs(graph: GraphData): GraphFrame[] {
       const considerEdges = t.idleEdgeRoles();
       considerEdges[edgeId] = "consider";
       t.relax();
-      t.push(
-        considerRoles,
-        considerEdges,
-        `Inspect edge ${u} — ${to}.`,
-        { frontier: [...queue] },
-      );
+      t.push(considerRoles, considerEdges, `Inspect edge ${u} — ${to}.`, {
+        frontier: [...queue],
+      });
 
       if (!visited[to]) {
         visited[to] = true;
@@ -132,14 +124,7 @@ export function dfs(graph: GraphData): GraphFrame[] {
 
     if (u === goal) {
       const path = reconstructPath(parent, parentEdge, start, goal);
-      paintTerminal(
-        t,
-        start,
-        goal,
-        path.nodes,
-        path.edges,
-        `DFS reached ${goal}.`,
-      );
+      paintTerminal(t, start, goal, path.nodes, path.edges, `DFS reached ${goal}.`);
       return t.frames;
     }
 

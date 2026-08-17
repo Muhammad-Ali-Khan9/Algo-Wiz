@@ -1,13 +1,7 @@
 import type { CodeSnippets } from "@/lib/code/languages";
 
 export type GraphKind =
-  | "random"
-  | "complete"
-  | "bipartite"
-  | "tree"
-  | "dag"
-  | "cycle"
-  | "grid";
+  "random" | "complete" | "bipartite" | "tree" | "dag" | "cycle" | "grid";
 
 export type GraphAlgoId =
   | "bfs"
@@ -29,13 +23,7 @@ export type GraphAlgoId =
   | "coloring";
 
 export type NodeRole =
-  | "idle"
-  | "frontier"
-  | "current"
-  | "visited"
-  | "path"
-  | "start"
-  | "goal";
+  "idle" | "frontier" | "current" | "visited" | "path" | "start" | "goal";
 
 export type EdgeRole = "idle" | "consider" | "tree" | "path" | "rejected";
 

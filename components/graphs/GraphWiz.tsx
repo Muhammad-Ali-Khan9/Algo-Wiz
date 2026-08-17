@@ -1,16 +1,9 @@
 "use client";
 
 import { CodePanel } from "@/components/code/CodePanel";
-import {
-  AlgoSidebar,
-  AlgoSidebarToggle,
-} from "@/components/wiz/AlgoSidebar";
+import { AlgoSidebar, AlgoSidebarToggle } from "@/components/wiz/AlgoSidebar";
 import { WizPreloader } from "@/components/wiz/WizPreloader";
-import {
-  BOOT_HOLD_MS,
-  PRELOAD_FADE_MS,
-  delayForSpeed,
-} from "@/components/wiz/playback";
+import { BOOT_HOLD_MS, PRELOAD_FADE_MS, delayForSpeed } from "@/components/wiz/playback";
 import {
   GRAPH_KINDS,
   GRAPH_META,
@@ -148,10 +141,7 @@ export function GraphWiz() {
     return () => window.clearTimeout(timer);
   }, [preloaderActive]);
 
-  const frames = useMemo(
-    () => runGraphAlgo(algorithmId, graph),
-    [algorithmId, graph],
-  );
+  const frames = useMemo(() => runGraphAlgo(algorithmId, graph), [algorithmId, graph]);
 
   const safeIndex = frames.length ? Math.min(index, frames.length - 1) : 0;
   const frame = frames[safeIndex];
@@ -260,11 +250,7 @@ export function GraphWiz() {
               >
                 Step
               </button>
-              <button
-                type="button"
-                className={styles.btn}
-                onClick={() => shuffle()}
-              >
+              <button type="button" className={styles.btn} onClick={() => shuffle()}>
                 Shuffle
               </button>
             </div>
@@ -273,9 +259,7 @@ export function GraphWiz() {
               <label className={styles.slider}>
                 <span className={styles.sliderLabel}>
                   <span>Graph type</span>
-                  <span>
-                    {GRAPH_KINDS.find((item) => item.id === graphKind)?.label}
-                  </span>
+                  <span>{GRAPH_KINDS.find((item) => item.id === graphKind)?.label}</span>
                 </span>
                 <GraphTypeSelect
                   value={graphKind}
@@ -324,11 +308,7 @@ export function GraphWiz() {
 
           <div className={styles.stageWrap}>
             <div className={graphStyles.graphStage} aria-label="Graph visualization">
-              <svg
-                className={graphStyles.graphSvg}
-                viewBox="0 0 100 100"
-                role="img"
-              >
+              <svg className={graphStyles.graphSvg} viewBox="0 0 100 100" role="img">
                 {edges.map((edge) => {
                   const role = frame?.edgeRoles[edge.id] ?? "idle";
                   const a = nodes[edge.u];
@@ -416,23 +396,15 @@ export function GraphWiz() {
             </div>
 
             <div className={styles.progress} aria-hidden="true">
-              <div
-                className={styles.progressFill}
-                style={{ width: `${progress}%` }}
-              />
+              <div className={styles.progressFill} style={{ width: `${progress}%` }} />
             </div>
 
-            <p className={styles.hint}>
-              {frame?.hint ?? "Shuffle a graph to begin."}
-            </p>
+            <p className={styles.hint}>{frame?.hint ?? "Shuffle a graph to begin."}</p>
 
             {(frame?.frontier?.length ?? 0) > 0 ? (
               <div className={graphStyles.frontierStrip} aria-label="Frontier">
                 {frame!.frontier.map((id, chipIndex) => (
-                  <span
-                    key={`${id}-${chipIndex}`}
-                    className={graphStyles.frontierChip}
-                  >
+                  <span key={`${id}-${chipIndex}`} className={graphStyles.frontierChip}>
                     {id}
                   </span>
                 ))}
@@ -452,9 +424,8 @@ export function GraphWiz() {
                 ))}
               </div>
               <p className={styles.live}>
-                Visits {frame?.stats.visits ?? 0} · Relaxes{" "}
-                {frame?.stats.relaxes ?? 0} · Step {frames.length ? safeIndex + 1 : 0}/
-                {frames.length}
+                Visits {frame?.stats.visits ?? 0} · Relaxes {frame?.stats.relaxes ?? 0} ·
+                Step {frames.length ? safeIndex + 1 : 0}/{frames.length}
               </p>
             </div>
           </div>

@@ -2,13 +2,7 @@
 
 import styles from "./wiz.module.scss";
 
-export function WizPreloader({
-  shown,
-  exiting,
-}: {
-  shown: boolean;
-  exiting: boolean;
-}) {
+export function WizPreloader({ shown, exiting }: { shown: boolean; exiting: boolean }) {
   if (!shown) return null;
 
   return (

@@ -10,7 +10,9 @@
 
 .rail {
   @include theme-color-shift;
-  @include tw("sticky top-0 z-20 flex h-dvh flex-col items-center gap-[0.7rem] px-[0.65rem] py-4");
+  @include tw(
+    "sticky top-0 z-20 flex h-dvh flex-col items-center gap-[0.7rem] px-[0.65rem] py-4"
+  );
   width: $nav-w;
   background: var(--rail);
   box-shadow: inset -1px 0 0 var(--border);
@@ -22,7 +24,9 @@
 }
 
 .label {
-  @include tw("mb-[0.15rem] font-mono text-[0.58rem] font-semibold uppercase tracking-[0.16em]");
+  @include tw(
+    "mb-[0.15rem] font-mono text-[0.58rem] font-semibold uppercase tracking-[0.16em]"
+  );
   margin-top: 0;
   color: var(--rail-label);
   font-family: var(--font-mono), ui-monospace, monospace;
@@ -99,7 +103,9 @@
 }
 
 .themeBtn {
-  @include tw("relative z-[1] flex size-[2.16rem] cursor-pointer items-center justify-center border-0 bg-transparent p-0");
+  @include tw(
+    "relative z-[1] flex size-[2.16rem] cursor-pointer items-center justify-center border-0 bg-transparent p-0"
+  );
   border-radius: 999px;
 
   &:focus-visible {
@@ -125,7 +131,9 @@
   }
 
   .menuBtn {
-    @include tw("fixed top-[0.7rem] left-[0.7rem] z-40 flex size-[2.75rem] cursor-pointer items-center justify-center border-0 p-0");
+    @include tw(
+      "fixed top-[0.7rem] left-[0.7rem] z-40 flex size-[2.75rem] cursor-pointer items-center justify-center border-0 p-0"
+    );
     border-radius: 999px;
     background: var(--rail-btn);
     box-shadow: 0 0 0 1px rgb(0 0 0 / 0.06);
@@ -140,6 +148,7 @@
     @include tw("pointer-events-none fixed inset-0 z-30 block border-0 opacity-0");
     background: rgb(0 0 0 / 0.45);
     transition: opacity 0.22s ease;
+    cursor: pointer;
 
     &[data-open="true"] {
       @include tw("pointer-events-auto opacity-100");

@@ -59,8 +59,7 @@ export const PATH_META: PathMeta[] = [
     available: true,
     definition:
       "Dijkstra repeatedly settles the unsettled node with the smallest tentative distance, then relaxes its outgoing edges. With non-negative weights it yields true shortest-path distances.",
-    usage:
-      "Road maps, network routing, and any weighted graph without negative edges.",
+    usage: "Road maps, network routing, and any weighted graph without negative edges.",
     code: PATH_CODE.dijkstra,
   },
   soon({
