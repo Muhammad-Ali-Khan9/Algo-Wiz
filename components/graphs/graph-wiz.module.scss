@@ -1,0 +1,155 @@
+@use "../../app/styles/mixins" as *;
+
+@reference "tailwindcss";
+
+.graphStage {
+  @include tw("relative box-border h-[min(58vh,32rem)] min-h-80 w-full overflow-hidden");
+  background: var(--stage);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+}
+
+.graphSvg {
+  @include tw("block h-full w-full");
+}
+
+.edge {
+  fill: none;
+  stroke-linecap: round;
+  transition:
+    stroke 90ms linear,
+    stroke-width 90ms linear,
+    opacity 90ms linear;
+}
+
+.edgeWeight {
+  @include tw("pointer-events-none text-center font-mono font-bold");
+  fill: var(--foreground);
+}
+
+.edgeWeightBg {
+  fill: var(--stage);
+  stroke: var(--border);
+  stroke-width: 0.25;
+}
+
+.node {
+  transition:
+    fill 90ms linear,
+    stroke 90ms linear;
+}
+
+.nodeLabel {
+  @include tw("pointer-events-none text-center font-bold");
+  fill: #fff;
+}
+
+.nodeId {
+  @include tw("pointer-events-none text-center font-bold");
+  fill: #fff;
+  opacity: 0.92;
+}
+
+.nodeMetric {
+  @include tw("pointer-events-none text-center font-mono font-bold");
+  fill: #fff;
+}
+
+.distLabel {
+  @include tw("pointer-events-none font-mono font-semibold");
+  fill: var(--foreground);
+}
+
+.frontierStrip {
+  @include tw("mt-2 flex flex-wrap items-center gap-2");
+}
+
+.frontierChip {
+  @include tw("px-2.5 py-1 font-mono text-[0.68rem]");
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--foreground);
+  border-radius: 999px;
+}
+
+.typeSelectWrap {
+  @apply relative z-10 block w-full min-w-40;
+
+  &::after {
+    content: "";
+    @apply pointer-events-none absolute top-1/2 right-3.5 z-[1] h-2 w-2 -translate-y-[60%] rotate-45 border-r-2 border-b-2 transition-transform duration-200 ease-out;
+    border-color: var(--accent);
+  }
+
+  &[data-open="true"]::after {
+    @apply -translate-y-[20%] -rotate-[135deg];
+  }
+
+  @media (max-width: 640px) {
+    @apply min-w-32;
+
+    &::after {
+      @apply right-3 h-1.5 w-1.5;
+    }
+  }
+}
+
+.typeSelect {
+  @apply flex w-full cursor-pointer appearance-none items-center rounded-xl border-2 px-3.5 py-2.5 pr-10 text-left font-mono text-[0.75rem] leading-normal transition-[border-color,background-color,box-shadow,color] duration-300 ease-out;
+  border-color: var(--accent);
+  background-color: var(--surface-strong);
+  color: var(--foreground);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 28%, transparent);
+
+  &:hover {
+    border-color: var(--accent-hover);
+    background-color: var(--surface);
+  }
+
+  &:focus {
+    @apply outline-none;
+  }
+
+  &:focus-visible {
+    @apply outline-2 outline-offset-2;
+    border-color: var(--accent-hover);
+    outline-color: var(--accent-hover);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+  }
+
+  @media (max-width: 640px) {
+    @apply rounded-lg px-3 py-2 pr-9 text-[0.7rem];
+  }
+}
+
+.typeMenu {
+  @apply absolute top-[calc(100%+0.35rem)] right-0 left-0 z-[1] m-0 list-none overflow-hidden rounded-xl border-2 p-1.5;
+  border-color: var(--accent);
+  background-color: var(--surface-strong);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--accent) 28%, transparent),
+    0 12px 28px -8px rgb(0 0 0 / 0.35);
+
+  @media (max-width: 640px) {
+    @apply rounded-lg p-1;
+  }
+}
+
+.typeOption {
+  @apply flex w-full cursor-pointer appearance-none rounded-lg border-0 bg-transparent px-3 py-2 text-left font-mono text-[0.75rem] transition-[background-color,color] duration-200 ease-out;
+  color: var(--foreground);
+
+  &:hover {
+    background-color: var(--accent-soft);
+    color: var(--accent-hover);
+  }
+
+  &[data-active="true"] {
+    background-color: var(--accent);
+    color: #fff;
+  }
+
+  @media (max-width: 640px) {
+    @apply rounded-md px-2.5 py-1.5 text-[0.7rem];
+  }
+}

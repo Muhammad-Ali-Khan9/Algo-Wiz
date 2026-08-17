@@ -1,47 +1,37 @@
 @use "../../app/styles/mixins" as *;
 
+@reference "tailwindcss";
+
 .wrap {
-  position: relative;
-  z-index: 20;
+  @include tw("relative z-20 h-dvh");
   flex: 0 0 $nav-w;
   width: $nav-w;
-  height: 100dvh;
 }
 
 .rail {
-  @include flex($dir: column, $align: center, $gap: 0.7rem);
   @include theme-color-shift;
-  position: sticky;
-  top: 0;
-  z-index: 20;
+  @include tw("sticky top-0 z-20 flex h-dvh flex-col items-center gap-[0.7rem] px-[0.65rem] py-4");
   width: $nav-w;
-  height: 100dvh;
-  padding: 1rem 0.65rem;
   background: var(--rail);
   box-shadow: inset -1px 0 0 var(--border);
 }
 
 .menuBtn,
 .scrim {
-  display: none;
+  @include tw("hidden");
 }
 
 .label {
-  margin: 0 0 0.15rem;
+  @include tw("mb-[0.15rem] font-mono text-[0.58rem] font-semibold uppercase tracking-[0.16em]");
+  margin-top: 0;
   color: var(--rail-label);
   font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: 0.58rem;
-  font-weight: 600;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
   transition: color 0.55s ease;
 }
 
 .btn {
-  @include flex($align: center, $justify: center);
   @include theme-color-shift(0.18s);
-  width: 2.85rem;
-  height: 2.85rem;
+  @include tw("flex size-[2.85rem] items-center justify-center");
   border-radius: 999px;
   background: var(--rail-btn);
   color: #18181b;
@@ -55,13 +45,12 @@
   &:hover,
   &:focus-visible {
     background: var(--rail-active);
-    color: #ffffff;
-    transform: translateY(-1px);
+    @include tw("text-white -translate-y-px");
   }
 
   &[data-active="true"] {
     background: var(--rail-active);
-    color: #ffffff;
+    @include tw("text-white");
     box-shadow: none;
   }
 
@@ -72,7 +61,7 @@
 }
 
 .icon {
-  display: block;
+  @include tw("block");
   filter: var(--rail-icon);
   transition: filter 0.35s ease;
 }
@@ -84,36 +73,25 @@
 }
 
 .spacer {
-  flex: 1;
+  @include tw("flex-1");
 }
 
 .themeCapsule {
   @include theme-color-shift;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.18rem;
-  width: 2.6rem;
-  padding: 0.22rem;
+  @include tw("relative flex w-[2.6rem] flex-col items-center gap-[0.18rem] p-[0.22rem]");
   border-radius: 999px;
   background: var(--rail-btn);
   box-shadow: 0 0 0 1px rgb(0 0 0 / 0.06);
 }
 
 .themeThumb {
-  position: absolute;
-  top: 0.22rem;
-  left: 0.22rem;
-  width: 2.16rem;
-  height: 2.16rem;
+  @include tw("pointer-events-none absolute top-[0.22rem] left-[0.22rem] size-[2.16rem]");
   border-radius: 999px;
   background: var(--rail-active);
   box-shadow: 0 0 0 1px rgb(0 0 0 / 0.08);
   transition:
     transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
     background-color 0.55s ease;
-  pointer-events: none;
 }
 
 .themeCapsule[data-mode="dark"] .themeThumb {
@@ -121,18 +99,8 @@
 }
 
 .themeBtn {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 2.16rem;
-  height: 2.16rem;
-  padding: 0;
-  border: 0;
+  @include tw("relative z-[1] flex size-[2.16rem] cursor-pointer items-center justify-center border-0 bg-transparent p-0");
   border-radius: 999px;
-  background: transparent;
-  cursor: pointer;
 
   &:focus-visible {
     outline: 2px solid var(--rail-active);
@@ -141,7 +109,7 @@
 }
 
 .themeIcon {
-  display: block;
+  @include tw("block");
   filter: var(--rail-icon);
   transition: filter 0.4s ease;
 }
@@ -152,26 +120,15 @@
 
 @media (max-width: 800px) {
   .wrap {
+    @include tw("h-0 w-0 overflow-visible");
     flex: 0 0 0;
-    width: 0;
-    height: 0;
-    overflow: visible;
   }
 
   .menuBtn {
-    @include flex($align: center, $justify: center);
-    position: fixed;
-    top: 0.7rem;
-    left: 0.7rem;
-    z-index: 40;
-    width: 2.75rem;
-    height: 2.75rem;
-    padding: 0;
-    border: 0;
+    @include tw("fixed top-[0.7rem] left-[0.7rem] z-40 flex size-[2.75rem] cursor-pointer items-center justify-center border-0 p-0");
     border-radius: 999px;
     background: var(--rail-btn);
     box-shadow: 0 0 0 1px rgb(0 0 0 / 0.06);
-    cursor: pointer;
 
     &:focus-visible {
       outline: 2px solid var(--rail-active);
@@ -180,35 +137,23 @@
   }
 
   .scrim {
-    display: block;
-    position: fixed;
-    inset: 0;
-    z-index: 30;
-    border: 0;
+    @include tw("pointer-events-none fixed inset-0 z-30 block border-0 opacity-0");
     background: rgb(0 0 0 / 0.45);
-    opacity: 0;
-    pointer-events: none;
     transition: opacity 0.22s ease;
 
     &[data-open="true"] {
-      opacity: 1;
-      pointer-events: auto;
+      @include tw("pointer-events-auto opacity-100");
     }
   }
 
   .rail {
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 35;
-    padding-top: 4.15rem;
+    @include tw("pointer-events-none fixed top-0 left-0 z-[35] pt-[4.15rem]");
     transform: translateX(-110%);
     transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
-    pointer-events: none;
 
     &[data-open="true"] {
+      @include tw("pointer-events-auto");
       transform: translateX(0);
-      pointer-events: auto;
     }
   }
 }

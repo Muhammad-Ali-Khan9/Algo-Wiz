@@ -1,15 +1,11 @@
 @use "../../app/styles/mixins" as *;
 
+@reference "tailwindcss";
+
 .frame {
-  display: flex;
-  align-items: stretch;
-  width: 100%;
-  min-height: 100%;
+  @include tw("flex min-h-full w-full items-stretch");
 }
 
 .content {
-  min-width: 0;
-  flex: 1 1 auto;
-  height: 100dvh;
-  overflow: hidden;
+  @include tw("h-dvh min-w-0 flex-1 overflow-hidden");
 }

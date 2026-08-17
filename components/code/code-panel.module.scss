@@ -3,60 +3,76 @@
 @reference "tailwindcss";
 
 .title {
-  margin: 0 0 0.45rem;
-  @apply font-mono uppercase;
+  @include tw("mb-[0.45rem] font-mono text-[0.72rem] uppercase tracking-[0.16em]");
+  margin-top: 0;
   color: var(--accent-hover);
-  font-size: 0.72rem;
-  letter-spacing: 0.16em;
   transition: color 0.55s ease;
 }
 
+.window {
+  @include theme-color-shift;
+  @include tw("max-w-[52rem]");
+}
+
 .tabs {
-  @include flex($gap: 0.35rem, $wrap: wrap);
-  margin: 0 0 0.65rem;
+  @include tw("relative z-[1] flex flex-wrap items-end gap-[0.28rem] pl-[0.1rem]");
+  margin: 0;
 }
 
 .tab {
   @include focus-ring;
   @include theme-color-shift(0.18s);
-  appearance: none;
-  cursor: pointer;
+  @include tw("relative cursor-pointer appearance-none px-[0.85rem] py-[0.4rem] font-mono text-[0.72rem]");
   font: inherit;
-  padding: 0.28rem 0.7rem;
-  border: 1px solid var(--border);
-  border-radius: 999px;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  border: 1px solid #94a3b8;
+  border-bottom: none;
+  border-radius: 0.55rem 0.55rem 0 0;
   background: transparent;
   color: var(--muted);
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: 0.72rem;
 
-  &:hover {
+  &:hover:not([data-active="true"]) {
     color: var(--foreground);
-    border-color: color-mix(in srgb, var(--accent) 40%, var(--border));
+    background: color-mix(in srgb, var(--surface) 80%, transparent);
   }
 
+  // Selected tab rides over the window top border, then the border rejoins beside it.
   &[data-active="true"] {
-    border-color: var(--accent);
-    background: var(--accent);
-    color: #fff;
+    z-index: 2;
+    color: var(--accent-hover);
+    border-top-color: var(--accent);
+    border-right-color: var(--accent);
+    border-left-color: var(--accent);
+    border-bottom: 0;
+    background: var(--surface-strong);
+    margin-bottom: -1px;
+    box-shadow: inset 0 2px 0 0 var(--accent);
+
+    // Cover the window's top accent under this tab so no theme line sits on the button bottom.
+    &::after {
+      content: "";
+      position: absolute;
+      left: -1px;
+      right: -1px;
+      bottom: -3px;
+      height: 4px;
+      background: var(--surface-strong);
+      pointer-events: none;
+    }
   }
 }
 
+:global(html[data-theme="dark"]) .tab:not([data-active="true"]) {
+  border-color: #64748b;
+}
+
 .pre {
-  @include theme-color-shift;
-  margin: 0;
-  max-width: 52rem;
-  max-height: 28rem;
-  overflow: auto;
-  padding: 0.9rem 1rem;
-  border: 1px solid var(--border);
-  border-radius: 0.75rem;
+  @include tw("relative z-0 m-0 max-h-[28rem] overflow-auto whitespace-pre px-4 py-[0.9rem] font-mono text-[0.78rem] leading-[1.55]");
+  border: 1px solid var(--accent);
+  border-radius: 0 0.75rem 0.75rem 0.75rem;
   background: var(--surface-strong);
   color: var(--foreground);
   font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: 0.78rem;
-  line-height: 1.55;
-  white-space: pre;
   scrollbar-width: thin;
   scrollbar-color: var(--scrollbar) transparent;
 }

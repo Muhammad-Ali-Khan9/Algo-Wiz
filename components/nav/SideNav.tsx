@@ -1,9 +1,11 @@
 "use client";
 
 import closeIcon from "@/public/icons/close.svg";
+import graphIcon from "@/public/icons/graph.svg";
 import homeIcon from "@/public/icons/home.svg";
 import menuIcon from "@/public/icons/menu.svg";
 import moonIcon from "@/public/icons/moon.svg";
+import pathfindingIcon from "@/public/icons/pathfinding.svg";
 import searchIcon from "@/public/icons/search.svg";
 import sortIcon from "@/public/icons/sort.svg";
 import sunIcon from "@/public/icons/sun.svg";
@@ -18,6 +20,8 @@ const SECTIONS = [
   { href: "/", label: "Home", icon: homeIcon },
   { href: "/sorting", label: "Sorting", icon: sortIcon },
   { href: "/searching", label: "Searching", icon: searchIcon },
+  { href: "/graphs", label: "Graphs", icon: graphIcon },
+  { href: "/pathfinding", label: "Pathfinding", icon: pathfindingIcon },
 ] as const;
 
 export function SideNav() {

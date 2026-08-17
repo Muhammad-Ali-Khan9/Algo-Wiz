@@ -3,67 +3,57 @@
 @reference "tailwindcss";
 
 .shell {
-  position: relative;
-  box-sizing: border-box;
-  display: grid;
+  @include tw("relative box-border grid h-full min-h-full w-full overflow-hidden");
   grid-template-columns: $sidebar-w minmax(0, 1fr);
-  width: 100%;
-  height: 100%;
-  min-height: 100%;
-  overflow: hidden;
 }
 
 .sidebar {
   @include capsule-scroll-left;
   @include theme-color-shift;
-  box-sizing: border-box;
-  height: 100%;
-  min-height: 0;
-  padding: 1rem 0.85rem 1rem 0.45rem;
+  @include tw("box-border h-full min-h-0 py-4 pr-[0.85rem] pl-[0.45rem]");
   border-right: 1px solid var(--border);
   background: var(--panel-sidebar);
 }
 
 .sidebarInner {
-  @include flex($dir: column, $gap: 0.5rem);
-  min-height: 100%;
+  @include tw("flex min-h-full flex-col gap-2");
 }
 
 .sidebarHead {
-  @include flex($align: center, $justify: space-between, $gap: 0.5rem);
+  @include tw("flex items-center justify-between gap-2");
 }
 
 .sidebarHead .sideTitle {
-  margin: 0;
-  padding-bottom: 0;
+  @include tw("m-0 pb-0");
 }
 
 .sidebarClose {
-  display: none;
+  @include tw("hidden");
 }
 
 .sideTitle {
-  @apply px-1 pb-1 font-mono uppercase;
+  @include tw("px-1 pb-1 font-mono text-[0.68rem] uppercase tracking-[0.16em]");
   color: var(--muted);
-  font-size: 0.68rem;
-  letter-spacing: 0.16em;
+}
+
+.algoGroup {
+  @include tw("flex flex-col gap-1");
+}
+
+.algoGroupLabel {
+  @include tw("m-0 px-1 pt-2 pb-1 font-mono text-[0.62rem] uppercase tracking-[0.14em]");
+  color: var(--muted);
 }
 
 .algoBtn {
   @include focus-ring;
   @include theme-color-shift(0.18s);
-  appearance: none;
-  cursor: pointer;
+  @include tw("w-full cursor-pointer appearance-none border-0 bg-transparent py-[0.55rem] pr-[0.2rem] pl-[0.65rem] text-left");
   font: inherit;
-  width: 100%;
-  padding: 0.55rem 0.2rem 0.55rem 0.65rem;
-  border: 0;
   border-left: 2px solid transparent;
-  background: transparent;
   color: var(--foreground);
-  text-align: left;
 
-  &:hover {
+  &:hover:not(:disabled) {
     border-left-color: color-mix(in srgb, var(--accent) 45%, transparent);
   }
 
@@ -71,76 +61,70 @@
     border-left-color: var(--accent);
     color: var(--accent-hover);
   }
+
+  &[data-soon="true"],
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+  }
 }
 
 .algoName {
-  @apply block text-sm font-medium;
+  @include tw("flex items-center gap-2 text-sm font-medium");
+}
+
+.algoSoon {
+  @include tw("font-mono text-[0.58rem] uppercase tracking-[0.12em]");
+  color: var(--muted);
 }
 
 .algoComplex {
-  @apply mt-0.5 block font-mono;
+  @include tw("mt-0.5 block font-mono text-[0.68rem]");
   color: var(--muted);
-  font-size: 0.68rem;
 }
 
 .main {
-  min-width: 0;
-  min-height: 0;
-  height: 100%;
-  overflow-x: hidden;
-  overflow-y: auto;
+  @include tw("h-full min-h-0 min-w-0 overflow-x-hidden overflow-y-auto");
   scrollbar-width: thin;
   scrollbar-color: var(--scrollbar) transparent;
 }
 
 .page {
-  box-sizing: border-box;
-  width: 100%;
-  padding: 1.5rem 1.75rem 3.25rem 1.25rem;
+  @include tw("box-border w-full pt-6 pr-7 pb-[3.25rem] pl-5");
 }
 
 .header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 0.75rem;
-  margin: 0 0 1.4rem;
+  @include tw("mb-[1.4rem] flex items-start justify-between gap-3");
 }
 
 .headerCopy {
-  min-width: 0;
+  @include tw("min-w-0");
 }
 
 .sidebarToggle {
-  display: none;
+  @include tw("hidden");
 }
 
 .kicker {
-  margin: 0 0 0.35rem;
-  @apply font-mono uppercase;
+  @include tw("mb-[0.35rem] font-mono text-[0.7rem] uppercase tracking-[0.18em]");
+  margin-top: 0;
   color: var(--muted);
-  font-size: 0.7rem;
-  letter-spacing: 0.18em;
   transition: color 0.55s ease;
 }
 
 .title {
-  margin: 0;
+  @include tw("m-0 font-bold tracking-[-0.04em] leading-[1.1]");
   font-size: clamp(1.85rem, 3.4vw, 2.6rem);
-  font-weight: 700;
-  letter-spacing: -0.04em;
-  line-height: 1.1;
   color: var(--foreground);
   transition: color 0.55s ease;
 }
 
 .controls {
-  @include flex($align: center, $justify: space-between, $gap: 0.75rem, $wrap: wrap);
-  margin: 0 0 1.25rem;
+  @include tw("mb-5 flex flex-wrap items-center justify-between gap-3");
 }
 
 .btnRow {
-  @include flex($gap: 0.35rem, $wrap: wrap);
+  @include tw("flex flex-wrap gap-[0.35rem]");
 }
 
 .play {
@@ -158,20 +142,16 @@
 }
 
 .sliders {
-  @include flex($gap: 1rem, $wrap: wrap, $align: center);
+  @include tw("flex flex-wrap items-center gap-4");
 }
 
 .slider {
-  @include flex($dir: column, $gap: 0.35rem);
-  min-width: 10rem;
+  @include tw("flex min-w-40 flex-col gap-[0.35rem]");
 }
 
 .sliderLabel {
-  @include flex($justify: space-between);
-  @apply font-mono uppercase;
+  @include tw("flex justify-between font-mono text-[0.7rem] uppercase tracking-[0.12em]");
   color: var(--muted);
-  font-size: 0.7rem;
-  letter-spacing: 0.12em;
 }
 
 .range {
@@ -179,58 +159,30 @@
 }
 
 .stageWrap {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  margin: 0 0 2.4rem;
+  @include tw("mb-[2.4rem] flex flex-col gap-3");
 }
 
 .stage {
   @include theme-color-shift;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
+  @include tw("flex h-[42vh] min-h-72 items-end justify-center overflow-hidden pt-[1.85rem] pb-2");
   gap: $bar-gap;
-  min-height: 18rem;
-  height: 42vh;
-  overflow: hidden;
-  padding: 1.85rem 0 0.5rem;
 }
 
 .barCol {
-  display: flex;
-  position: relative;
-  flex: 1 1 0;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-end;
-  height: 100%;
-  min-width: 6px;
-  max-width: 2.75rem;
+  @include tw("relative flex h-full min-w-[6px] max-w-11 flex-1 flex-col items-center justify-end");
 }
 
 .barValue {
-  position: absolute;
-  left: 50%;
-  top: 0;
+  @include tw("pointer-events-none absolute top-0 left-1/2 whitespace-nowrap text-[0.72rem] font-bold leading-none");
   transform: translate(-50%, calc(-100% - 0.2rem));
   font-family: var(--font-poppins), sans-serif;
-  font-size: 0.72rem;
-  font-weight: 700;
-  line-height: 1;
   color: var(--foreground);
-  pointer-events: none;
-  white-space: nowrap;
 }
 
 .bar {
-  display: block;
-  position: relative;
-  flex: 0 0 auto;
-  width: 100%;
+  @include tw("relative block w-full flex-none border-0");
   height: var(--bar-size, 6%);
   min-height: $bar-min-h;
-  border: 0;
   border-radius: 6px 6px 2px 2px;
   background-color: #22c55e;
   box-shadow: 0 0 12px rgb(34 197 94 / 0.35);
@@ -252,122 +204,89 @@
 }
 
 .hint {
-  @apply text-sm;
+  @include tw("flex-none text-sm");
   color: var(--muted);
-  flex: 0 0 auto;
 }
 
 .progress {
-  @apply h-1 overflow-hidden;
+  @include tw("h-1 flex-none overflow-hidden");
   background: var(--border);
-  flex: 0 0 auto;
   border-radius: 999px;
 }
 
 .progressFill {
-  @apply h-full;
+  @include tw("h-full");
   background: var(--accent);
   border-radius: 999px;
   transition: width 80ms linear;
 }
 
 .legend {
-  @include flex($gap: 0.65rem, $wrap: wrap);
+  @include tw("flex flex-wrap gap-[0.65rem]");
 }
 
 .legendItem {
-  @include flex($align: center, $gap: 0.4rem);
-  @apply font-mono;
+  @include tw("flex items-center gap-[0.4rem] font-mono text-[0.7rem]");
   color: var(--muted);
-  font-size: 0.7rem;
 }
 
 .swatch {
-  display: inline-block;
-  width: 0.625rem;
-  height: 0.625rem;
+  @include tw("inline-block size-[0.625rem]");
   border-radius: 999px;
 }
 
 .metaRow {
-  @include flex($align: center, $justify: space-between, $gap: 0.75rem, $wrap: wrap);
+  @include tw("flex flex-wrap items-center justify-between gap-3");
 }
 
 .live {
-  margin: 0;
-  @apply font-mono;
+  @include tw("m-0 font-mono text-[0.72rem]");
   color: var(--muted);
-  font-size: 0.72rem;
 }
 
 .detail {
-  @include flex($dir: column, $gap: 1.5rem);
-  padding-top: 0.35rem;
+  @include tw("flex flex-col gap-6 pt-[0.35rem]");
 }
 
 .detailTitle {
-  margin: 0 0 0.45rem;
-  @apply font-mono uppercase;
+  @include tw("mb-[0.45rem] font-mono text-[0.72rem] uppercase tracking-[0.16em]");
+  margin-top: 0;
   color: var(--accent-hover);
-  font-size: 0.72rem;
-  letter-spacing: 0.16em;
   transition: color 0.55s ease;
 }
 
 .detailBody {
-  margin: 0;
-  max-width: 42rem;
+  @include tw("m-0 max-w-2xl text-[0.98rem] leading-[1.7]");
   color: var(--muted);
-  font-size: 0.98rem;
-  line-height: 1.7;
   transition: color 0.55s ease;
 }
 
 .complexity {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 0.85rem 1rem;
-  margin: 0;
-
-  @media (max-width: 700px) {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+  @include tw("m-0 grid grid-cols-2 gap-x-4 gap-y-[0.85rem] md:grid-cols-5");
 
   dt {
-    @apply font-mono uppercase;
+    @include tw("font-mono text-[0.65rem] uppercase tracking-[0.12em]");
     color: var(--muted);
-    font-size: 0.65rem;
-    letter-spacing: 0.12em;
   }
 
   dd {
-    margin: 0.2rem 0 0;
+    @include tw("mt-[0.2rem] mb-0 font-mono text-[0.95rem]");
     color: var(--foreground);
     font-family: var(--font-mono), ui-monospace, monospace;
-    font-size: 0.95rem;
   }
 }
 
 .aux {
-  @include flex($gap: 0.55rem, $align: flex-end);
-  @apply overflow-x-auto pb-1;
+  @include tw("flex items-end gap-[0.55rem] overflow-x-auto pb-1");
 }
 
 .bucket {
-  @include flex($dir: column, $justify: flex-end, $align: center, $gap: 0.35rem);
-  flex: 0 0 auto;
+  @include tw("flex flex-none flex-col items-center justify-end gap-[0.35rem]");
 }
 
 .bucketVessel {
   @include theme-color-shift;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  box-sizing: border-box;
-  width: 2.7rem;
-  min-height: 7rem;
-  padding: 0.28rem 0.22rem 0.32rem;
-  overflow: hidden;
+  @include tw("box-border flex min-h-28 w-[2.7rem] flex-col justify-end overflow-hidden px-[0.22rem] pt-[0.28rem] pb-[0.32rem]");
   border: 2px solid var(--accent);
   border-top: 0;
   border-radius: 0 0 0.65rem 0.65rem;
@@ -376,41 +295,28 @@
 }
 
 .bucketStack {
-  @include flex($dir: column-reverse, $gap: 0.18rem, $align: stretch);
+  @include tw("flex flex-col-reverse items-stretch gap-[0.18rem]");
 }
 
 .chip {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 1.15rem;
-  padding: 0.08rem 0.1rem;
+  @include tw("flex min-h-[1.15rem] items-center justify-center px-[0.1rem] py-[0.08rem] text-[0.62rem] font-bold leading-none text-white");
   border-radius: 0.28rem;
   background: var(--accent);
-  color: #fff;
   font-family: var(--font-poppins), sans-serif;
-  font-size: 0.62rem;
-  font-weight: 700;
-  line-height: 1;
   transform-origin: center bottom;
   animation: chip-drop 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .bucketLabel {
-  @apply font-mono;
+  @include tw("font-mono text-[0.65rem]");
   color: var(--muted);
-  font-size: 0.65rem;
 }
 
 .preloader {
-  position: absolute;
-  inset: 0;
-  z-index: 8;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  @include tw("absolute inset-0 z-40 flex items-center justify-center");
   background: var(--preloader);
   backdrop-filter: blur(8px);
+  pointer-events: auto;
   animation: preloader-in 0.45s ease forwards;
 }
 
@@ -419,11 +325,7 @@
 }
 
 .loader {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 3.15rem;
-  height: 3.15rem;
+  @include tw("flex size-[3.15rem] items-center justify-center");
   animation: loader-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
@@ -440,7 +342,7 @@
 }
 
 .sidebarScrim {
-  display: none;
+  @include tw("hidden");
 }
 
 @media (max-width: 800px) {
@@ -449,26 +351,18 @@
   }
 
   .page {
-    padding: 0.9rem 1rem 2.5rem;
+    @include tw("px-4 pt-[0.9rem] pb-10");
   }
 
   .header {
-    padding-left: 3.55rem;
-    min-height: 2.75rem;
-    margin-bottom: 1rem;
+    @include tw("mb-4 min-h-11 pl-[3.55rem]");
   }
 
   .sidebarToggle {
-    @include flex($align: center, $justify: center, $gap: 0.4rem);
-    flex: 0 0 auto;
-    height: 2.75rem;
-    margin-top: 0.05rem;
-    padding: 0 0.85rem 0 1rem;
-    border: 0;
+    @include tw("mt-[0.05rem] flex h-11 flex-none cursor-pointer items-center justify-center gap-[0.4rem] border-0 py-0 pr-[0.85rem] pl-4");
     border-radius: 999px;
     background: var(--rail-btn);
     box-shadow: 0 0 0 1px rgb(0 0 0 / 0.06);
-    cursor: pointer;
     color: #18181b;
 
     &:focus-visible {
@@ -478,29 +372,20 @@
   }
 
   .sidebarToggleLabel {
+    @include tw("text-[0.82rem] font-semibold leading-none tracking-[-0.01em]");
     font-family: var(--font-poppins), sans-serif;
-    font-size: 0.82rem;
-    font-weight: 600;
-    line-height: 1;
-    letter-spacing: -0.01em;
   }
 
   .sidebarToggleIcon {
-    display: block;
+    @include tw("block");
     filter: var(--rail-icon);
   }
 
   .sidebarClose {
-    @include flex($align: center, $justify: center);
-    flex: 0 0 auto;
-    width: 2.15rem;
-    height: 2.15rem;
-    padding: 0;
-    border: 0;
+    @include tw("flex size-[2.15rem] flex-none cursor-pointer items-center justify-center border-0 p-0");
     border-radius: 999px;
     background: var(--rail-btn);
     box-shadow: 0 0 0 1px rgb(0 0 0 / 0.06);
-    cursor: pointer;
 
     &:focus-visible {
       outline: 2px solid var(--rail-active);
@@ -509,90 +394,56 @@
   }
 
   .sidebarCloseIcon {
-    display: block;
+    @include tw("block");
     filter: var(--rail-icon);
   }
 
   .sidebarScrim {
-    display: block;
-    position: absolute;
-    inset: 0;
-    z-index: 12;
-    border: 0;
+    @include tw("pointer-events-none absolute inset-0 z-20 block border-0 opacity-0");
     background: rgb(0 0 0 / 0.45);
-    opacity: 0;
-    pointer-events: none;
     transition: opacity 0.22s ease;
 
     &[data-open="true"] {
-      opacity: 1;
-      pointer-events: auto;
+      @include tw("pointer-events-auto opacity-100");
     }
   }
 
   .sidebar {
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 14;
+    @include tw("pointer-events-none absolute top-0 left-0 z-[25] h-full py-4 pr-[0.85rem] pl-[0.55rem]");
     width: min(18rem, 86vw);
-    height: 100%;
-    padding: 1rem 0.85rem 1rem 0.55rem;
     box-shadow: 8px 0 24px rgb(0 0 0 / 0.18);
     transform: translateX(-105%);
     transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
-    pointer-events: none;
 
     &[data-open="true"] {
+      @include tw("pointer-events-auto");
       transform: translateX(0);
-      pointer-events: auto;
     }
   }
 
   .stage {
-    flex-direction: column;
-    align-items: stretch;
-    justify-content: flex-start;
-    gap: 0.22rem;
-    height: auto;
-    min-height: 0;
-    max-height: 70vh;
-    overflow-x: hidden;
-    overflow-y: auto;
-    padding: 0.2rem 1.9rem 0.2rem 0;
+    @include tw("h-auto max-h-[70vh] min-h-0 flex-col items-stretch justify-start gap-[0.22rem] overflow-x-hidden overflow-y-auto py-[0.2rem] pr-[1.9rem] pl-0");
   }
 
   .barCol {
-    flex: 0 0 auto;
-    flex-direction: row;
-    align-items: center;
-    justify-content: flex-start;
-    width: 100%;
-    height: 0.72rem;
-    min-width: 0;
-    max-width: none;
+    @include tw("h-[0.72rem] w-full min-w-0 max-w-none flex-none flex-row items-center justify-start");
   }
 
   .bar {
     width: var(--bar-size, 6%);
-    height: 100%;
-    min-height: 0;
+    @include tw("h-full min-h-0");
     min-width: $bar-min-h;
     border-radius: 2px 6px 6px 2px;
   }
 
   .barValue {
-    left: 100%;
-    top: 50%;
+    @include tw("top-1/2 left-full text-[0.58rem]");
     transform: translate(0.3rem, -50%);
-    font-size: 0.58rem;
   }
 }
 
 .loaderRing {
-  display: block;
-  width: 100%;
-  height: 100%;
+  @include tw("block size-full");
   border-radius: 50%;
   background: conic-gradient(
     from 0deg,

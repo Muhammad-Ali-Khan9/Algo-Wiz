@@ -1,14 +1,21 @@
 "use client";
 
 import { CodePanel } from "@/components/code/CodePanel";
+import {
+  AlgoSidebar,
+  AlgoSidebarToggle,
+} from "@/components/wiz/AlgoSidebar";
+import { WizPreloader } from "@/components/wiz/WizPreloader";
+import {
+  BOOT_HOLD_MS,
+  PRELOAD_FADE_MS,
+  delayForSpeed,
+} from "@/components/wiz/playback";
 import { ALGORITHM_META, RUNNERS, bucketSort, getAlgorithm } from "@/lib/sorting";
 import { arrayMax, patternedArray, randomArray } from "@/lib/sorting/random";
 import type { AlgorithmId, BarRole } from "@/lib/sorting/types";
-import closeIcon from "@/public/icons/close.svg";
-import listIcon from "@/public/icons/list.svg";
-import Image from "next/image";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import styles from "./sorting-wiz.module.scss";
+import styles from "@/components/wiz/wiz.module.scss";
 
 const MIN_SIZE = 8;
 const MAX_SIZE = 48;
@@ -36,13 +43,6 @@ const ROLE_LABELS: { role: BarRole; label: string }[] = [
   { role: "swap", label: "Swapping" },
   { role: "sorted", label: "Sorted" },
 ];
-
-const PRELOAD_FADE_MS = 450;
-const BOOT_HOLD_MS = 900;
-
-function delayForSpeed(speed: number) {
-  return Math.round(480 * Math.pow(0.955, speed));
-}
 
 export function SortingWiz() {
   const [algorithmId, setAlgorithmId] = useState<AlgorithmId>("bubble");
@@ -172,69 +172,16 @@ export function SortingWiz() {
 
   return (
     <div className={styles.shell}>
-      {preloaderShown ? (
-        <div
-          className={styles.preloader}
-          data-exiting={preloaderExiting ? "true" : "false"}
-          aria-busy={!preloaderExiting}
-          aria-live="polite"
-          aria-label="Loading"
-        >
-          <div className={styles.loader}>
-            <span className={styles.loaderRing} aria-hidden="true" />
-          </div>
-        </div>
-      ) : null}
+      <WizPreloader shown={preloaderShown} exiting={preloaderExiting} />
 
-      <button
-        type="button"
-        className={styles.sidebarScrim}
-        data-open={sidebarOpen}
-        tabIndex={-1}
-        aria-hidden="true"
-        onClick={() => setSidebarOpen(false)}
+      <AlgoSidebar
+        title="Sorting algorithms"
+        items={ALGORITHM_META}
+        activeId={algorithmId}
+        open={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+        onSelect={(id) => selectAlgorithm(id as AlgorithmId)}
       />
-
-      <aside
-        className={styles.sidebar}
-        data-open={sidebarOpen}
-        aria-label="Sorting algorithms"
-      >
-        <div className={styles.sidebarInner}>
-          <div className={styles.sidebarHead}>
-            <p className={styles.sideTitle}>Algorithms</p>
-            <button
-              type="button"
-              className={styles.sidebarClose}
-              aria-label="Close algorithms"
-              onClick={() => setSidebarOpen(false)}
-            >
-              <Image
-                src={closeIcon}
-                alt=""
-                width={16}
-                height={16}
-                className={styles.sidebarCloseIcon}
-                unoptimized
-              />
-            </button>
-          </div>
-          {ALGORITHM_META.map((item) => (
-            <button
-              key={item.id}
-              type="button"
-              className={styles.algoBtn}
-              data-active={item.id === algorithmId}
-              onClick={() => selectAlgorithm(item.id)}
-            >
-              <span className={styles.algoName}>{item.name}</span>
-              <span className={styles.algoComplex}>
-                Avg {item.average} · Worst {item.worst}
-              </span>
-            </button>
-          ))}
-        </div>
-      </aside>
 
       <div className={styles.main}>
         <div className={styles.page}>
@@ -243,23 +190,10 @@ export function SortingWiz() {
               <p className={styles.kicker}>Sorting</p>
               <h1 className={styles.title}>{algorithm.name}</h1>
             </div>
-            <button
-              type="button"
-              className={styles.sidebarToggle}
-              aria-expanded={sidebarOpen}
-              aria-label={sidebarOpen ? "Close algorithms" : "Open algorithms"}
-              onClick={() => setSidebarOpen((value) => !value)}
-            >
-              <span className={styles.sidebarToggleLabel}>Algorithm</span>
-              <Image
-                src={sidebarOpen ? closeIcon : listIcon}
-                alt=""
-                width={18}
-                height={18}
-                className={styles.sidebarToggleIcon}
-                unoptimized
-              />
-            </button>
+            <AlgoSidebarToggle
+              open={sidebarOpen}
+              onToggle={() => setSidebarOpen((value) => !value)}
+            />
           </header>
 
           <div className={styles.controls}>

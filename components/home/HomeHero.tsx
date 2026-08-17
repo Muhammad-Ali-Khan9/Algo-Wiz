@@ -1,8 +1,90 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
-import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
+import { useCallback, useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import styles from "./home-hero.module.scss";
+
+function IconLinkedIn() {
+  return (
+    <svg viewBox="0 0 24 24" width="30" height="30" fill="none" aria-hidden="true">
+      <rect x="3.2" y="3.2" width="17.6" height="17.6" rx="2.4" stroke="currentColor" strokeWidth="1.8" />
+      <path
+        d="M8.1 10.2V17.5M8.1 7.35v.05M16.2 17.5v-4.05c0-2.15-1.15-3.15-2.7-3.15-1.25 0-1.85.7-2.2 1.4V10.2H8.1"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function IconGitHub() {
+  return (
+    <svg viewBox="0 0 24 24" width="30" height="30" fill="none" aria-hidden="true">
+      <path
+        d="M9.5 19.5c-5 1.5-5.5-2.2-7.5-2.5M15.5 21v-3.4a3 3 0 0 0-.85-2.35c2.85-.32 5.85-1.4 5.85-6.35a4.9 4.9 0 0 0-1.35-3.45 4.6 4.6 0 0 0-.1-3.4s-1.1-.35-3.55 1.35a12.2 12.2 0 0 0-6.4 0C6.55 1.7 5.45 2.05 5.45 2.05a4.6 4.6 0 0 0-.1 3.4A4.9 4.9 0 0 0 4 9.25c0 4.9 3 6.03 5.85 6.35A3 3 0 0 0 9 17.95V21"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function IconInstagram() {
+  return (
+    <svg viewBox="0 0 24 24" width="30" height="30" fill="none" aria-hidden="true">
+      <rect x="3.5" y="3.5" width="17" height="17" rx="5" stroke="currentColor" strokeWidth="1.8" />
+      <circle cx="12" cy="12" r="4.1" stroke="currentColor" strokeWidth="1.8" />
+      <circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" />
+    </svg>
+  );
+}
+
+function IconGmail() {
+  return (
+    <svg viewBox="0 0 24 24" width="30" height="30" fill="none" aria-hidden="true">
+      <rect x="3.2" y="5.2" width="17.6" height="13.6" rx="2.2" stroke="currentColor" strokeWidth="1.8" />
+      <path
+        d="m4.4 7.4 7.6 6.1 7.6-6.1"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+const SOCIALS: readonly {
+  href: string;
+  label: string;
+  icon: ReactNode;
+}[] = [
+  {
+    href: "https://www.linkedin.com/in/muhammad-ali-khan-a238b9254/",
+    label: "LinkedIn",
+    icon: <IconLinkedIn />,
+  },
+  {
+    href: "https://github.com/Muhammad-Ali-Khan9",
+    label: "GitHub",
+    icon: <IconGitHub />,
+  },
+  {
+    href: "https://www.instagram.com/mobiuszero_ak",
+    label: "Instagram",
+    icon: <IconInstagram />,
+  },
+  {
+    href: "mailto:muhammadalikhan0003@gmail.com",
+    label: "Gmail",
+    icon: <IconGmail />,
+  },
+];
 
 const SECTIONS = [
   {
@@ -27,18 +109,18 @@ const SECTIONS = [
     id: "graphs",
     kicker: "03 — Networks",
     title: "Graphs",
-    body: "Walk vertices and edges with BFS, DFS, and weighted searches. Follow the frontier as it spreads across a connected world.",
-    href: null,
-    cta: "Coming soon",
+    body: "Traversal, connectivity, MSTs, ordering, and analysis — BFS, DFS, Prim, Kruskal, and more on generated graph structures.",
+    href: "/graphs",
+    cta: "Open Graphs",
     bg: "graphs",
   },
   {
     id: "pathfinding",
     kicker: "04 — Routes",
     title: "Pathfinding",
-    body: "Grid mazes, Dijkstra, and A*. Watch a path grow around walls from start to goal, one explored cell at a time.",
-    href: null,
-    cta: "Coming soon",
+    body: "What is the best route from A to B? Watch BFS, Dijkstra, A*, and more grow a path from start to goal.",
+    href: "/pathfinding",
+    cta: "Open Pathfinding",
     bg: "pathfinding",
   },
   {
@@ -175,57 +257,103 @@ export function HomeHero() {
             <div className={styles.bgVignette} />
           </div>
           <div className={styles.content}>
-            <div className={styles.contentInner}>
-            <p className={styles.kicker}>Algorithm Visualizer</p>
-            <h1 id="home-title" className={styles.title}>
-              Algorithms Wizard
-            </h1>
-            <p className={styles.subtitle}>
-              A visual lab for classic computer science. Instead of reading
-              pseudocode, you watch the data move — one comparison, swap, probe,
-              or hop at a time.
-            </p>
-            <p className={styles.lead}>
-              Play a run at speed, pause when something interesting happens, or
-              step backward and forward through the exact operations. Counts,
-              complexity bounds, and color-coded roles stay on screen so the
-              algorithm&apos;s decisions are readable, not just animated.
-            </p>
-            <ul className={styles.points}>
-              <li className={styles.point}>
-                <p className={styles.pointTitle}>Step through</p>
-                <p className={styles.pointBody}>
-                  Play, pause, shuffle, and walk a single write or swap. Space,
-                  arrows, and R work as shortcuts once a visualizer is open.
+            <div className={styles.introLayout}>
+              <aside className={styles.portrait}>
+                <p className={styles.madeBy}>Made By:</p>
+                <Image
+                  src="/personal-portrait.svg"
+                  alt="Muhammad Ali Khan"
+                  width={173}
+                  height={405}
+                  className={styles.portraitArt}
+                  loading="eager"
+                  unoptimized
+                />
+                <p className={styles.portraitName}>Muhammad Ali Khan</p>
+                <p className={styles.portraitBio}>
+                  A CS grad from GIKI, working as an associate software engineer
+                  in the industry.
                 </p>
-              </li>
-              <li className={styles.point}>
-                <p className={styles.pointTitle}>State in color</p>
-                <p className={styles.pointBody}>
-                  Idle, comparing, selected, swapping, and sorted each keep a
-                  role color, so you can see why a value moved.
+              </aside>
+
+              <div className={styles.contentInner}>
+                <p className={styles.kicker}>Algorithm Visualizer</p>
+                <h1 id="home-title" className={styles.title}>
+                  Algorithms Wizard
+                </h1>
+                <p className={styles.subtitle}>
+                  A visual lab for classic computer science. Instead of reading
+                  pseudocode, you watch the data move — one comparison, swap, probe,
+                  or hop at a time.
                 </p>
-              </li>
-              <li className={styles.point}>
-                <p className={styles.pointTitle}>Complexity in view</p>
-                <p className={styles.pointBody}>
-                  Best, worst, and average bounds sit beside live comparison and
-                  write counts as the trace plays.
+                <p className={styles.lead}>
+                  Play a run at speed, pause when something interesting happens, or
+                  step backward and forward through the exact operations. Counts,
+                  complexity bounds, and color-coded roles stay on screen so the
+                  algorithm&apos;s decisions are readable, not just animated.
                 </p>
-              </li>
-            </ul>
-            <p className={styles.mapLabel}>Inside this workspace</p>
-            <ul className={styles.map}>
-              <li>Sorting</li>
-              <li>Searching</li>
-              <li>Graphs</li>
-              <li>Pathfinding</li>
-              <li>Trees</li>
-              <li>Dynamic Programming</li>
-              <li>Backtracking</li>
-              <li>String Algorithms</li>
-            </ul>
-            <p className={styles.scrollHint}>Scroll for sections</p>
+                <ul className={styles.points}>
+                  <li className={styles.point}>
+                    <p className={styles.pointTitle}>Step through</p>
+                    <p className={styles.pointBody}>
+                      Play, pause, shuffle, and walk a single write or swap. Space,
+                      arrows, and R work as shortcuts once a visualizer is open.
+                    </p>
+                  </li>
+                  <li className={styles.point}>
+                    <p className={styles.pointTitle}>State in color</p>
+                    <p className={styles.pointBody}>
+                      Idle, comparing, selected, swapping, and sorted each keep a
+                      role color, so you can see why a value moved.
+                    </p>
+                  </li>
+                  <li className={styles.point}>
+                    <p className={styles.pointTitle}>Complexity in view</p>
+                    <p className={styles.pointBody}>
+                      Best, worst, and average bounds sit beside live comparison and
+                      write counts as the trace plays.
+                    </p>
+                  </li>
+                </ul>
+                <p className={styles.mapLabel}>Inside this workspace</p>
+                <ul className={styles.map}>
+                  <li>Sorting</li>
+                  <li>Searching</li>
+                  <li>Graphs</li>
+                  <li>Pathfinding</li>
+                  <li>Trees</li>
+                  <li>Dynamic Programming</li>
+                  <li>Backtracking</li>
+                  <li>String Algorithms</li>
+                </ul>
+                <p className={`${styles.scrollHint} ${styles.scrollHintDesktop}`}>
+                  Scroll for sections
+                </p>
+              </div>
+
+              <nav className={styles.socials} aria-label="Social links">
+                {SOCIALS.map((social) => (
+                  <a
+                    key={social.label}
+                    href={social.href}
+                    className={styles.socialBtn}
+                    target={social.href.startsWith("mailto:") ? undefined : "_blank"}
+                    rel={
+                      social.href.startsWith("mailto:")
+                        ? undefined
+                        : "noopener noreferrer"
+                    }
+                    aria-label={social.label}
+                    title={social.label}
+                  >
+                    {social.icon}
+                  </a>
+                ))}
+              </nav>
+
+              <p className={`${styles.scrollHint} ${styles.scrollHintMobile}`}>
+                Scroll for sections
+              </p>
             </div>
           </div>
         </section>

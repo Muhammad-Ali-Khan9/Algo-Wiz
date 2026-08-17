@@ -11,48 +11,68 @@ import {
   PRELOAD_FADE_MS,
   delayForSpeed,
 } from "@/components/wiz/playback";
-import { SEARCH_META, SEARCH_RUNNERS, getSearch, needsSorted } from "@/lib/searching";
-import { pickTarget, searchArray } from "@/lib/searching/random";
-import type { ProbeRole, SearchId } from "@/lib/searching/types";
-import { arrayMax, patternedArray } from "@/lib/sorting/random";
+import {
+  GRAPH_KINDS,
+  GRAPH_META,
+  generateGraph,
+  getGraphAlgo,
+  runGraphAlgo,
+} from "@/lib/graphs";
+import type {
+  EdgeRole,
+  GraphAlgoId,
+  GraphData,
+  GraphKind,
+  NodeRole,
+} from "@/lib/graphs/types";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { GraphTypeSelect } from "./GraphTypeSelect";
+import graphStyles from "./graph-wiz.module.scss";
 import styles from "@/components/wiz/wiz.module.scss";
 
-const MIN_SIZE = 8;
-const MAX_SIZE = 48;
-const MIN_TARGET = 8;
-const MAX_TARGET = 96;
-const DEFAULT_SIZE = 28;
-const DEFAULT_SPEED = 62;
+const MIN_SIZE = 5;
+const MAX_SIZE = 9;
+const DEFAULT_SIZE = 6;
+const DEFAULT_SPEED = 58;
+const INITIAL_SEED = 42;
+const STEP_NORMAL = 26;
 
-const ROLE_COLORS: Record<ProbeRole, string> = {
-  unsearched: "#94A3B8",
-  current: "#FACC15",
-  compared: "#38BDF8",
-  found: "#22C55E",
-  eliminated: "#EF4444",
-  range: "#A78BFA",
+const NODE_COLORS: Record<NodeRole, string> = {
+  idle: "#64748b",
+  frontier: "#eab308",
+  current: "#3b82f6",
+  visited: "#94a3b8",
+  path: "#a855f7",
+  start: "#22c55e",
+  goal: "#ef4444",
 };
 
-const ROLE_LABELS: { role: ProbeRole; label: string }[] = [
-  { role: "unsearched", label: "Unsearched" },
+const EDGE_COLORS: Record<EdgeRole, string> = {
+  idle: "#475569",
+  consider: "#eab308",
+  tree: "#38bdf8",
+  path: "#a855f7",
+  rejected: "#ef4444",
+};
+
+const NODE_LEGEND: { role: NodeRole; label: string }[] = [
+  { role: "idle", label: "Idle" },
+  { role: "frontier", label: "Frontier" },
   { role: "current", label: "Current" },
-  { role: "compared", label: "Compared" },
-  { role: "found", label: "Found" },
-  { role: "eliminated", label: "Not found / Eliminated" },
-  { role: "range", label: "Search range" },
+  { role: "visited", label: "Visited" },
+  { role: "path", label: "Path / MST" },
+  { role: "start", label: "Start" },
+  { role: "goal", label: "Goal" },
 ];
 
-function initialArray() {
-  return patternedArray(DEFAULT_SIZE);
-}
-
-export function SearchingWiz() {
-  const [algorithmId, setAlgorithmId] = useState<SearchId>("linear");
+export function GraphWiz() {
+  const [algorithmId, setAlgorithmId] = useState<GraphAlgoId>("bfs");
+  const [graphKind, setGraphKind] = useState<GraphKind>("random");
   const [size, setSize] = useState(DEFAULT_SIZE);
   const [speed, setSpeed] = useState(DEFAULT_SPEED);
-  const [array, setArray] = useState(initialArray);
-  const [target, setTarget] = useState(() => initialArray()[Math.floor(DEFAULT_SIZE / 2)] ?? 40);
+  const [graph, setGraph] = useState<GraphData>(() =>
+    generateGraph("random", DEFAULT_SIZE, INITIAL_SEED, { minStep: STEP_NORMAL }),
+  );
   const [index, setIndex] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [booting, setBooting] = useState(true);
@@ -62,34 +82,38 @@ export function SearchingWiz() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const swapTimers = useRef<number[]>([]);
 
-  const algorithm = getSearch(algorithmId);
+  const algorithm = getGraphAlgo(algorithmId);
+
+  const makeGraph = useCallback(
+    (nextSize: number, seed: number, kind = graphKind) =>
+      generateGraph(kind, nextSize, seed, { minStep: STEP_NORMAL }),
+    [graphKind],
+  );
 
   const shuffle = useCallback(
-    (nextSize = size, id = algorithmId) => {
-      const next = searchArray(nextSize, needsSorted(id));
-      setArray(next);
-      setTarget(pickTarget(next));
+    (nextSize = size, kind = graphKind) => {
+      setGraph(makeGraph(nextSize, Date.now(), kind));
       setIndex(0);
       setPlaying(false);
     },
-    [algorithmId, size],
+    [size, graphKind, makeGraph],
   );
 
   const selectAlgorithm = useCallback(
-    (id: SearchId) => {
+    (id: string) => {
+      const next = id as GraphAlgoId;
+      const nextMeta = getGraphAlgo(next);
+      if (!nextMeta.available) return;
       setSidebarOpen(false);
-      if (id === algorithmId) return;
+      if (next === algorithmId) return;
       swapTimers.current.forEach((timer) => window.clearTimeout(timer));
       swapTimers.current = [];
       setBusy(true);
       setPlaying(false);
       swapTimers.current.push(
         window.setTimeout(() => {
-          setAlgorithmId(id);
+          setAlgorithmId(next);
           setIndex(0);
-          if (needsSorted(id)) {
-            setArray((current) => current.slice().sort((a, b) => a - b));
-          }
         }, 400),
         window.setTimeout(() => setBusy(false), 850),
       );
@@ -116,39 +140,30 @@ export function SearchingWiz() {
       setPreloaderExiting(false);
       return;
     }
-
     setPreloaderExiting(true);
     const timer = window.setTimeout(() => {
       setPreloaderShown(false);
       setPreloaderExiting(false);
     }, PRELOAD_FADE_MS);
-
     return () => window.clearTimeout(timer);
   }, [preloaderActive]);
 
-  const frames = useMemo(() => {
-    if (!array.length) return [];
-    return SEARCH_RUNNERS[algorithmId](array, target);
-  }, [algorithmId, array, target]);
+  const frames = useMemo(
+    () => runGraphAlgo(algorithmId, graph),
+    [algorithmId, graph],
+  );
 
   const safeIndex = frames.length ? Math.min(index, frames.length - 1) : 0;
   const frame = frames[safeIndex];
-  const maxValue = arrayMax(frame?.array ?? array);
   const atEnd = frames.length > 0 && safeIndex >= frames.length - 1;
 
   useEffect(() => {
-    if (!playing) return;
-    if (frames.length === 0) return;
-    if (index >= frames.length - 1) return;
-
+    if (!playing || frames.length === 0 || index >= frames.length - 1) return;
     const timer = window.setTimeout(() => {
       const next = index + 1;
       setIndex(next);
-      if (next >= frames.length - 1) {
-        setPlaying(false);
-      }
+      if (next >= frames.length - 1) setPlaying(false);
     }, delayForSpeed(speed));
-
     return () => window.clearTimeout(timer);
   }, [playing, index, speed, frames.length]);
 
@@ -160,9 +175,7 @@ export function SearchingWiz() {
         if (atEnd) {
           setIndex(0);
           setPlaying(true);
-        } else {
-          setPlaying((value) => !value);
-        }
+        } else setPlaying((value) => !value);
       } else if (event.code === "ArrowRight") {
         setPlaying(false);
         setIndex((current) => Math.min(current + 1, Math.max(frames.length - 1, 0)));
@@ -175,7 +188,6 @@ export function SearchingWiz() {
         setSidebarOpen(false);
       }
     };
-
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [atEnd, frames.length, shuffle]);
@@ -183,24 +195,27 @@ export function SearchingWiz() {
   const progress =
     frames.length > 1 ? Math.round((safeIndex / (frames.length - 1)) * 100) : 0;
 
+  const nodes = frame?.nodes ?? graph.nodes;
+  const edges = frame?.edges ?? graph.edges;
+
   return (
     <div className={styles.shell}>
       <WizPreloader shown={preloaderShown} exiting={preloaderExiting} />
 
       <AlgoSidebar
-        title="Searching algorithms"
-        items={SEARCH_META}
+        title="Graph algorithms"
+        items={GRAPH_META}
         activeId={algorithmId}
         open={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
-        onSelect={(id) => selectAlgorithm(id as SearchId)}
+        onSelect={selectAlgorithm}
       />
 
       <div className={styles.main}>
         <div className={styles.page}>
           <header className={styles.header}>
             <div className={styles.headerCopy}>
-              <p className={styles.kicker}>Searching</p>
+              <p className={styles.kicker}>Graphs</p>
               <h1 className={styles.title}>{algorithm.name}</h1>
             </div>
             <AlgoSidebarToggle
@@ -218,11 +233,8 @@ export function SearchingWiz() {
                   if (atEnd) {
                     setIndex(0);
                     setPlaying(true);
-                    return;
-                  }
-                  setPlaying((value) => !value);
+                  } else setPlaying((value) => !value);
                 }}
-                disabled={frames.length === 0}
               >
                 {playing ? "Pause" : atEnd ? "Replay" : "Play"}
               </button>
@@ -240,55 +252,45 @@ export function SearchingWiz() {
                 type="button"
                 className={styles.btn}
                 onClick={() => {
-                  if (atEnd) {
-                    setIndex(0);
-                    setPlaying(true);
-                    return;
-                  }
                   setPlaying(false);
                   setIndex((current) =>
                     Math.min(current + 1, Math.max(frames.length - 1, 0)),
                   );
                 }}
               >
-                Step ahead
-              </button>
-              <button type="button" className={styles.btn} onClick={() => shuffle()}>
-                Shuffle
+                Step
               </button>
               <button
                 type="button"
                 className={styles.btn}
-                onClick={() => {
-                  setIndex(0);
-                  setPlaying(false);
-                }}
+                onClick={() => shuffle()}
               >
-                Reset
+                Shuffle
               </button>
             </div>
 
             <div className={styles.sliders}>
               <label className={styles.slider}>
                 <span className={styles.sliderLabel}>
-                  Target <b>{target}</b>
+                  <span>Graph type</span>
+                  <span>
+                    {GRAPH_KINDS.find((item) => item.id === graphKind)?.label}
+                  </span>
                 </span>
-                <input
-                  className={styles.range}
-                  type="range"
-                  min={MIN_TARGET}
-                  max={MAX_TARGET}
-                  value={target}
-                  onChange={(event) => {
-                    setTarget(Number(event.target.value));
-                    setIndex(0);
-                    setPlaying(false);
+                <GraphTypeSelect
+                  value={graphKind}
+                  options={GRAPH_KINDS}
+                  locked={preloaderShown}
+                  onChange={(next) => {
+                    setGraphKind(next);
+                    shuffle(size, next);
                   }}
                 />
               </label>
               <label className={styles.slider}>
                 <span className={styles.sliderLabel}>
-                  Size <b>{size}</b>
+                  <span>Nodes</span>
+                  <span>{size}</span>
                 </span>
                 <input
                   className={styles.range}
@@ -305,7 +307,8 @@ export function SearchingWiz() {
               </label>
               <label className={styles.slider}>
                 <span className={styles.sliderLabel}>
-                  Speed <b>{speed}</b>
+                  <span>Speed</span>
+                  <span>{speed}</span>
                 </span>
                 <input
                   className={styles.range}
@@ -320,59 +323,143 @@ export function SearchingWiz() {
           </div>
 
           <div className={styles.stageWrap}>
-            <div className={styles.stage} aria-label="Array visualization">
-              {(frame?.array ?? []).map((value, barIndex) => {
-                const role = frame?.roles[barIndex] ?? "unsearched";
-                const color = ROLE_COLORS[role];
-                return (
-                  <div key={barIndex} className={styles.barCol}>
-                    <div
-                      className={styles.bar}
-                      data-role={role}
-                      style={{
-                        ["--bar-size" as string]: `${Math.max((value / maxValue) * 100, 6)}%`,
-                        backgroundColor: color,
-                        boxShadow: `0 0 12px ${color}59`,
-                      }}
-                      title={String(value)}
-                    >
-                      <span className={styles.barValue}>{value}</span>
-                    </div>
-                  </div>
-                );
-              })}
+            <div className={graphStyles.graphStage} aria-label="Graph visualization">
+              <svg
+                className={graphStyles.graphSvg}
+                viewBox="0 0 100 100"
+                role="img"
+              >
+                {edges.map((edge) => {
+                  const role = frame?.edgeRoles[edge.id] ?? "idle";
+                  const a = nodes[edge.u];
+                  const b = nodes[edge.v];
+                  const dx = b.x - a.x;
+                  const dy = b.y - a.y;
+                  const len = Math.hypot(dx, dy) || 1;
+                  const offset = 2.4;
+                  const mx = (a.x + b.x) / 2 - (dy / len) * offset;
+                  const my = (a.y + b.y) / 2 + (dx / len) * offset;
+                  return (
+                    <g key={edge.id}>
+                      <line
+                        className={graphStyles.edge}
+                        x1={a.x}
+                        y1={a.y}
+                        x2={b.x}
+                        y2={b.y}
+                        stroke={EDGE_COLORS[role]}
+                        strokeWidth={role === "idle" ? 0.45 : 0.9}
+                        opacity={role === "rejected" ? 0.4 : 0.95}
+                      />
+                      {algorithm.weighted ? (
+                        <g>
+                          <circle
+                            cx={mx}
+                            cy={my}
+                            r={1.7}
+                            className={graphStyles.edgeWeightBg}
+                          />
+                          <text
+                            className={graphStyles.edgeWeight}
+                            x={mx}
+                            y={my + 0.75}
+                            textAnchor="middle"
+                            fontSize={2.1}
+                          >
+                            {edge.weight}
+                          </text>
+                        </g>
+                      ) : null}
+                    </g>
+                  );
+                })}
+                {nodes.map((node) => {
+                  const role = frame?.nodeRoles[node.id] ?? "idle";
+                  const color = NODE_COLORS[role];
+                  const metric = frame?.labels[node.id];
+                  const radius = nodes.length > 8 ? 2.6 : 3;
+                  return (
+                    <g key={node.id}>
+                      <circle
+                        className={graphStyles.node}
+                        cx={node.x}
+                        cy={node.y}
+                        r={radius}
+                        fill={color}
+                        stroke="#0f172a"
+                        strokeWidth={0.35}
+                      />
+                      <text
+                        className={graphStyles.nodeLabel}
+                        x={node.x}
+                        y={node.y + 0.75}
+                        textAnchor="middle"
+                        fontSize={2.4}
+                      >
+                        {node.label}
+                      </text>
+                      {metric ? (
+                        <text
+                          className={graphStyles.distLabel}
+                          x={node.x}
+                          y={node.y - radius - 1.6}
+                          textAnchor="middle"
+                          fontSize={2}
+                        >
+                          {metric}
+                        </text>
+                      ) : null}
+                    </g>
+                  );
+                })}
+              </svg>
             </div>
 
             <div className={styles.progress} aria-hidden="true">
-              <div className={styles.progressFill} style={{ width: `${progress}%` }} />
+              <div
+                className={styles.progressFill}
+                style={{ width: `${progress}%` }}
+              />
             </div>
 
-            <p className={styles.hint}>{frame?.hint ?? "Shuffle an array to begin."}</p>
+            <p className={styles.hint}>
+              {frame?.hint ?? "Shuffle a graph to begin."}
+            </p>
+
+            {(frame?.frontier?.length ?? 0) > 0 ? (
+              <div className={graphStyles.frontierStrip} aria-label="Frontier">
+                {frame!.frontier.map((id, chipIndex) => (
+                  <span
+                    key={`${id}-${chipIndex}`}
+                    className={graphStyles.frontierChip}
+                  >
+                    {id}
+                  </span>
+                ))}
+              </div>
+            ) : null}
 
             <div className={styles.metaRow}>
               <div className={styles.legend}>
-                {ROLE_LABELS.map((item) => (
+                {NODE_LEGEND.map((item) => (
                   <span key={item.role} className={styles.legendItem}>
-                    <i
+                    <span
                       className={styles.swatch}
-                      data-role={item.role}
-                      style={{ backgroundColor: ROLE_COLORS[item.role] }}
+                      style={{ backgroundColor: NODE_COLORS[item.role] }}
                     />
                     {item.label}
                   </span>
                 ))}
               </div>
               <p className={styles.live}>
-                Comparisons {frame?.stats.comparisons ?? 0}
-                <span aria-hidden="true"> · </span>
-                Probes {frame?.stats.probes ?? 0}
-                <span aria-hidden="true"> · </span>
-                Step {frames.length ? `${safeIndex + 1}/${frames.length}` : "0/0"}
+                Visits {frame?.stats.visits ?? 0} · Relaxes{" "}
+                {frame?.stats.relaxes ?? 0} · Step {frames.length ? safeIndex + 1 : 0}/
+                {frames.length}
               </p>
             </div>
           </div>
 
-          <article className={styles.detail} aria-label={`${algorithm.name} notes`}>
+          <div className={styles.detail}>
             <section>
               <h2 className={styles.detailTitle}>Definition</h2>
               <p className={styles.detailBody}>{algorithm.definition}</p>
@@ -397,8 +484,8 @@ export function SearchingWiz() {
                   <dd>{algorithm.space}</dd>
                 </div>
                 <div>
-                  <dt>Sorted</dt>
-                  <dd>{algorithm.sortedInput ? "Yes" : "No"}</dd>
+                  <dt>Weighted</dt>
+                  <dd>{algorithm.weighted ? "Yes" : "No"}</dd>
                 </div>
               </dl>
             </section>
@@ -407,7 +494,7 @@ export function SearchingWiz() {
               <p className={styles.detailBody}>{algorithm.usage}</p>
             </section>
             {algorithm.code ? <CodePanel snippets={algorithm.code} /> : null}
-          </article>
+          </div>
         </div>
       </div>
     </div>

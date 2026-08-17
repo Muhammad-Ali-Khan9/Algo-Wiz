@@ -10,24 +10,26 @@ export function CodePanel({ snippets: samples }: { snippets: CodeSnippets }) {
   return (
     <section>
       <h2 className={styles.title}>Code</h2>
-      <div className={styles.tabs} role="tablist" aria-label="Language">
-        {CODE_LANGS.map((item) => (
-          <button
-            key={item.id}
-            type="button"
-            role="tab"
-            aria-selected={item.id === lang}
-            className={styles.tab}
-            data-active={item.id === lang}
-            onClick={() => setLang(item.id)}
-          >
-            {item.label}
-          </button>
-        ))}
+      <div className={styles.window}>
+        <div className={styles.tabs} role="tablist" aria-label="Language">
+          {CODE_LANGS.map((item) => (
+            <button
+              key={item.id}
+              type="button"
+              role="tab"
+              aria-selected={item.id === lang}
+              className={styles.tab}
+              data-active={item.id === lang}
+              onClick={() => setLang(item.id)}
+            >
+              {item.label}
+            </button>
+          ))}
+        </div>
+        <pre className={styles.pre}>
+          <code>{samples[lang]}</code>
+        </pre>
       </div>
-      <pre className={styles.pre}>
-        <code>{samples[lang]}</code>
-      </pre>
     </section>
   );
 }
