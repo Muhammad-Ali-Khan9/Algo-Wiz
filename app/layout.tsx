@@ -24,7 +24,7 @@ const poppins = Poppins({
 export const metadata: Metadata = {
   title: "Algorithms Wizard",
   description:
-    "Interactive algorithm visualizations — sorting, searching, graphs, pathfinding, and trees.",
+    "Interactive algorithm visualizations — sorting, searching, graphs, pathfinding, trees, and dynamic programming.",
   icons: {
     icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
   },

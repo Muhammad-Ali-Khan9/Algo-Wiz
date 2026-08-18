@@ -169,8 +169,8 @@ const SECTIONS = [
     kicker: "06 — Overlap",
     title: "Dynamic Programming",
     body: "Fill a table of subproblems — knapsack, LCS, coin change — until the last cell is the answer. Overlapping work becomes a grid you can read.",
-    href: null,
-    cta: "Coming soon",
+    href: "/dp",
+    cta: "Open DP",
     bg: "dp",
   },
   {

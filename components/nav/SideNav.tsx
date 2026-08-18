@@ -10,6 +10,7 @@ import searchIcon from "@/public/icons/search.svg";
 import sortIcon from "@/public/icons/sort.svg";
 import sunIcon from "@/public/icons/sun.svg";
 import treeIcon from "@/public/icons/tree.svg";
+import dpIcon from "@/public/icons/dp.svg";
 import { AlgoMark } from "@/components/brand/AlgoMark";
 import { useTheme } from "@/components/theme/ThemeProvider";
 import Image from "next/image";
@@ -25,6 +26,7 @@ const SECTIONS = [
   { href: "/graphs", label: "Graphs", icon: graphIcon },
   { href: "/pathfinding", label: "Pathfinding", icon: pathfindingIcon },
   { href: "/trees", label: "Trees", icon: treeIcon },
+  { href: "/dp", label: "DP", icon: dpIcon },
 ] as const;
 
 export function SideNav() {
