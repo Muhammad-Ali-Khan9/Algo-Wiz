@@ -2,6 +2,7 @@
 
 import { CodePanel } from "@/components/code/CodePanel";
 import dpStyles from "@/components/dp/dp-wiz.module.scss";
+import graphStyles from "@/components/graphs/graph-wiz.module.scss";
 import { AlgoSidebar, AlgoSidebarToggle } from "@/components/wiz/AlgoSidebar";
 import { WizPreloader } from "@/components/wiz/WizPreloader";
 import { BOOT_HOLD_MS, PRELOAD_FADE_MS, delayForSpeed } from "@/components/wiz/playback";
@@ -48,9 +49,16 @@ const ROLE_LABELS: { role: DpCellRole; label: string }[] = [
   { role: "skip", label: "Skip" },
 ];
 
-function formatCell(value: number | null, amountHint: number) {
-  if (value == null) return "·";
-  if (isUnreachable(value, amountHint)) return "∞";
+function compactNumber(value: number) {
+  const abs = Math.abs(value);
+  if (abs >= 1_000_000) {
+    const scaled = value / 1_000_000;
+    return `${Number.isInteger(scaled) ? scaled : scaled.toFixed(1)}M`;
+  }
+  if (abs >= 10_000) {
+    const scaled = value / 1_000;
+    return `${Number.isInteger(scaled) ? scaled : scaled.toFixed(1)}k`;
+  }
   return String(value);
 }
 
@@ -122,6 +130,7 @@ export function DpWiz() {
     hasItems: false,
     tableLen: 0,
     isGrid: false,
+    maxDigits: 1,
   });
 
   useEffect(() => {
@@ -189,7 +198,17 @@ export function DpWiz() {
   const sourceGrid = frame?.sourceGrid;
   const items = frame?.items;
   const itemRoles = frame?.itemRoles;
+  const frameWords = frame?.words;
+  const wordRoles = frame?.wordRoles;
+  const treeNodes = frame?.treeNodes;
+  const treeEdges = frame?.treeEdges;
+  const treeRoles = frame?.treeRoles;
+  const treeEdgeRoles = frame?.treeEdgeRoles;
+  const isTree = Boolean(treeNodes?.length);
   const isSubsetSum = algorithmId === "subset-sum";
+  const isWordBreak = algorithmId === "word-break";
+  const isPalindromePartition = algorithmId === "palindrome-partitioning";
+  const isBoolTable = isSubsetSum || isWordBreak || isPalindromePartition;
 
   const isGridAlgo =
     algorithmId === "unique-paths" ||
@@ -201,36 +220,116 @@ export function DpWiz() {
     algorithmId === "knapsack-unbounded" ||
     algorithmId === "subset-sum";
 
+  const isStringAlgo =
+    algorithmId === "lcs" ||
+    algorithmId === "edit-distance" ||
+    algorithmId === "word-break" ||
+    algorithmId === "palindromic-subsequence" ||
+    isPalindromePartition;
+
+  const isSequenceAlgo = algorithmId === "lis" || algorithmId === "bitonic-subsequence";
+
+  const isTreeAlgo =
+    algorithmId === "tree-diameter" ||
+    algorithmId === "maximum-path-sum" ||
+    algorithmId === "minimax";
+
+  const isGraphAlgo = algorithmId === "dag-dp" || algorithmId === "tsp";
+  const isBitmaskAlgo = algorithmId === "tsp" || algorithmId === "assignment";
+
   const sizeLabel = isGridAlgo
     ? "Grid"
     : isKnapsackAlgo
       ? "Items"
-      : algorithmId === "coin-change"
-        ? "Amount"
-        : algorithmId === "house-robber"
-          ? "Houses"
-          : "n";
+      : isStringAlgo
+        ? "Length"
+        : algorithmId === "assignment"
+          ? "Size"
+          : algorithmId === "minimax"
+            ? "Depth"
+            : algorithmId === "optimal-strategy"
+              ? "Pots"
+              : isTreeAlgo || isGraphAlgo
+                ? "Nodes"
+                : isSequenceAlgo || algorithmId === "burst-balloons"
+                  ? "Values"
+                  : algorithmId === "matrix-chain"
+                    ? "Matrices"
+                    : algorithmId === "house-robber"
+                      ? "Houses"
+                      : algorithmId === "coin-change"
+                        ? "Amount"
+                        : "n";
 
   const sizeDisplay = isGridAlgo
     ? `${input.rows}×${input.cols}`
     : isKnapsackAlgo
       ? `${input.weights.length} · W=${input.capacity}`
-      : algorithmId === "coin-change"
-        ? input.amount
-        : algorithmId === "house-robber"
-          ? input.values.length
-          : input.n;
+      : algorithmId === "lcs" || algorithmId === "edit-distance"
+        ? `${input.textA.length}×${input.textB.length}`
+        : algorithmId === "word-break"
+          ? `${input.textA.length} · ${input.words.length}w`
+          : algorithmId === "palindromic-subsequence" || isPalindromePartition
+            ? input.textA.length
+            : algorithmId === "matrix-chain"
+              ? Math.max(0, input.values.length - 1)
+              : algorithmId === "assignment"
+                ? `${input.n}×${input.n}`
+                : algorithmId === "minimax"
+                  ? input.n
+                  : algorithmId === "optimal-strategy"
+                    ? input.values.length
+                    : isTreeAlgo ||
+                        isGraphAlgo ||
+                        isBitmaskAlgo ||
+                        isSequenceAlgo ||
+                        algorithmId === "house-robber" ||
+                        algorithmId === "burst-balloons"
+                      ? input.n || input.values.length
+                      : algorithmId === "coin-change"
+                        ? input.amount
+                        : input.n;
 
   function formatGridCell(value: number | null) {
     if (value == null) return "·";
-    if (isSubsetSum) return value === 1 ? "T" : "F";
-    return String(value);
+    if (isBoolTable) return value === 1 ? "T" : "F";
+    return compactNumber(value);
   }
+
+  function formatTableCell(value: number | null) {
+    if (isWordBreak) {
+      if (value == null) return "·";
+      return value === 1 ? "T" : "F";
+    }
+    if (value == null) return "·";
+    if (isUnreachable(value, amountHint)) return "∞";
+    return compactNumber(value);
+  }
+
+  const maxDigits = useMemo(() => {
+    let max = 1;
+    const consider = (value: number | null | undefined) => {
+      if (value == null) return;
+      if (isUnreachable(value, amountHint)) {
+        max = Math.max(max, 1);
+        return;
+      }
+      max = Math.max(max, compactNumber(value).length);
+    };
+    for (const row of dpGrid) for (const value of row) consider(value);
+    for (const value of table) consider(value);
+    if (inputRow) for (const value of inputRow) consider(value);
+    return max;
+  }, [dpGrid, table, inputRow, amountHint]);
 
   const gridRows = dpGrid.length;
   const gridCols = dpGrid[0]?.length ?? 0;
   const hasSourceGrid = Boolean(sourceGrid?.length);
-  const hasItems = Boolean(items?.length);
+  const hasItems =
+    Boolean(items?.length) ||
+    Boolean(frameWords?.length) ||
+    Boolean(sourceGrid?.length) ||
+    isStringAlgo;
   const tableLen = table.length;
 
   fitSnapshotRef.current = {
@@ -240,6 +339,7 @@ export function DpWiz() {
     hasItems,
     tableLen,
     isGrid,
+    maxDigits,
   };
 
   const density = useMemo(() => {
@@ -286,24 +386,33 @@ export function DpWiz() {
         cell = (availW - gap * Math.max(snap.tableLen - 1, 0)) / snap.tableLen;
       }
 
-      const nextSize = Math.round(Math.min(48, Math.max(12, cell)));
-      const font = Math.max(9, Math.round(nextSize * 0.32));
-      const showLabels = nextSize >= 22;
-      const label = showLabels ? Math.max(8, Math.round(nextSize * 0.22)) : 0;
-      const gapPx = Math.max(2, Math.round(nextSize * 0.08));
-      const radius = Math.max(3, Math.round(nextSize * 0.16));
-      const key = `${nextSize}:${font}:${label}:${gapPx}`;
+      const digits = Math.max(1, snap.maxDigits);
+      const fit = Math.round(Math.min(56, Math.max(12, cell)));
+      const digitNeed = Math.min(56, 8 + digits * 7.5);
+      // Widen a little for long values when the viewport allows; never shrink below fit.
+      const sized = Math.round(
+        Math.min(56, Math.max(fit, Math.min(digitNeed, fit + digits * 2))),
+      );
+
+      const fontFromBox = Math.round(sized * 0.28);
+      const fontFromDigits = Math.floor((sized - 8) / Math.max(digits * 0.62, 1));
+      const font = Math.max(6, Math.min(14, fontFromBox, fontFromDigits || fontFromBox));
+      const showLabels = sized >= 22;
+      const label = showLabels ? Math.max(7, Math.round(sized * 0.2)) : 0;
+      const gapPx = Math.max(2, Math.round(sized * 0.08));
+      const radius = Math.max(3, Math.round(sized * 0.16));
+      const key = `${sized}:${font}:${label}:${gapPx}:${digits}`;
       if (lastFitKeyRef.current === key) return;
       lastFitKeyRef.current = key;
 
-      wrap.style.setProperty("--cell-w", `${nextSize}px`);
-      wrap.style.setProperty("--cell-h", `${nextSize}px`);
+      wrap.style.setProperty("--cell-w", `${sized}px`);
+      wrap.style.setProperty("--cell-h", `${sized}px`);
       wrap.style.setProperty("--cell-font", `${font}px`);
       wrap.style.setProperty("--cell-gap", `${gapPx}px`);
       wrap.style.setProperty("--cell-radius", `${radius}px`);
       wrap.style.setProperty("--label-font", label ? `${label}px` : "0px");
-      wrap.style.setProperty("--1d-w", `${nextSize}px`);
-      wrap.style.setProperty("--1d-h", `${nextSize}px`);
+      wrap.style.setProperty("--1d-w", `${sized}px`);
+      wrap.style.setProperty("--1d-h", `${sized}px`);
       wrap.style.setProperty("--1d-font", `${font}px`);
       wrap.dataset.hideLabels = showLabels ? "false" : "true";
     };
@@ -442,7 +551,49 @@ export function DpWiz() {
                 ref={tableWrapRef}
                 className={dpStyles.tableWrap}
                 data-density={density}
+                data-tree={isTree ? "true" : "false"}
               >
+                {isStringAlgo && (input.textA || input.textB) ? (
+                  <div>
+                    <p className={dpStyles.rowLabel}>
+                      {algorithmId === "lcs" || algorithmId === "edit-distance"
+                        ? "Strings"
+                        : "String"}
+                    </p>
+                    <div className={dpStyles.items}>
+                      {input.textA ? (
+                        <span className={dpStyles.itemChip} data-role="idle">
+                          {algorithmId === "lcs" || algorithmId === "edit-distance"
+                            ? `A = "${input.textA}"`
+                            : `"${input.textA}"`}
+                        </span>
+                      ) : null}
+                      {input.textB ? (
+                        <span className={dpStyles.itemChip} data-role="idle">
+                          B = "{input.textB}"
+                        </span>
+                      ) : null}
+                    </div>
+                  </div>
+                ) : null}
+
+                {frameWords && frameWords.length > 0 ? (
+                  <div>
+                    <p className={dpStyles.rowLabel}>Dictionary</p>
+                    <div className={dpStyles.items}>
+                      {frameWords.map((word, i) => (
+                        <span
+                          key={`word-${i}`}
+                          className={dpStyles.itemChip}
+                          data-role={wordRoles?.[i] ?? "idle"}
+                        >
+                          {word}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                ) : null}
+
                 {items && items.length > 0 ? (
                   <div>
                     <p className={dpStyles.rowLabel}>
@@ -467,8 +618,143 @@ export function DpWiz() {
                   </div>
                 ) : null}
 
-                {isGrid ? (
+                {isTree && treeNodes ? (
+                  <div className={dpStyles.treeBlock}>
+                    <svg
+                      className={dpStyles.treeSvg}
+                      viewBox="0 0 100 100"
+                      preserveAspectRatio="xMidYMid meet"
+                      role="img"
+                      aria-label={
+                        isGraphAlgo ? "Graph DP visualization" : "Tree DP visualization"
+                      }
+                    >
+                      {(treeEdges ?? []).map((edge) => {
+                        const a = treeNodes.find((n) => n.id === edge.u);
+                        const b = treeNodes.find((n) => n.id === edge.v);
+                        if (!a || !b) return null;
+                        const edgeRole = treeEdgeRoles?.[edge.id] ?? "idle";
+                        const stroke =
+                          edgeRole === "current"
+                            ? ROLE_COLORS.current
+                            : edgeRole === "write"
+                              ? ROLE_COLORS.write
+                              : edgeRole === "read"
+                                ? ROLE_COLORS.read
+                                : "color-mix(in srgb, var(--border) 85%, transparent)";
+                        const midX = (a.x + b.x) / 2;
+                        const midY = (a.y + b.y) / 2;
+                        return (
+                          <g key={`e-${edge.id}`}>
+                            <line
+                              className={graphStyles.edge}
+                              x1={a.x}
+                              y1={a.y}
+                              x2={b.x}
+                              y2={b.y}
+                              stroke={stroke}
+                              strokeWidth={edgeRole === "idle" ? 0.45 : 0.85}
+                            />
+                            {edge.weight != null ? (
+                              <text
+                                className={dpStyles.treeCaption}
+                                x={midX}
+                                y={midY - 1.2}
+                                textAnchor="middle"
+                                fontSize={2.2}
+                              >
+                                {edge.weight}
+                              </text>
+                            ) : null}
+                          </g>
+                        );
+                      })}
+                      {treeNodes.map((node) => {
+                        const role = treeRoles?.[node.id] ?? "idle";
+                        const fill = ROLE_COLORS[role];
+                        return (
+                          <g key={`n-${node.id}`}>
+                            <circle
+                              className={graphStyles.node}
+                              cx={node.x}
+                              cy={node.y}
+                              r={4.2}
+                              fill={fill}
+                              stroke="color-mix(in srgb, var(--foreground) 18%, transparent)"
+                              strokeWidth={0.35}
+                            />
+                            <text
+                              className={graphStyles.nodeLabel}
+                              x={node.x}
+                              y={node.y + 0.35}
+                              textAnchor="middle"
+                              dominantBaseline="middle"
+                              fontSize={3.2}
+                            >
+                              {node.label}
+                            </text>
+                            {node.caption ? (
+                              <text
+                                className={dpStyles.treeCaption}
+                                x={node.x}
+                                y={node.y + 7.2}
+                                textAnchor="middle"
+                                fontSize={2.4}
+                              >
+                                {node.caption}
+                              </text>
+                            ) : null}
+                          </g>
+                        );
+                      })}
+                    </svg>
+                    {frame?.formula ? (
+                      <p className={dpStyles.formula}>{frame.formula}</p>
+                    ) : null}
+                  </div>
+                ) : isGrid ? (
                   <div className={dpStyles.gridBlock}>
+                    {isPalindromePartition && input.textA ? (
+                      <div>
+                        <p className={dpStyles.rowLabel}>Characters</p>
+                        <div className={dpStyles.row}>
+                          {input.textA.split("").map((ch, i) => (
+                            <div key={`pch-${i}`} className={dpStyles.cell}>
+                              <div
+                                className={dpStyles.box}
+                                data-role={inputRoles?.[i] ?? "idle"}
+                              >
+                                {ch}
+                              </div>
+                              <span className={dpStyles.index}>{i}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ) : inputRow && inputRow.length > 0 ? (
+                      <div>
+                        <p className={dpStyles.rowLabel}>
+                          {algorithmId === "matrix-chain"
+                            ? "Dimensions"
+                            : algorithmId === "burst-balloons"
+                              ? "Balloons"
+                              : "Sequence"}
+                        </p>
+                        <div className={dpStyles.row}>
+                          {inputRow.map((value, i) => (
+                            <div key={`seq-${i}`} className={dpStyles.cell}>
+                              <div
+                                className={dpStyles.box}
+                                data-role={inputRoles?.[i] ?? "idle"}
+                              >
+                                {value}
+                              </div>
+                              <span className={dpStyles.index}>{i}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ) : null}
                     <div className={dpStyles.grids}>
                       {sourceGrid && sourceGrid.length > 0 ? (
                         <div className={dpStyles.gridPanel}>
@@ -528,7 +814,69 @@ export function DpWiz() {
                   </div>
                 ) : (
                   <>
-                    {inputRow && inputRow.length > 0 ? (
+                    {sourceGrid && sourceGrid.length > 0 ? (
+                      <div className={dpStyles.gridPanel}>
+                        <p className={dpStyles.rowLabel}>
+                          {algorithmId === "assignment" ? "Cost matrix" : "Input grid"}
+                        </p>
+                        <div className={dpStyles.grid}>
+                          {sourceGrid.map((row, i) => (
+                            <div key={`cost-${i}`} className={dpStyles.gridRow}>
+                              {row.map((value, j) => (
+                                <div key={`cost-${i}-${j}`} className={dpStyles.gridCell}>
+                                  <div
+                                    className={dpStyles.gridBox}
+                                    data-source="true"
+                                    data-role={dpGridRoles[i]?.[j] ?? "idle"}
+                                  >
+                                    {value}
+                                  </div>
+                                  <span className={dpStyles.coord}>
+                                    {frame?.rowLabels?.[i] ?? i},J{j}
+                                  </span>
+                                </div>
+                              ))}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ) : null}
+
+                    {isWordBreak && input.textA ? (
+                      <div>
+                        <p className={dpStyles.rowLabel}>Characters</p>
+                        <div className={dpStyles.row}>
+                          {input.textA.split("").map((ch, i) => (
+                            <div key={`ch-${i}`} className={dpStyles.cell}>
+                              <div
+                                className={dpStyles.box}
+                                data-role={inputRoles?.[i] ?? "idle"}
+                              >
+                                {ch}
+                              </div>
+                              <span className={dpStyles.index}>{i}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ) : isPalindromePartition && input.textA ? (
+                      <div>
+                        <p className={dpStyles.rowLabel}>Characters</p>
+                        <div className={dpStyles.row}>
+                          {input.textA.split("").map((ch, i) => (
+                            <div key={`cut-ch-${i}`} className={dpStyles.cell}>
+                              <div
+                                className={dpStyles.box}
+                                data-role={inputRoles?.[i] ?? "idle"}
+                              >
+                                {ch}
+                              </div>
+                              <span className={dpStyles.index}>{i}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ) : inputRow && inputRow.length > 0 ? (
                       <div>
                         <p className={dpStyles.rowLabel}>
                           {algorithmId === "coin-change" ? "Coins" : "Input"}
@@ -552,7 +900,9 @@ export function DpWiz() {
                     ) : null}
 
                     <div>
-                      <p className={dpStyles.rowLabel}>DP table</p>
+                      <p className={dpStyles.rowLabel}>
+                        {algorithmId === "assignment" ? "dp[mask]" : "DP table"}
+                      </p>
                       <div className={dpStyles.row}>
                         {table.map((value, i) => (
                           <div key={`dp-${i}`} className={dpStyles.cell}>
@@ -560,12 +910,15 @@ export function DpWiz() {
                               className={dpStyles.box}
                               data-role={roles[i] ?? "idle"}
                               data-empty={
-                                value == null || isUnreachable(value, amountHint)
+                                value == null ||
+                                (!isWordBreak && isUnreachable(value, amountHint))
                               }
                             >
-                              {formatCell(value, amountHint)}
+                              {formatTableCell(value)}
                             </div>
-                            <span className={dpStyles.index}>{i}</span>
+                            <span className={dpStyles.index}>
+                              {frame?.colLabels?.[i] ?? i}
+                            </span>
                           </div>
                         ))}
                       </div>

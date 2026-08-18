@@ -23,6 +23,10 @@
   --1d-w: 3rem;
   --1d-h: 3rem;
   --1d-font: 0.9rem;
+
+  &[data-tree="true"] {
+    @include tw("w-full");
+  }
 }
 
 .rowLabel {
@@ -43,7 +47,9 @@
 
 .box {
   @include theme-color-shift(0.18s);
-  @include tw("box-border flex w-full items-center justify-center border-2 font-bold");
+  @include tw(
+    "box-border flex w-full items-center justify-center overflow-hidden border-2 px-0.5 font-bold"
+  );
   height: var(--1d-h);
   font-size: var(--1d-font);
   border-radius: var(--cell-radius);
@@ -51,6 +57,9 @@
   background: var(--surface);
   color: var(--foreground);
   font-family: var(--font-mono), ui-monospace, monospace;
+  line-height: 1;
+  white-space: nowrap;
+  text-overflow: clip;
 
   &[data-role="current"] {
     border-color: #3b82f6;
@@ -142,7 +151,9 @@
 
 .gridBox {
   @include theme-color-shift(0.18s);
-  @include tw("box-border flex w-full items-center justify-center border-2 font-bold");
+  @include tw(
+    "box-border flex w-full items-center justify-center overflow-hidden border-2 px-0.5 font-bold"
+  );
   height: var(--cell-h);
   font-size: var(--cell-font);
   border-radius: var(--cell-radius);
@@ -151,6 +162,8 @@
   color: var(--foreground);
   font-family: var(--font-mono), ui-monospace, monospace;
   line-height: 1;
+  white-space: nowrap;
+  text-overflow: clip;
 
   &[data-role="current"] {
     border-color: #3b82f6;
@@ -241,4 +254,17 @@
     color: #fca5a5;
     opacity: 0.8;
   }
+}
+
+.treeBlock {
+  @include tw("flex w-full min-w-[18rem] flex-col gap-3");
+}
+
+.treeSvg {
+  @include tw("block h-[min(48vh,28rem)] w-full min-h-64");
+}
+
+.treeCaption {
+  @include tw("pointer-events-none font-mono font-semibold");
+  fill: var(--muted);
 }
