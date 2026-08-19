@@ -2,8 +2,8 @@
 
 Interactive algorithm visualizations. Watch classic computer science move — comparisons, swaps, probes, hops, edge relaxations, tree walks, and DP table fills — one step at a time.
 
-**Live sections:** Sorting · Searching · Graphs · Pathfinding · Trees · Dynamic Programming  
-**Planned:** Backtracking · String Algorithms
+**Live sections:** Sorting · Searching · Graphs · Pathfinding · Trees · Dynamic Programming · Backtracking  
+**Planned:** String Algorithms
 
 Deployed example: [algorithm-visualizer-rho-three.vercel.app](https://algorithm-visualizer-rho-three.vercel.app)
 
@@ -32,15 +32,15 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
-| Script                 | Purpose                                         |
-| ---------------------- | ----------------------------------------------- |
-| `npm run dev`          | Local development (Turbopack)                   |
-| `npm run build`        | Production build                                |
-| `npm run start`        | Serve the production build                      |
-| `npm run lint`         | ESLint                                          |
-| `npm run format`       | Format the repo with Prettier                   |
-| `npm run format:check` | Check Prettier without writing                  |
-| `npm run prepare`      | Install Husky git hooks (runs on `npm install`) |
+| Script                 | Purpose                                            |
+| ---------------------- | -------------------------------------------------- |
+| `npm run dev`          | Local development (webpack)                        |
+| `npm run build`        | Production build (webpack; warn 15 MB, fail 20 MB) |
+| `npm run start`        | Serve the production build                         |
+| `npm run lint`         | ESLint                                             |
+| `npm run format`       | Format the repo with Prettier                      |
+| `npm run format:check` | Check Prettier without writing                     |
+| `npm run prepare`      | Install Husky git hooks (runs on `npm install`)    |
 
 ### Git hooks
 
@@ -63,13 +63,14 @@ Full-viewport intro, then algorithm families as you scroll:
 5. **Pathfinding** → `/pathfinding`
 6. **Trees** → `/trees`
 7. **Dynamic Programming** → `/dp`
-8. **Backtracking**, **String Algorithms** — coming soon
+8. **Backtracking** → `/backtracking`
+9. **String Algorithms** — coming soon
 
 Sections **crossfade** in the same viewport (sticky stack + scroll-linked opacity). The global rail stays fixed.
 
 ### Global chrome
 
-- **Left rail** — Home, Sorting, Searching, Graphs, Pathfinding, Trees, DP. Theme-aware icons (dark purple-black / light orange).
+- **Left rail** — Home, Sorting, Searching, Graphs, Pathfinding, Trees, DP, Backtracking. Theme-aware icons (dark purple-black / light orange).
 - **Theme toggle** — capsule at the bottom of the rail (sun / moon). Saved in `localStorage` (`algo-wiz-theme`).
 - **Boot script** — applies the saved theme before paint to avoid a flash of the wrong palette.
 
@@ -453,26 +454,68 @@ The size slider remaps by family — e.g. grid dimensions, knapsack item count, 
 
 ---
 
+## Backtracking (`/backtracking`)
+
+Sidebar grouped by family + a stage that shows **candidates**, the growing **path**, and **solutions found so far**. Roles highlight choose / skip / backtrack as the search tree is explored.
+
+Every algorithm below is **playable**, with multi-language code, shuffleable inputs, size/speed controls, and the same keyboard shortcuts as sorting.
+
+### Cell / chip roles
+
+| Role      | Meaning                           |
+| --------- | --------------------------------- |
+| Idle      | Not under consideration           |
+| Current   | Candidate being decided right now |
+| Chosen    | Included in the current path      |
+| Skip      | Pruned or deliberately left out   |
+| Backtrack | Just undone / path rewound        |
+| Solution  | Complete valid answer recorded    |
+
+### Algorithms
+
+#### Combinatorial
+
+| Algorithm       | Average       | Notes                                                       |
+| --------------- | ------------- | ----------------------------------------------------------- |
+| Permutations    | O(n · n!)     | Every ordering; mark used indices, recurse, then unmark     |
+| Combinations    | O(k · C(n,k)) | Choose `k` from `n` without regard to order                 |
+| Subsets         | O(n · 2ⁿ)     | Include / skip each element (power set)                     |
+| Combination Sum | O(n^{t/min})  | Multisets summing to target; reuse allowed, ascending picks |
+
+#### Constraint Satisfaction
+
+| Algorithm      | Average | Notes                                                 |
+| -------------- | ------- | ----------------------------------------------------- |
+| N-Queens       | O(n!)   | Place n queens with no shared row/col/diagonal        |
+| Sudoku         | O(nⁿ²)  | 4×4 fill with row/col/box uniqueness (teaching-sized) |
+| Graph Coloring | O(kⁿ)   | Assign k colors so adjacent nodes differ              |
+| Crossword      | O(wˢ)   | Place word-bank entries into across/down slots        |
+
+Size stays small (roughly 3–6 candidates / 4–5 board) so frame counts stay playable. Combinations expose `n · k`; combination sum shows `T` (target); CSP algos show board / node counts.
+
+---
+
 ## How traces work
 
 Algorithms are **runners**: pure functions that build an array of frames ahead of time. The UI only indexes into that list.
 
 ```
-Frame → snapshot of state (bars / cells / nodes / edges)
+Frame → snapshot of state (bars / cells / nodes / edges / chips)
       → roles per index / cell / node / edge
-      → optional labels, captions, frontiers, input rows
+      → optional labels, captions, frontiers, input rows, paths
       → hint string + formula (DP)
-      → visit / relax / compare / write stats (where relevant)
+      → visit / relax / compare / write / backtrack stats
 ```
 
 ```
-lib/sorting/      comparison, linear, hybrid runners + trace
-lib/searching/    linear + ordered search runners + trace
-lib/graphs/       traversal, connectivity, mst, ordering, analysis, random
-lib/pathfinding/  shortest-path runners (reuses graph types / BFS)
-lib/trees/        binary, BST, AVL, RB, heaps, tries, segment, specialized
-lib/dp/           1D, grid, knapsack, string, sequence, interval,
-                  tree, graph, bitmask, game + shared trace / random
+lib/sorting/        comparison, linear, hybrid runners + trace
+lib/searching/      linear + ordered search runners + trace
+lib/graphs/         traversal, connectivity, mst, ordering, analysis, random
+lib/pathfinding/    shortest-path runners (reuses graph types / BFS)
+lib/trees/          binary, BST, AVL, RB, heaps, tries, segment, specialized
+lib/dp/             1D, grid, knapsack, string, sequence, interval,
+                    tree, graph, bitmask, game + shared trace / random
+lib/backtracking/   combinatorial + constraint runners + shared trace / random
 ```
 
 Playback is speed-gated `setTimeout` stepping; Space / arrows / `R` match sorting.
@@ -501,6 +544,7 @@ app/
   pathfinding/page.tsx
   trees/page.tsx
   dp/page.tsx
+  backtracking/page.tsx
   globals.scss               Theme CSS variables
   styles/                    Tokens, mixins, Tailwind entry
 components/
@@ -512,6 +556,7 @@ components/
   pathfinding/               PathfindingWiz
   trees/                     TreesWiz + SCSS
   dp/                        DpWiz + SCSS (tables, grids, tree/graph scenes)
+  backtracking/              BacktrackingWiz + SCSS (candidates / path / solutions)
   code/                      CodePanel (language tabs + Prettier-styled UI)
   wiz/                       Shared shell, AlgoSidebar, preloader, playback
   brand/                     AlgoMark mark
@@ -519,13 +564,16 @@ lib/
   sorting/ · searching/
   graphs/                    Types, generators, runners, snippets
   pathfinding/               Path meta, shortest-path runners, snippets
-  trees/                    Layout, runners by family, snippets, random
+  trees/                     Layout, runners by family, snippets, random
   dp/
     index.ts                 Meta + runners registry
     types.ts · trace.ts · random.ts · snippets.ts
     oned.ts · grid.ts · knapsack.ts
     string.ts · sequence.ts · interval.ts
     tree.ts · graph.ts · bitmask.ts · game.ts
+  backtracking/
+    index.ts · types.ts · trace.ts · random.ts
+    combinatorial.ts · constraint.ts · snippets.ts
   code/                      Multi-language snippet helpers
 public/
   icons/                     Nav + section icons
@@ -543,10 +591,10 @@ Styles: **SCSS modules**. Prefer `@include tw("…")` / `@apply` for utilities; 
 
 Same pattern as live sections: algo sidebar, step playback, color roles, definition / complexity / usage / code.
 
-### Backtracking
+### Backtracking (more families)
 
-- N-queens, permutations / subsets
-- Grow, fail, rewind — show the search tree
+- Larger Sudoku (9×9), richer crossword banks
+- Optional explicit search-tree SVG (in addition to boards / path chips)
 
 ### String Algorithms
 

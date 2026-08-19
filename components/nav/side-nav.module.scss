@@ -3,17 +3,14 @@
 @reference "tailwindcss";
 
 .wrap {
-  @include tw("relative z-20 h-dvh");
-  flex: 0 0 $nav-w;
-  width: $nav-w;
+  @include tw("relative z-20 h-dvh w-[#{$nav-w}] shrink-0 grow-0");
 }
 
 .rail {
   @include theme-color-shift;
   @include tw(
-    "sticky top-0 z-20 flex h-dvh flex-col items-center gap-[0.7rem] px-[0.65rem] py-4"
+    "sticky top-0 z-20 flex h-dvh w-[#{$nav-w}] flex-col items-center gap-[0.7rem] px-[0.65rem] py-4"
   );
-  width: $nav-w;
   background: var(--rail);
   box-shadow: inset -1px 0 0 var(--border);
 }
@@ -43,18 +40,15 @@
 
 .label {
   @include tw(
-    "mb-[0.15rem] font-mono text-[0.58rem] font-semibold uppercase tracking-[0.16em]"
+    "mt-0 mb-[0.15rem] font-mono text-[0.58rem] font-semibold uppercase tracking-[0.16em]"
   );
-  margin-top: 0;
   color: var(--rail-label);
-  font-family: var(--font-mono), ui-monospace, monospace;
   transition: color 0.55s ease;
 }
 
 .btn {
   @include theme-color-shift(0.18s);
-  @include tw("flex size-[2.85rem] items-center justify-center");
-  border-radius: 999px;
+  @include tw("flex size-[2.85rem] items-center justify-center rounded-full");
   background: var(--rail-btn);
   color: #18181b;
   box-shadow: 0 0 0 1px rgb(0 0 0 / 0.06);
@@ -100,15 +94,17 @@
 
 .themeCapsule {
   @include theme-color-shift;
-  @include tw("relative flex w-[2.6rem] flex-col items-center gap-[0.18rem] p-[0.22rem]");
-  border-radius: 999px;
+  @include tw(
+    "relative flex w-[2.6rem] flex-col items-center gap-[0.18rem] rounded-full p-[0.22rem]"
+  );
   background: var(--rail-btn);
   box-shadow: 0 0 0 1px rgb(0 0 0 / 0.06);
 }
 
 .themeThumb {
-  @include tw("pointer-events-none absolute top-[0.22rem] left-[0.22rem] size-[2.16rem]");
-  border-radius: 999px;
+  @include tw(
+    "pointer-events-none absolute top-[0.22rem] left-[0.22rem] size-[2.16rem] rounded-full"
+  );
   background: var(--rail-active);
   box-shadow: 0 0 0 1px rgb(0 0 0 / 0.08);
   transition:
@@ -122,9 +118,8 @@
 
 .themeBtn {
   @include tw(
-    "relative z-[1] flex size-[2.16rem] cursor-pointer items-center justify-center border-0 bg-transparent p-0"
+    "relative z-[1] flex size-[2.16rem] cursor-pointer items-center justify-center rounded-full border-0 bg-transparent p-0"
   );
-  border-radius: 999px;
 
   &:focus-visible {
     outline: 2px solid var(--rail-active);
@@ -144,15 +139,13 @@
 
 @media (max-width: 800px) {
   .wrap {
-    @include tw("h-0 w-0 overflow-visible");
-    flex: 0 0 0;
+    @include tw("h-0 w-0 shrink-0 grow-0 overflow-visible");
   }
 
   .menuBtn {
     @include tw(
-      "fixed top-[0.7rem] left-[0.7rem] z-40 flex size-[2.75rem] cursor-pointer items-center justify-center border-0 p-0"
+      "fixed top-[0.7rem] left-[0.7rem] z-40 flex size-[2.75rem] cursor-pointer items-center justify-center rounded-full border-0 p-0"
     );
-    border-radius: 999px;
     background: var(--rail-btn);
     box-shadow: 0 0 0 1px rgb(0 0 0 / 0.06);
 
@@ -163,10 +156,11 @@
   }
 
   .scrim {
-    @include tw("pointer-events-none fixed inset-0 z-30 block border-0 opacity-0");
+    @include tw(
+      "pointer-events-none fixed inset-0 z-30 block cursor-pointer border-0 opacity-0"
+    );
     background: rgb(0 0 0 / 0.45);
     transition: opacity 0.22s ease;
-    cursor: pointer;
 
     &[data-open="true"] {
       @include tw("pointer-events-auto opacity-100");

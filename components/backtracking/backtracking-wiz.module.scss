@@ -1,0 +1,109 @@
+@use "../../app/styles/mixins" as *;
+
+@reference "tailwindcss";
+
+.stage {
+  @include theme-color-shift;
+  @include tw("grid min-h-[min(42vh,360px)] gap-4 rounded-xl border p-4 sm:px-[1.1rem]");
+  border-color: color-mix(in oklab, var(--border) 85%, transparent);
+  background:
+    radial-gradient(
+      120% 80% at 10% 0%,
+      color-mix(in oklab, var(--accent) 10%, transparent),
+      transparent 55%
+    ),
+    color-mix(in oklab, var(--panel) 88%, transparent);
+}
+
+.panel {
+  @include tw("grid gap-[0.55rem]");
+}
+
+.panelLabel {
+  @include tw("m-0 text-[0.72rem] uppercase tracking-[0.08em]");
+  color: var(--muted);
+
+  b {
+    @include tw("font-semibold tracking-normal normal-case");
+    color: var(--ink);
+  }
+}
+
+.chips {
+  @include tw("flex min-h-[2.4rem] flex-wrap items-center gap-[0.45rem]");
+}
+
+.chip {
+  @include theme-color-shift(0.16s);
+  @include tw(
+    "inline-flex h-[2.2rem] min-w-[2.2rem] items-center justify-center rounded-lg border-[1.5px] px-[0.55rem] font-mono text-[0.95rem] font-semibold"
+  );
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease,
+    background-color 160ms ease;
+}
+
+.chip[data-role="current"],
+.chip[data-role="backtrack"] {
+  @include tw("-translate-y-0.5 scale-[1.04]");
+}
+
+.empty {
+  @include tw("text-[0.9rem]");
+  color: var(--muted);
+}
+
+.solutions {
+  @include tw("flex max-h-[5.5rem] flex-wrap gap-[0.4rem] overflow-auto");
+}
+
+.solutions[data-all="true"] {
+  @include tw("max-h-[9.5rem]");
+}
+
+.board {
+  @include tw("grid w-[min(100%,280px)] gap-[0.28rem]");
+}
+
+.cell {
+  @include tw(
+    "inline-flex aspect-square min-h-[2.1rem] items-center justify-center rounded-md border-[1.5px] font-mono text-[0.95rem] font-semibold"
+  );
+  border-color: var(--border);
+}
+
+.cell[data-blocked="true"] {
+  @include tw("border-transparent");
+  background: color-mix(in oklab, var(--ink) 55%, transparent);
+}
+
+.graph {
+  @include tw("aspect-square h-auto w-[min(100%,320px)]");
+}
+
+.graphEdge {
+  stroke: color-mix(in oklab, var(--muted) 70%, transparent);
+  stroke-width: 1.2;
+}
+
+.graphLabel {
+  @include tw("pointer-events-none font-mono text-[3.2px] font-bold");
+}
+
+.sol {
+  @include tw("rounded-md px-[0.55rem] py-[0.28rem] font-mono text-[0.82rem]");
+  border: 1px solid color-mix(in oklab, #a855f7 45%, var(--border));
+  background: color-mix(in oklab, #a855f7 12%, transparent);
+  color: color-mix(in oklab, #a855f7 75%, var(--ink));
+}
+
+@media (max-width: 720px) {
+  .stage {
+    @include tw("min-h-[280px] p-[0.85rem]");
+  }
+
+  .chip {
+    @include tw("h-8 min-w-8 text-[0.88rem]");
+  }
+}

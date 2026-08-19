@@ -11,6 +11,7 @@ import sortIcon from "@/public/icons/sort.svg";
 import sunIcon from "@/public/icons/sun.svg";
 import treeIcon from "@/public/icons/tree.svg";
 import dpIcon from "@/public/icons/dp.svg";
+import backtrackingIcon from "@/public/icons/backtracking.svg";
 import { AlgoMark } from "@/components/brand/AlgoMark";
 import { useTheme } from "@/components/theme/ThemeProvider";
 import Image from "next/image";
@@ -27,6 +28,7 @@ const SECTIONS = [
   { href: "/pathfinding", label: "Pathfinding", icon: pathfindingIcon },
   { href: "/trees", label: "Trees", icon: treeIcon },
   { href: "/dp", label: "DP", icon: dpIcon },
+  { href: "/backtracking", label: "Backtracking", icon: backtrackingIcon },
 ] as const;
 
 export function SideNav() {

@@ -110,10 +110,8 @@
 
 .introLayout {
   @include tw(
-    "box-border my-auto w-full max-w-none items-center gap-x-5 px-[1.1rem] py-6"
+    "box-border my-auto grid w-full max-w-none grid-cols-[1fr_minmax(0,52rem)_1fr] items-center gap-x-5 px-[1.1rem] py-6"
   );
-  display: grid;
-  grid-template-columns: 1fr minmax(0, 52rem) 1fr;
 }
 
 .portrait {
@@ -130,8 +128,7 @@
 }
 
 .portraitArt {
-  @include tw("block h-auto w-full object-contain");
-  max-height: min(72vh, 34rem);
+  @include tw("block h-auto max-h-[min(72vh,34rem)] w-full object-contain");
   filter: drop-shadow(0 8px 18px rgb(0 0 0 / 0.35));
 }
 
@@ -161,9 +158,8 @@
 
 .socialBtn {
   @include tw(
-    "flex size-[3.15rem] cursor-pointer items-center justify-center border-0 bg-transparent p-0"
+    "flex size-[3.15rem] cursor-pointer items-center justify-center rounded-full border-0 bg-transparent p-0"
   );
-  border-radius: 999px;
   color: var(--accent);
   transition:
     color 160ms ease,
@@ -201,9 +197,9 @@
 }
 
 .title {
-  @include tw("m-0 font-bold tracking-[-0.06em]");
-  font-size: clamp(2.6rem, 7vw, 5.6rem);
-  line-height: 0.95;
+  @include tw(
+    "m-0 text-[clamp(2.6rem,7vw,5.6rem)] font-bold tracking-[-0.06em] leading-[0.95]"
+  );
   color: var(--foreground);
   transition: color 0.55s ease;
 }
@@ -255,11 +251,10 @@
   );
 
   li {
-    @include tw("px-3 py-[0.35rem] font-mono text-[0.72rem]");
-    border: 1px solid var(--border);
+    @include tw("rounded-full border px-3 py-[0.35rem] font-mono text-[0.72rem]");
+    border-color: var(--border);
     background: var(--surface);
     color: var(--foreground);
-    border-radius: 999px;
     transition:
       background-color 0.55s ease,
       border-color 0.55s ease,
@@ -337,9 +332,9 @@
 }
 
 .panelTitle {
-  @include tw("m-0 font-bold tracking-[-0.05em]");
-  font-size: clamp(2.4rem, 6vw, 4.6rem);
-  line-height: 0.95;
+  @include tw(
+    "m-0 text-[clamp(2.4rem,6vw,4.6rem)] font-bold tracking-[-0.05em] leading-[0.95]"
+  );
   color: var(--foreground);
   transition: color 0.55s ease;
 }
@@ -352,8 +347,7 @@
 
 .cta {
   @include control-btn("primary");
-  @include tw("mt-[0.4rem] px-6 py-3 text-base");
-  border-radius: 999px;
+  @include tw("mt-[0.4rem] rounded-full px-6 py-3 text-base");
 }
 
 .soon {
@@ -448,8 +442,7 @@
   }
 
   .title {
-    font-size: clamp(1.7rem, 8.4vw, 2.45rem);
-    @include tw("leading-[1.05]");
+    @include tw("text-[clamp(1.7rem,8.4vw,2.45rem)] leading-[1.05]");
   }
 
   .subtitle {
@@ -481,7 +474,7 @@
   }
 
   .panelTitle {
-    font-size: clamp(1.85rem, 9vw, 2.8rem);
+    @include tw("text-[clamp(1.85rem,9vw,2.8rem)]");
   }
 }
 

@@ -177,9 +177,9 @@ const SECTIONS = [
     id: "backtracking",
     kicker: "07 — Search trees",
     title: "Backtracking",
-    body: "N-queens, permutations, and constraint paths. A candidate grows until it fails, then the walk rewinds and tries the next branch.",
-    href: null,
-    cta: "Coming soon",
+    body: "Permutations, combinations, N-Queens, Sudoku, and more. A candidate grows until it fails, then the walk rewinds and tries the next branch.",
+    href: "/backtracking",
+    cta: "Open Backtracking",
     bg: "backtracking",
   },
   {

@@ -3,8 +3,9 @@
 @reference "tailwindcss";
 
 .shell {
-  @include tw("relative box-border grid h-full min-h-full w-full overflow-hidden");
-  grid-template-columns: $sidebar-w minmax(0, 1fr);
+  @include tw(
+    "relative box-border grid h-full min-h-full w-full overflow-hidden grid-cols-[#{$sidebar-w}_minmax(0,1fr)]"
+  );
 }
 
 .sidebar {
@@ -108,15 +109,15 @@
 }
 
 .kicker {
-  @include tw("mb-[0.35rem] font-mono text-[0.7rem] uppercase tracking-[0.18em]");
-  margin-top: 0;
+  @include tw("mt-0 mb-[0.35rem] font-mono text-[0.7rem] uppercase tracking-[0.18em]");
   color: var(--muted);
   transition: color 0.55s ease;
 }
 
 .title {
-  @include tw("m-0 font-bold tracking-[-0.04em] leading-[1.1]");
-  font-size: clamp(1.85rem, 3.4vw, 2.6rem);
+  @include tw(
+    "m-0 text-[clamp(1.85rem,3.4vw,2.6rem)] font-bold tracking-[-0.04em] leading-[1.1]"
+  );
   color: var(--foreground);
   transition: color 0.55s ease;
 }
@@ -167,9 +168,8 @@
 .stage {
   @include theme-color-shift;
   @include tw(
-    "flex h-[42vh] min-h-72 items-end justify-center overflow-hidden pt-[1.85rem] pb-2"
+    "flex h-[42vh] min-h-72 items-end justify-center gap-[#{$bar-gap}] overflow-hidden pt-[1.85rem] pb-2"
   );
-  gap: $bar-gap;
 }
 
 .barCol {
@@ -180,18 +180,16 @@
 
 .barValue {
   @include tw(
-    "pointer-events-none absolute top-0 left-1/2 whitespace-nowrap text-[0.72rem] font-bold leading-none"
+    "pointer-events-none absolute top-0 left-1/2 whitespace-nowrap text-[0.72rem] font-bold leading-none font-[family-name:var(--font-poppins)]"
   );
   transform: translate(-50%, calc(-100% - 0.2rem));
-  font-family: var(--font-poppins), sans-serif;
   color: var(--foreground);
 }
 
 .bar {
-  @include tw("relative block w-full flex-none border-0");
-  height: var(--bar-size, 6%);
-  min-height: $bar-min-h;
-  border-radius: 6px 6px 2px 2px;
+  @include tw(
+    "relative block h-[length:var(--bar-size,6%)] min-h-[#{$bar-min-h}] w-full flex-none rounded-t-[6px] rounded-b-[2px] border-0"
+  );
   background-color: #22c55e;
   box-shadow: 0 0 12px rgb(34 197 94 / 0.35);
   transition:
@@ -217,15 +215,13 @@
 }
 
 .progress {
-  @include tw("h-1 flex-none overflow-hidden");
+  @include tw("h-1 flex-none overflow-hidden rounded-full");
   background: var(--border);
-  border-radius: 999px;
 }
 
 .progressFill {
-  @include tw("h-full");
+  @include tw("h-full rounded-full");
   background: var(--accent);
-  border-radius: 999px;
   transition: width 80ms linear;
 }
 
@@ -239,8 +235,7 @@
 }
 
 .swatch {
-  @include tw("inline-block size-[0.625rem]");
-  border-radius: 999px;
+  @include tw("inline-block size-[0.625rem] rounded-full");
 }
 
 .metaRow {
@@ -295,11 +290,9 @@
 .bucketVessel {
   @include theme-color-shift;
   @include tw(
-    "box-border flex min-h-28 w-[2.7rem] flex-col justify-end overflow-hidden px-[0.22rem] pt-[0.28rem] pb-[0.32rem]"
+    "box-border flex min-h-28 w-[2.7rem] flex-col justify-end overflow-hidden rounded-b-[0.65rem] border-2 border-t-0 px-[0.22rem] pt-[0.28rem] pb-[0.32rem]"
   );
-  border: 2px solid var(--accent);
-  border-top: 0;
-  border-radius: 0 0 0.65rem 0.65rem;
+  border-color: var(--accent);
   background: color-mix(in srgb, var(--accent) 10%, transparent);
   box-shadow: inset 0 -10px 16px color-mix(in srgb, var(--accent) 12%, transparent);
 }
@@ -310,11 +303,9 @@
 
 .chip {
   @include tw(
-    "flex min-h-[1.15rem] items-center justify-center px-[0.1rem] py-[0.08rem] text-[0.62rem] font-bold leading-none text-white"
+    "flex min-h-[1.15rem] items-center justify-center rounded px-[0.1rem] py-[0.08rem] text-[0.62rem] font-bold leading-none text-white font-[family-name:var(--font-poppins)]"
   );
-  border-radius: 0.28rem;
   background: var(--accent);
-  font-family: var(--font-poppins), sans-serif;
   transform-origin: center bottom;
   animation: chip-drop 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
@@ -466,8 +457,7 @@
 }
 
 .loaderRing {
-  @include tw("block size-full");
-  border-radius: 50%;
+  @include tw("block size-full rounded-full");
   background: conic-gradient(from 0deg, transparent 0 68%, var(--accent) 78% 100%);
   -webkit-mask: radial-gradient(
     farthest-side,

@@ -3,10 +3,9 @@
 @reference "tailwindcss";
 
 .title {
-  @include tw("mb-[0.45rem] font-mono text-[0.72rem] uppercase tracking-[0.16em]");
-  margin-top: 0;
+  @include theme-color-shift;
+  @include tw("mt-0 mb-[0.45rem] font-mono text-[0.72rem] uppercase tracking-[0.16em]");
   color: var(--accent-hover);
-  transition: color 0.55s ease;
 }
 
 .window {
@@ -15,21 +14,17 @@
 }
 
 .tabs {
-  @include tw("relative z-[1] flex flex-wrap items-end gap-[0.28rem] pl-[0.1rem]");
-  margin: 0;
+  @include tw("relative z-[1] m-0 flex flex-wrap items-end gap-[0.28rem] pl-[0.1rem]");
 }
 
 .tab {
   @include focus-ring;
   @include theme-color-shift(0.18s);
   @include tw(
-    "relative cursor-pointer appearance-none px-[0.85rem] py-[0.4rem] font-mono text-[0.72rem]"
+    "relative cursor-pointer appearance-none rounded-t-[0.55rem] border border-b-0 px-[0.85rem] py-[0.4rem] font-mono text-[0.72rem]"
   );
   font: inherit;
-  font-family: var(--font-mono), ui-monospace, monospace;
-  border: 1px solid #94a3b8;
-  border-bottom: none;
-  border-radius: 0.55rem 0.55rem 0 0;
+  border-color: #94a3b8;
   background: transparent;
   color: var(--muted);
 
@@ -40,26 +35,19 @@
 
   // Selected tab rides over the window top border, then the border rejoins beside it.
   &[data-active="true"] {
-    z-index: 2;
+    @include tw("z-[2] -mb-px border-b-0");
     color: var(--accent-hover);
     border-top-color: var(--accent);
     border-right-color: var(--accent);
     border-left-color: var(--accent);
-    border-bottom: 0;
     background: var(--surface-strong);
-    margin-bottom: -1px;
     box-shadow: inset 0 2px 0 0 var(--accent);
 
     // Cover the window's top accent under this tab so no theme line sits on the button bottom.
     &::after {
       content: "";
-      position: absolute;
-      left: -1px;
-      right: -1px;
-      bottom: -3px;
-      height: 4px;
+      @include tw("pointer-events-none absolute -right-px -bottom-[3px] -left-px h-1");
       background: var(--surface-strong);
-      pointer-events: none;
     }
   }
 }
@@ -70,13 +58,11 @@
 
 .pre {
   @include tw(
-    "relative z-0 m-0 max-h-[28rem] overflow-auto whitespace-pre px-4 py-[0.9rem] font-mono text-[0.78rem] leading-[1.55]"
+    "relative z-0 m-0 max-h-[28rem] overflow-auto rounded-br-xl rounded-bl-xl rounded-tr-xl whitespace-pre px-4 py-[0.9rem] font-mono text-[0.78rem] leading-[1.55]"
   );
   border: 1px solid var(--accent);
-  border-radius: 0 0.75rem 0.75rem 0.75rem;
   background: var(--surface-strong);
   color: var(--foreground);
-  font-family: var(--font-mono), ui-monospace, monospace;
   scrollbar-width: thin;
   scrollbar-color: var(--scrollbar) transparent;
 }

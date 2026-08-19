@@ -5,10 +5,9 @@
 .viewport {
   @include theme-color-shift;
   @include tw(
-    "box-border flex h-[min(58vh,36rem)] min-h-72 w-full items-start justify-center overflow-auto p-3 sm:p-4"
+    "box-border flex h-[min(58vh,36rem)] min-h-72 w-full items-start justify-center overflow-auto rounded-2xl border p-3 sm:p-4"
   );
-  border: 1px solid var(--border);
-  border-radius: 1rem;
+  border-color: var(--border);
   background: var(--stage);
 }
 
@@ -35,30 +34,22 @@
 }
 
 .row {
-  @include tw("flex items-end");
-  gap: var(--cell-gap);
+  @include tw("flex items-end gap-[length:var(--cell-gap)]");
 }
 
 .cell {
-  @include tw("flex flex-none flex-col items-center");
-  width: var(--1d-w);
-  gap: 0.2rem;
+  @include tw("flex w-[length:var(--1d-w)] flex-none flex-col items-center gap-[0.2rem]");
 }
 
 .box {
   @include theme-color-shift(0.18s);
   @include tw(
-    "box-border flex w-full items-center justify-center overflow-hidden border-2 px-0.5 font-bold"
+    "box-border flex h-[length:var(--1d-h)] w-full items-center justify-center overflow-hidden border-2 px-0.5 text-[length:var(--1d-font)] leading-none font-bold whitespace-nowrap font-mono"
   );
-  height: var(--1d-h);
-  font-size: var(--1d-font);
   border-radius: var(--cell-radius);
   border-color: color-mix(in srgb, var(--border) 80%, transparent);
   background: var(--surface);
   color: var(--foreground);
-  font-family: var(--font-mono), ui-monospace, monospace;
-  line-height: 1;
-  white-space: nowrap;
   text-overflow: clip;
 
   &[data-role="current"] {
@@ -86,28 +77,26 @@
   }
 
   &[data-role="skip"] {
+    @include tw("opacity-75");
     border-color: #ef4444;
     background: color-mix(in srgb, #ef4444 14%, var(--surface));
     color: #fca5a5;
-    opacity: 0.75;
   }
 
   &[data-empty="true"] {
+    @include tw("opacity-55");
     color: var(--muted);
-    opacity: 0.55;
   }
 }
 
 .index {
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: var(--label-font);
+  @include tw("font-mono text-[length:var(--label-font)] leading-none");
   color: var(--muted);
-  line-height: 1;
 
   .tableWrap[data-hide-labels="true"] &,
   .tableWrap[data-density="tiny"] &,
   .tableWrap[data-density="compact"] & {
-    display: none;
+    @include tw("hidden");
   }
 }
 
@@ -134,35 +123,28 @@
 }
 
 .grid {
-  @include tw("inline-flex flex-col");
-  gap: var(--cell-gap);
+  @include tw("inline-flex flex-col gap-[length:var(--cell-gap)]");
 }
 
 .gridRow {
-  @include tw("flex");
-  gap: var(--cell-gap);
+  @include tw("flex gap-[length:var(--cell-gap)]");
 }
 
 .gridCell {
-  @include tw("flex flex-none flex-col items-center");
-  width: var(--cell-w);
-  gap: 0.12rem;
+  @include tw(
+    "flex w-[length:var(--cell-w)] flex-none flex-col items-center gap-[0.12rem]"
+  );
 }
 
 .gridBox {
   @include theme-color-shift(0.18s);
   @include tw(
-    "box-border flex w-full items-center justify-center overflow-hidden border-2 px-0.5 font-bold"
+    "box-border flex h-[length:var(--cell-h)] w-full items-center justify-center overflow-hidden border-2 px-0.5 text-[length:var(--cell-font)] leading-none font-bold whitespace-nowrap font-mono"
   );
-  height: var(--cell-h);
-  font-size: var(--cell-font);
   border-radius: var(--cell-radius);
   border-color: color-mix(in srgb, var(--border) 80%, transparent);
   background: var(--surface);
   color: var(--foreground);
-  font-family: var(--font-mono), ui-monospace, monospace;
-  line-height: 1;
-  white-space: nowrap;
   text-overflow: clip;
 
   &[data-role="current"] {
@@ -190,36 +172,32 @@
   }
 
   &[data-role="skip"] {
+    @include tw("opacity-75");
     border-color: #ef4444;
     background: color-mix(in srgb, #ef4444 14%, var(--surface));
     color: #fca5a5;
-    opacity: 0.75;
   }
 
   &[data-empty="true"] {
+    @include tw("opacity-55");
     color: var(--muted);
-    opacity: 0.55;
   }
 
   &[data-source="true"] {
-    border-style: dashed;
+    @include tw("border-dashed");
   }
 }
 
 .coord {
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: var(--label-font);
+  @include tw(
+    "max-w-full overflow-hidden font-mono text-[length:var(--label-font)] leading-none text-ellipsis whitespace-nowrap"
+  );
   color: var(--muted);
-  line-height: 1;
-  max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 
   .tableWrap[data-hide-labels="true"] &,
   .tableWrap[data-density="tiny"] &,
   .tableWrap[data-density="compact"] & {
-    display: none;
+    @include tw("hidden");
   }
 }
 
@@ -250,9 +228,9 @@
   }
 
   &[data-role="skip"] {
+    @include tw("opacity-80");
     border-color: #ef4444;
     color: #fca5a5;
-    opacity: 0.8;
   }
 }
 
@@ -261,7 +239,7 @@
 }
 
 .treeSvg {
-  @include tw("block h-[min(48vh,28rem)] w-full min-h-64");
+  @include tw("block h-[min(48vh,28rem)] min-h-64 w-full");
 }
 
 .treeCaption {
