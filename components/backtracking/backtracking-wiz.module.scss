@@ -63,7 +63,7 @@
 }
 
 .board {
-  @include tw("grid w-[min(100%,280px)] gap-[0.28rem]");
+  @include tw("grid w-[min(100%,360px)] gap-[0.28rem]");
 }
 
 .cell {

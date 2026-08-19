@@ -484,12 +484,12 @@ Every algorithm below is **playable**, with multi-language code, shuffleable inp
 
 #### Constraint Satisfaction
 
-| Algorithm      | Average | Notes                                                 |
-| -------------- | ------- | ----------------------------------------------------- |
-| N-Queens       | O(n!)   | Place n queens with no shared row/col/diagonal        |
-| Sudoku         | O(nⁿ²)  | 4×4 fill with row/col/box uniqueness (teaching-sized) |
-| Graph Coloring | O(kⁿ)   | Assign k colors so adjacent nodes differ              |
-| Crossword      | O(wˢ)   | Place word-bank entries into across/down slots        |
+| Algorithm      | Average | Notes                                                     |
+| -------------- | ------- | --------------------------------------------------------- |
+| N-Queens       | O(n!)   | Place n queens with no shared row/col/diagonal            |
+| Sudoku         | O(nⁿ²)  | 4×4 fill with row/col/box uniqueness (teaching-sized)     |
+| Graph Coloring | O(kⁿ)   | Assign k colors so adjacent nodes differ                  |
+| Crossword      | O(wˢ)   | Fill 4×4 / 5×5 word squares (across slots; downs in bank) |
 
 Size stays small (roughly 3–6 candidates / 4–5 board) so frame counts stay playable. Combinations expose `n · k`; combination sum shows `T` (target); CSP algos show board / node counts.
 

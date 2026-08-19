@@ -112,20 +112,45 @@ export function generateBacktrackingInput(
     return { ...base, n, k, pairs };
   }
 
-  // crossword
-  const banks = [
-    ["AT", "ME", "AM", "TE"],
-    ["TO", "BE", "TB", "OE"],
-    ["IN", "OR", "IO", "NR"],
+  // crossword — larger open grids (4×4 / 5×5) with decoy bank words
+  const puzzles: { grid: string[][]; words: string[] }[] = [
+    {
+      grid: [
+        [".", ".", ".", "."],
+        [".", ".", ".", "."],
+        [".", ".", ".", "."],
+        [".", ".", ".", "."],
+      ],
+      // Word square: CASE / AREA / REAR / EARS (downs CARE, AREA, SEAR, EARS)
+      words: ["CASE", "AREA", "REAR", "EARS", "CARE", "SEAR", "TEAR", "SEAT"],
+    },
+    {
+      grid: [
+        [".", ".", ".", ".", "."],
+        [".", ".", ".", ".", "."],
+        [".", ".", ".", ".", "."],
+        [".", ".", ".", ".", "."],
+        [".", ".", ".", ".", "."],
+      ],
+      // Sator square — across & down: SATOR AREPO TENET OPERA ROTAS
+      words: [
+        "SATOR",
+        "AREPO",
+        "TENET",
+        "OPERA",
+        "ROTAS",
+        "RATES",
+        "STORE",
+        "TREES",
+        "NOTES",
+      ],
+    },
   ];
-  const words = banks[Math.floor(rand() * banks.length)]!;
+  const puzzle = size >= 10 ? puzzles[1]! : puzzles[0]!;
   return {
     ...base,
-    n: 2,
-    grid: [
-      [".", "."],
-      [".", "."],
-    ],
-    words: words.slice(),
+    n: puzzle.grid.length,
+    grid: puzzle.grid.map((row) => row.slice()),
+    words: puzzle.words.slice(),
   };
 }

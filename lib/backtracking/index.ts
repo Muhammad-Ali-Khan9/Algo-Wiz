@@ -124,8 +124,8 @@ export const BACKTRACKING_META: BacktrackingMeta[] = [
     space: "O(s)",
     available: true,
     definition:
-      "Place dictionary words into across/down slots so shared letters agree. Try a word per slot and backtrack when it clashes.",
-    usage: "Crossword generation, word puzzles, and interlocking constraints.",
+      "Fill a 4×4 or 5×5 word square: try bank words in across slots, then require every down reading to also be in the bank.",
+    usage: "Crossword generation, word squares, and interlocking constraints.",
   }),
 ];
 

@@ -468,21 +468,37 @@ export function graphColoring(input: BacktrackingInput): BacktrackingFrame[] {
 
 type Slot = { id: number; cells: [number, number][]; across: boolean };
 
-/** Tiny crossword — place a small word bank into slotted grid. */
+const DEFAULT_CROSSWORD_GRID = [
+  [".", ".", ".", "."],
+  [".", ".", ".", "."],
+  [".", ".", ".", "."],
+  [".", ".", ".", "."],
+];
+
+const DEFAULT_CROSSWORD_WORDS = [
+  "CASE",
+  "AREA",
+  "REAR",
+  "EARS",
+  "CARE",
+  "SEAR",
+  "TEAR",
+  "SEAT",
+];
+
+/** Crossword — place bank words into across slots; downs must also be bank words. */
 export function crossword(input: BacktrackingInput): BacktrackingFrame[] {
   const t = new BacktrackingTrace();
-  const template = parseGrid(input, [
-    [".", "."],
-    [".", "."],
-  ]);
+  const template = parseGrid(input, DEFAULT_CROSSWORD_GRID);
   const rows = template.length;
   const cols = template[0]?.length ?? 0;
   const board: (string | null)[][] = template.map((row) =>
     row.map((cell) => (cell === "#" ? "#" : null)),
   );
-  const words = (input.words?.length ? input.words : ["AT", "ME", "AM", "TE"]).map((w) =>
+  const words = (input.words?.length ? input.words : DEFAULT_CROSSWORD_WORDS).map((w) =>
     w.toUpperCase(),
   );
+  const wordSet = new Set(words);
   const found: number[][] = [];
   const foundLabels: string[] = [];
   const usedWord = Array.from({ length: words.length }, () => false);
@@ -517,7 +533,18 @@ export function crossword(input: BacktrackingInput): BacktrackingFrame[] {
     }
   }
 
+  const acrossSlots = slots.filter((s) => s.across);
+  const downSlots = slots.filter((s) => !s.across);
   const wordIds = words.map((_, i) => i);
+
+  const readSlot = (slot: Slot) =>
+    slot.cells.map(([r, c]) => board[r]![c] ?? "").join("");
+
+  const downsValid = () =>
+    downSlots.every((slot) => {
+      const text = readSlot(slot);
+      return text.length === slot.cells.length && wordSet.has(text);
+    });
 
   const baseRoles = (): BtRole[][] => {
     const roles = t.idleBoard(rows, cols);
@@ -563,7 +590,7 @@ export function crossword(input: BacktrackingInput): BacktrackingFrame[] {
     wordIds,
     t.idle(words.length),
     [],
-    `Crossword — place words into ${slots.length} slots.`,
+    `Crossword — ${rows}×${cols} grid · fill ${acrossSlots.length} across slots (${downSlots.length} downs must match the bank).`,
     {
       depth: 0,
       found,
@@ -573,13 +600,49 @@ export function crossword(input: BacktrackingInput): BacktrackingFrame[] {
     },
   );
 
-  const order = slots
+  const order = acrossSlots
     .map((_, i) => i)
-    .sort((a, b) => slots[b]!.cells.length - slots[a]!.cells.length);
+    .sort((a, b) => acrossSlots[b]!.cells.length - acrossSlots[a]!.cells.length);
 
   const solve = (si: number): boolean => {
     t.calls += 1;
     if (si === order.length) {
+      const rolesCheck = baseRoles();
+      for (const slot of downSlots) {
+        for (const [r, c] of slot.cells) rolesCheck[r]![c] = "current";
+      }
+      t.push(
+        wordIds,
+        usedWord.map((u) => (u ? "choose" : "idle")),
+        [],
+        "Across filled — check down words against the bank.",
+        {
+          found,
+          foundLabels,
+          board: board.map((row) => row.slice()),
+          boardRoles: rolesCheck,
+        },
+      );
+
+      if (!downsValid()) {
+        for (const slot of downSlots) {
+          for (const [r, c] of slot.cells) rolesCheck[r]![c] = "skip";
+        }
+        t.push(
+          wordIds,
+          usedWord.map((u) => (u ? "choose" : "idle")),
+          [],
+          "Down words are not all in the bank — backtrack.",
+          {
+            found,
+            foundLabels,
+            board: board.map((row) => row.slice()),
+            boardRoles: rolesCheck,
+          },
+        );
+        return false;
+      }
+
       t.solutions += 1;
       found.push([1]);
       foundLabels.push(
@@ -595,7 +658,7 @@ export function crossword(input: BacktrackingInput): BacktrackingFrame[] {
         wordIds,
         usedWord.map((u) => (u ? "solution" : "idle")),
         [],
-        "All slots filled.",
+        "All across and down words are valid.",
         {
           found,
           foundLabels,
@@ -606,8 +669,7 @@ export function crossword(input: BacktrackingInput): BacktrackingFrame[] {
       return true;
     }
 
-    const slot = slots[order[si]!]!;
-    const dir = slot.across ? "across" : "down";
+    const slot = acrossSlots[order[si]!]!;
     for (let wi = 0; wi < words.length; wi += 1) {
       if (usedWord[wi]) continue;
       const word = words[wi]!;
@@ -615,7 +677,7 @@ export function crossword(input: BacktrackingInput): BacktrackingFrame[] {
       wordRoles[wi] = "current";
       const rolesTry = baseRoles();
       for (const [r, c] of slot.cells) rolesTry[r]![c] = "current";
-      t.push(wordIds, wordRoles, [], `Slot ${slot.id} (${dir}): try "${word}".`, {
+      t.push(wordIds, wordRoles, [], `Across slot ${slot.id}: try "${word}".`, {
         depth: si,
         found,
         foundLabels,
@@ -627,7 +689,7 @@ export function crossword(input: BacktrackingInput): BacktrackingFrame[] {
         const rolesSkip = baseRoles();
         for (const [r, c] of slot.cells) rolesSkip[r]![c] = "skip";
         wordRoles[wi] = "skip";
-        t.push(wordIds, wordRoles, [], `"${word}" does not fit this slot.`, {
+        t.push(wordIds, wordRoles, [], `"${word}" does not fit this across slot.`, {
           found,
           foundLabels,
           board: board.map((row) => row.slice()),
@@ -645,7 +707,7 @@ export function crossword(input: BacktrackingInput): BacktrackingFrame[] {
         wordIds,
         usedWord.map((u) => (u ? "choose" : "idle")),
         [],
-        `Place "${word}" ${dir}.`,
+        `Place "${word}" across.`,
         {
           depth: si + 1,
           found,
