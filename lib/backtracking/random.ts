@@ -359,5 +359,65 @@ export function generateBacktrackingInput(
     };
   }
 
+  if (id === "hamiltonian-path" || id === "hamiltonian-cycle") {
+    const n = size <= 8 ? 4 : 5;
+    // Cycle plus a few chords — guarantees Hamiltonian structure on small n
+    const pairs: [number, number][] = [];
+    for (let i = 0; i < n; i += 1) pairs.push([i, (i + 1) % n]);
+    if (n >= 4) pairs.push([0, 2]);
+    if (n >= 5 && rand() > 0.35) pairs.push([1, 3]);
+    if (n >= 5 && rand() > 0.5) pairs.push([0, 3]);
+    return { ...base, n, pairs };
+  }
+
+  if (id === "tsp") {
+    const n = size <= 10 ? 4 : 5;
+    const weights = Array.from({ length: n }, (_, i) =>
+      Array.from({ length: n }, (_, j) => {
+        if (i === j) return 0;
+        return 1 + Math.floor(rand() * 9);
+      }),
+    );
+    // Symmetrize for an undirected feel
+    for (let i = 0; i < n; i += 1)
+      for (let j = i + 1; j < n; j += 1) {
+        weights[j]![i] = weights[i]![j]!;
+      }
+    const pairs: [number, number][] = [];
+    for (let i = 0; i < n; i += 1) for (let j = i + 1; j < n; j += 1) pairs.push([i, j]);
+    return { ...base, n, pairs, weights };
+  }
+
+  if (id === "palindrome-partition") {
+    const pool = size <= 8 ? ["AAB", "AAA"] : ["AABB", "ABBA", "AACAA"];
+    const word = pool[Math.floor(rand() * pool.length)]!;
+    return { ...base, n: word.length, words: [word] };
+  }
+
+  if (id === "generate-parentheses") {
+    const n = size <= 8 ? 2 : size <= 12 ? 3 : 4;
+    return { ...base, n };
+  }
+
+  if (id === "letter-combinations") {
+    const pool = size <= 8 ? ["23", "79"] : ["234", "29", "567"];
+    const digits = pool[Math.floor(rand() * pool.length)]!;
+    return { ...base, n: digits.length, words: [digits] };
+  }
+
+  if (id === "expression-generation") {
+    const puzzles = [
+      { num: "123", target: 6 },
+      { num: "105", target: 5 },
+      { num: "232", target: 8 },
+      { num: "1234", target: 10 },
+    ];
+    const pick =
+      size <= 10
+        ? puzzles[Math.floor(rand() * 3)]!
+        : puzzles[Math.floor(rand() * puzzles.length)]!;
+    return { ...base, n: pick.num.length, words: [pick.num], target: pick.target };
+  }
+
   return base;
 }

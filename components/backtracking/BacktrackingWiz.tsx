@@ -196,6 +196,17 @@ export function BacktrackingWiz() {
     algorithmId === "word-search" ||
     algorithmId === "flood-fill";
 
+  const isGraphBt =
+    algorithmId === "hamiltonian-path" ||
+    algorithmId === "hamiltonian-cycle" ||
+    algorithmId === "tsp";
+
+  const isStringBt =
+    algorithmId === "palindrome-partition" ||
+    algorithmId === "generate-parentheses" ||
+    algorithmId === "letter-combinations" ||
+    algorithmId === "expression-generation";
+
   const isBoardAlgo = isCsp || isGridMaze;
 
   const sizeLabel =
@@ -207,13 +218,19 @@ export function BacktrackingWiz() {
           ? "Board"
           : algorithmId === "sudoku"
             ? "Puzzle"
-            : algorithmId === "graph-coloring"
+            : algorithmId === "graph-coloring" || isGraphBt
               ? "Nodes"
               : algorithmId === "rat-in-a-maze" || algorithmId === "word-search"
                 ? "Board"
                 : algorithmId === "crossword" || isGridMaze
                   ? "Grid"
-                  : "n";
+                  : algorithmId === "generate-parentheses"
+                    ? "Pairs"
+                    : algorithmId === "expression-generation"
+                      ? "Digits"
+                      : isStringBt
+                        ? "Input"
+                        : "n";
 
   const sizeDisplay =
     algorithmId === "combinations"
@@ -227,11 +244,24 @@ export function BacktrackingWiz() {
           ? `${input.grid?.length ?? input.n}×${input.grid?.[0]?.length ?? input.n}`
           : algorithmId === "graph-coloring"
             ? `${input.n} · k=${input.k}`
-            : input.values.length;
+            : isGraphBt
+              ? input.n
+              : algorithmId === "generate-parentheses"
+                ? input.n
+                : algorithmId === "expression-generation"
+                  ? `${input.words?.[0] ?? ""} → ${input.target}`
+                  : algorithmId === "palindrome-partition" ||
+                      algorithmId === "letter-combinations"
+                    ? (input.words?.[0] ?? "")
+                    : input.values.length;
 
   const found = frame?.found ?? [];
   const foundLabels = frame?.foundLabels ?? [];
-  const showAllSolutions = algorithmId === "permutations" || algorithmId === "n-queens";
+  const showAllSolutions =
+    algorithmId === "permutations" ||
+    algorithmId === "n-queens" ||
+    algorithmId === "generate-parentheses" ||
+    algorithmId === "letter-combinations";
   const showLabels = foundLabels.length
     ? showAllSolutions
       ? foundLabels
@@ -247,6 +277,9 @@ export function BacktrackingWiz() {
   const nodeRoles = frame?.nodeRoles;
   const isGraph = Boolean(nodes?.length);
   const DIR_LABELS = ["D", "L", "R", "U"];
+  const NODE_LABELS = Array.from({ length: input.n || 0 }, (_, i) =>
+    String.fromCharCode(65 + i),
+  );
   const candidateValues =
     algorithmId === "crossword" && input.words?.length
       ? input.words
@@ -256,7 +289,17 @@ export function BacktrackingWiz() {
           ? [input.words[0]]
           : algorithmId === "rat-in-a-maze" || algorithmId === "maze-solver"
             ? DIR_LABELS
-            : (frame?.candidates ?? input.values);
+            : isGraphBt
+              ? NODE_LABELS
+              : algorithmId === "palindrome-partition" && input.words?.[0]
+                ? input.words[0].split("")
+                : algorithmId === "generate-parentheses"
+                  ? ["(", ")"]
+                  : algorithmId === "expression-generation"
+                    ? ["+", "-", "*"]
+                    : algorithmId === "letter-combinations"
+                      ? (frame?.candidates ?? []).map((code) => String.fromCharCode(code))
+                      : (frame?.candidates ?? input.values);
 
   const pathLabels =
     algorithmId === "rat-in-a-maze"
@@ -268,7 +311,15 @@ export function BacktrackingWiz() {
             const cols = board?.[0]?.length ?? input.grid?.[0]?.length ?? 1;
             return `(${Math.floor(v / cols)},${v % cols})`;
           })
-        : (frame?.path ?? []).map(String);
+        : isGraphBt
+          ? (frame?.path ?? []).map((v) => NODE_LABELS[v] ?? String(v))
+          : algorithmId === "generate-parentheses"
+            ? (frame?.path ?? []).map((v) => (v === 0 ? "(" : ")"))
+            : algorithmId === "letter-combinations"
+              ? (frame?.path ?? []).map((code) => String.fromCharCode(code))
+              : algorithmId === "palindrome-partition"
+                ? (frame?.path ?? []).map((len) => String(len))
+                : (frame?.path ?? []).map(String);
 
   return (
     <div className={styles.shell}>
@@ -483,7 +534,12 @@ export function BacktrackingWiz() {
                 </div>
               ) : null}
 
-              {!isBoardAlgo || algorithmId === "crossword" || isGridMaze || !board ? (
+              {!isBoardAlgo ||
+              algorithmId === "crossword" ||
+              isGridMaze ||
+              isGraphBt ||
+              isStringBt ||
+              !board ? (
                 <div className={btStyles.panel}>
                   <p className={btStyles.panelLabel}>
                     {algorithmId === "crossword"
@@ -495,7 +551,17 @@ export function BacktrackingWiz() {
                           : algorithmId === "rat-in-a-maze" ||
                               algorithmId === "maze-solver"
                             ? "Moves"
-                            : "Candidates"}
+                            : isGraphBt
+                              ? "Vertices"
+                              : algorithmId === "generate-parentheses"
+                                ? "Chars"
+                                : algorithmId === "expression-generation"
+                                  ? "Ops"
+                                  : algorithmId === "letter-combinations"
+                                    ? "Letters"
+                                    : algorithmId === "palindrome-partition"
+                                      ? "Chars"
+                                      : "Candidates"}
                   </p>
                   <div className={btStyles.chips}>
                     {candidateValues.length === 0 ? (
@@ -525,7 +591,7 @@ export function BacktrackingWiz() {
                 </div>
               ) : null}
 
-              {!isCsp || isGridMaze ? (
+              {!isCsp || isGridMaze || isGraphBt || isStringBt ? (
                 <div className={btStyles.panel}>
                   <p className={btStyles.panelLabel}>
                     Path

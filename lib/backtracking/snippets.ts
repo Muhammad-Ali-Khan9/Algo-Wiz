@@ -812,4 +812,440 @@ int nQueens(int n, int row, vector<int>& cols, vector<int>& col, vector<int>& d1
     Fill(g,r,c+1,oldc,newc); Fill(g,r,c-1,oldc,newc);
 }`,
   ),
+
+  "hamiltonian-path": snippets(
+    `int ham(int u, int depth) {
+    path[depth]=u; visited[u]=1;
+    if (depth==n-1) return 1;
+    for (int v=0;v<n;v++) if (adj[u][v] && !visited[v])
+        if (ham(v, depth+1)) return 1;
+    visited[u]=0; return 0;
+}`,
+    `bool ham(int u, int depth, vector<int>& path, vector<int>& vis) {
+    path[depth]=u; vis[u]=1;
+    if (depth==n-1) return true;
+    for (int v=0;v<n;v++) if (adj[u][v] && !vis[v])
+        if (ham(v, depth+1, path, vis)) return true;
+    vis[u]=0; return false;
+}`,
+    `def hamiltonian_path(adj):
+    n, path, vis = len(adj), [], [False]*len(adj)
+    def dfs(u) -> bool:
+        path.append(u); vis[u] = True
+        if len(path) == n: return True
+        for v in range(n):
+            if adj[u][v] and not vis[v] and dfs(v): return True
+        path.pop(); vis[u] = False
+        return False
+    return any(dfs(s) for s in range(n))`,
+    `static boolean ham(int u, int depth, int[] path, boolean[] vis) {
+    path[depth]=u; vis[u]=true;
+    if (depth==n-1) return true;
+    for (int v=0;v<n;v++) if (adj[u][v] && !vis[v])
+        if (ham(v, depth+1, path, vis)) return true;
+    vis[u]=false; return false;
+}`,
+    `function hamiltonianPath(adj: boolean[][]): number[] | null {
+  const n = adj.length, path: number[] = [], vis = Array(n).fill(false);
+  function dfs(u: number): boolean {
+    path.push(u); vis[u] = true;
+    if (path.length === n) return true;
+    for (let v = 0; v < n; v++) if (adj[u]![v] && !vis[v] && dfs(v)) return true;
+    path.pop(); vis[u] = false; return false;
+  }
+  for (let s = 0; s < n; s++) if (dfs(s)) return path;
+  return null;
+}`,
+    `static bool Ham(int u, int depth, int[] path, bool[] vis) {
+    path[depth]=u; vis[u]=true;
+    if (depth==n-1) return true;
+    for (int v=0;v<n;v++) if (adj[u,v] && !vis[v])
+        if (Ham(v, depth+1, path, vis)) return true;
+    vis[u]=false; return false;
+}`,
+  ),
+
+  "hamiltonian-cycle": snippets(
+    `int ham(int u, int depth) {
+    path[depth]=u; visited[u]=1;
+    if (depth==n-1) return adj[u][path[0]];
+    for (int v=0;v<n;v++) if (adj[u][v] && !visited[v])
+        if (ham(v, depth+1)) return 1;
+    visited[u]=0; return 0;
+}`,
+    `bool ham(int u, int depth, vector<int>& path, vector<int>& vis) {
+    path[depth]=u; vis[u]=1;
+    if (depth==n-1) return adj[u][path[0]];
+    for (int v=0;v<n;v++) if (adj[u][v] && !vis[v])
+        if (ham(v, depth+1, path, vis)) return true;
+    vis[u]=0; return false;
+}`,
+    `def hamiltonian_cycle(adj, start=0):
+    n, path, vis = len(adj), [start], [False]*len(adj)
+    vis[start] = True
+    def dfs(u) -> bool:
+        if len(path) == n: return adj[u][start]
+        for v in range(n):
+            if adj[u][v] and not vis[v]:
+                vis[v] = True; path.append(v)
+                if dfs(v): return True
+                path.pop(); vis[v] = False
+        return False
+    return path + [start] if dfs(start) else None`,
+    `static boolean ham(int u, int depth, int[] path, boolean[] vis) {
+    path[depth]=u; vis[u]=true;
+    if (depth==n-1) return adj[u][path[0]];
+    for (int v=0;v<n;v++) if (adj[u][v] && !vis[v])
+        if (ham(v, depth+1, path, vis)) return true;
+    vis[u]=false; return false;
+}`,
+    `function hamiltonianCycle(adj: boolean[][], start = 0): number[] | null {
+  const n = adj.length, path = [start], vis = Array(n).fill(false);
+  vis[start] = true;
+  function dfs(u: number): boolean {
+    if (path.length === n) return !!adj[u]![start];
+    for (let v = 0; v < n; v++) {
+      if (!adj[u]![v] || vis[v]) continue;
+      vis[v] = true; path.push(v);
+      if (dfs(v)) return true;
+      path.pop(); vis[v] = false;
+    }
+    return false;
+  }
+  return dfs(start) ? [...path, start] : null;
+}`,
+    `static bool Ham(int u, int depth, int[] path, bool[] vis) {
+    path[depth]=u; vis[u]=true;
+    if (depth==n-1) return adj[u,path[0]];
+    for (int v=0;v<n;v++) if (adj[u,v] && !vis[v])
+        if (Ham(v, depth+1, path, vis)) return true;
+    vis[u]=false; return false;
+}`,
+  ),
+
+  tsp: snippets(
+    `int tsp(int u, int used, int cost) {
+    if (used == (1<<n)-1) return cost + w[u][0];
+    int best = INF;
+    for (int v=0;v<n;v++) if (!(used & (1<<v)))
+        best = min(best, tsp(v, used|(1<<v), cost+w[u][v]));
+    return best;
+}`,
+    `int tsp(int u, int used, int cost, vector<vector<int>>& w) {
+    if (used == (1<<n)-1) return cost + w[u][0];
+    int best = INT_MAX;
+    for (int v=0;v<n;v++) if (!(used & (1<<v)))
+        best = min(best, tsp(v, used|(1<<v), cost+w[u][v], w));
+    return best;
+}`,
+    `def tsp(w, start=0):
+    n, best = len(w), float("inf")
+    def dfs(u, used, cost, path):
+        nonlocal best
+        if len(path) == n:
+            best = min(best, cost + w[u][start]); return
+        for v in range(n):
+            if used & (1 << v): continue
+            nxt = cost + w[u][v]
+            if nxt >= best: continue
+            dfs(v, used | (1 << v), nxt, path + [v])
+    dfs(start, 1 << start, 0, [start])
+    return best`,
+    `static int tsp(int u, int used, int cost, int[][] w) {
+    if (used == (1<<n)-1) return cost + w[u][0];
+    int best = Integer.MAX_VALUE;
+    for (int v=0;v<n;v++) if ((used & (1<<v))==0)
+        best = Math.min(best, tsp(v, used|(1<<v), cost+w[u][v], w));
+    return best;
+}`,
+    `function tsp(w: number[][], start = 0): number {
+  const n = w.length; let best = Infinity;
+  function dfs(u: number, used: number, cost: number) {
+    if (used === (1 << n) - 1) { best = Math.min(best, cost + w[u]![start]!); return; }
+    for (let v = 0; v < n; v++) {
+      if (used & (1 << v)) continue;
+      const nxt = cost + w[u]![v]!;
+      if (nxt >= best) continue;
+      dfs(v, used | (1 << v), nxt);
+    }
+  }
+  dfs(start, 1 << start, 0);
+  return best;
+}`,
+    `static int Tsp(int u, int used, int cost, int[,] w) {
+    if (used == (1<<n)-1) return cost + w[u,0];
+    int best = int.MaxValue;
+    for (int v=0;v<n;v++) if ((used & (1<<v))==0)
+        best = Math.Min(best, Tsp(v, used|(1<<v), cost+w[u,v], w));
+    return best;
+}`,
+  ),
+
+  "palindrome-partition": snippets(
+    `void part(int start) {
+    if (start==n) { /* record parts */ return; }
+    for (int end=start; end<n; end++) {
+        if (!isPal(s,start,end)) continue;
+        push(s,start,end);
+        part(end+1);
+        pop();
+    }
+}`,
+    `void part(int start, string& s, vector<string>& parts) {
+    if (start==(int)s.size()) { /* record */ return; }
+    for (int end=start; end<(int)s.size(); end++) {
+        if (!isPal(s,start,end)) continue;
+        parts.push_back(s.substr(start,end-start+1));
+        part(end+1,s,parts);
+        parts.pop_back();
+    }
+}`,
+    `def palindrome_partition(s: str) -> list[list[str]]:
+    out, parts = [], []
+    def is_pal(lo, hi):
+        while lo < hi:
+            if s[lo] != s[hi]: return False
+            lo += 1; hi -= 1
+        return True
+    def dfs(start: int):
+        if start == len(s):
+            out.append(parts[:]); return
+        for end in range(start, len(s)):
+            if not is_pal(start, end): continue
+            parts.append(s[start:end+1])
+            dfs(end + 1)
+            parts.pop()
+    dfs(0)
+    return out`,
+    `static void part(int start, String s, List<String> parts, List<List<String>> out) {
+    if (start==s.length()) { out.add(new ArrayList<>(parts)); return; }
+    for (int end=start; end<s.length(); end++) {
+        if (!isPal(s,start,end)) continue;
+        parts.add(s.substring(start,end+1));
+        part(end+1,s,parts,out);
+        parts.remove(parts.size()-1);
+    }
+}`,
+    `function palindromePartition(s: string): string[][] {
+  const out: string[][] = [], parts: string[] = [];
+  const isPal = (lo: number, hi: number) => {
+    while (lo < hi) { if (s[lo++] !== s[hi--]) return false; }
+    return true;
+  };
+  function dfs(start: number) {
+    if (start === s.length) { out.push([...parts]); return; }
+    for (let end = start; end < s.length; end++) {
+      if (!isPal(start, end)) continue;
+      parts.push(s.slice(start, end + 1));
+      dfs(end + 1);
+      parts.pop();
+    }
+  }
+  dfs(0); return out;
+}`,
+    `static void Part(int start, string s, List<string> parts, List<List<string>> out) {
+    if (start==s.Length) { out.Add(new List<string>(parts)); return; }
+    for (int end=start; end<s.Length; end++) {
+        if (!IsPal(s,start,end)) continue;
+        parts.Add(s.Substring(start,end-start+1));
+        Part(end+1,s,parts,out);
+        parts.RemoveAt(parts.Count-1);
+    }
+}`,
+  ),
+
+  "generate-parentheses": snippets(
+    `void gen(int open, int close) {
+    if ((int)path.size()==2*n) { /* record */ return; }
+    if (open<n) { path.push_back('('); gen(open+1,close); path.pop_back(); }
+    if (close<open) { path.push_back(')'); gen(open,close+1); path.pop_back(); }
+}`,
+    `void gen(int open, int close, string& path, vector<string>& out) {
+    if ((int)path.size()==2*n) { out.push_back(path); return; }
+    if (open<n) { path.push_back('('); gen(open+1,close,path,out); path.pop_back(); }
+    if (close<open) { path.push_back(')'); gen(open,close+1,path,out); path.pop_back(); }
+}`,
+    `def generate_parentheses(n: int) -> list[str]:
+    out, path = [], []
+    def dfs(open_n: int, close_n: int):
+        if len(path) == 2 * n:
+            out.append("".join(path)); return
+        if open_n < n:
+            path.append("("); dfs(open_n + 1, close_n); path.pop()
+        if close_n < open_n:
+            path.append(")"); dfs(open_n, close_n + 1); path.pop()
+    dfs(0, 0)
+    return out`,
+    `static void gen(int open, int close, StringBuilder path, List<String> out) {
+    if (path.length()==2*n) { out.add(path.toString()); return; }
+    if (open<n) { path.append('('); gen(open+1,close,path,out); path.deleteCharAt(path.length()-1); }
+    if (close<open) { path.append(')'); gen(open,close+1,path,out); path.deleteCharAt(path.length()-1); }
+}`,
+    `function generateParentheses(n: number): string[] {
+  const out: string[] = [], path: string[] = [];
+  function dfs(open: number, close: number) {
+    if (path.length === 2 * n) { out.push(path.join("")); return; }
+    if (open < n) { path.push("("); dfs(open + 1, close); path.pop(); }
+    if (close < open) { path.push(")"); dfs(open, close + 1); path.pop(); }
+  }
+  dfs(0, 0); return out;
+}`,
+    `static void Gen(int open, int close, StringBuilder path, List<string> out) {
+    if (path.Length==2*n) { out.Add(path.ToString()); return; }
+    if (open<n) { path.Append('('); Gen(open+1,close,path,out); path.Length--; }
+    if (close<open) { path.Append(')'); Gen(open,close+1,path,out); path.Length--; }
+}`,
+  ),
+
+  "letter-combinations": snippets(
+    `void comb(int i) {
+    if (i==nd) { /* record path */ return; }
+    char* letters = map[digits[i]-'0'];
+    for (int k=0; letters[k]; k++) {
+        path[i]=letters[k];
+        comb(i+1);
+    }
+}`,
+    `void comb(int i, const string& digits, string& path, vector<string>& out) {
+    if (i==(int)digits.size()) { out.push_back(path); return; }
+    for (char c : phone[digits[i]-'0']) {
+        path.push_back(c);
+        comb(i+1, digits, path, out);
+        path.pop_back();
+    }
+}`,
+    `def letter_combinations(digits: str) -> list[str]:
+    phone = {"2":"abc","3":"def","4":"ghi","5":"jkl","6":"mno","7":"pqrs","8":"tuv","9":"wxyz"}
+    out, path = [], []
+    def dfs(i: int):
+        if i == len(digits):
+            out.append("".join(path)); return
+        for ch in phone.get(digits[i], ""):
+            path.append(ch); dfs(i + 1); path.pop()
+    if digits: dfs(0)
+    return out`,
+    `static void comb(int i, String digits, StringBuilder path, List<String> out) {
+    if (i==digits.length()) { out.add(path.toString()); return; }
+    String letters = phone[digits.charAt(i)-'0'];
+    for (int k=0;k<letters.length();k++) {
+        path.append(letters.charAt(k));
+        comb(i+1,digits,path,out);
+        path.deleteCharAt(path.length()-1);
+    }
+}`,
+    `function letterCombinations(digits: string): string[] {
+  const phone: Record<string,string> = {2:"abc",3:"def",4:"ghi",5:"jkl",6:"mno",7:"pqrs",8:"tuv",9:"wxyz"};
+  const out: string[] = [], path: string[] = [];
+  function dfs(i: number) {
+    if (i === digits.length) { out.push(path.join("")); return; }
+    for (const ch of phone[digits[i]!] ?? "") {
+      path.push(ch); dfs(i + 1); path.pop();
+    }
+  }
+  if (digits) dfs(0);
+  return out;
+}`,
+    `static void Comb(int i, string digits, StringBuilder path, List<string> out) {
+    if (i==digits.Length) { out.Add(path.ToString()); return; }
+    string letters = phone[digits[i]-'0'];
+    foreach (char c in letters) {
+        path.Append(c); Comb(i+1,digits,path,out); path.Length--;
+    }
+}`,
+  ),
+
+  "expression-generation": snippets(
+    `void expr(int i, long val, long last) {
+    if (i==n) { if (val==target) /* record */; return; }
+    for (int j=i;j<n;j++) {
+        long cur = parse(num,i,j);
+        if (i==0) expr(j+1,cur,cur);
+        else {
+            expr(j+1, val+cur, cur);
+            expr(j+1, val-cur, -cur);
+            expr(j+1, val-last+last*cur, last*cur);
+        }
+        if (num[i]=='0') break;
+    }
+}`,
+    `void expr(int i, long val, long last, string path) {
+    if (i==n) { if (val==target) out.push_back(path); return; }
+    for (int j=i;j<n;j++) {
+        string piece = num.substr(i,j-i+1);
+        long cur = stol(piece);
+        if (i==0) expr(j+1,cur,cur,piece);
+        else {
+            expr(j+1,val+cur,cur,path+"+"+piece);
+            expr(j+1,val-cur,-cur,path+"-"+piece);
+            expr(j+1,val-last+last*cur,last*cur,path+"*"+piece);
+        }
+        if (num[i]=='0') break;
+    }
+}`,
+    `def expression_generation(num: str, target: int) -> list[str]:
+    out = []
+    def dfs(i, expr, val, last):
+        if i == len(num):
+            if val == target: out.append(expr)
+            return
+        for j in range(i, len(num)):
+            if j > i and num[i] == "0": break
+            piece = num[i:j+1]
+            cur = int(piece)
+            if i == 0:
+                dfs(j+1, piece, cur, cur)
+            else:
+                dfs(j+1, expr+"+"+piece, val+cur, cur)
+                dfs(j+1, expr+"-"+piece, val-cur, -cur)
+                dfs(j+1, expr+"*"+piece, val-last+last*cur, last*cur)
+    dfs(0, "", 0, 0)
+    return out`,
+    `static void expr(int i, long val, long last, String path, List<String> out) {
+    if (i==n) { if (val==target) out.add(path); return; }
+    for (int j=i;j<n;j++) {
+        String piece = num.substring(i,j+1);
+        long cur = Long.parseLong(piece);
+        if (i==0) expr(j+1,cur,cur,piece,out);
+        else {
+            expr(j+1,val+cur,cur,path+"+"+piece,out);
+            expr(j+1,val-cur,-cur,path+"-"+piece,out);
+            expr(j+1,val-last+last*cur,last*cur,path+"*"+piece,out);
+        }
+        if (num.charAt(i)=='0') break;
+    }
+}`,
+    `function expressionGeneration(num: string, target: number): string[] {
+  const out: string[] = [];
+  function dfs(i: number, expr: string, val: number, last: number) {
+    if (i === num.length) { if (val === target) out.push(expr); return; }
+    for (let j = i; j < num.length; j++) {
+      if (j > i && num[i] === "0") break;
+      const piece = num.slice(i, j + 1);
+      const cur = Number(piece);
+      if (i === 0) dfs(j + 1, piece, cur, cur);
+      else {
+        dfs(j + 1, expr + "+" + piece, val + cur, cur);
+        dfs(j + 1, expr + "-" + piece, val - cur, -cur);
+        dfs(j + 1, expr + "*" + piece, val - last + last * cur, last * cur);
+      }
+    }
+  }
+  dfs(0, "", 0, 0);
+  return out;
+}`,
+    `static void Expr(int i, long val, long last, string path, List<string> out) {
+    if (i==n) { if (val==target) out.Add(path); return; }
+    for (int j=i;j<n;j++) {
+        string piece = num.Substring(i,j-i+1);
+        long cur = long.Parse(piece);
+        if (i==0) Expr(j+1,cur,cur,piece,out);
+        else {
+            Expr(j+1,val+cur,cur,path+"+"+piece,out);
+            Expr(j+1,val-cur,-cur,path+"-"+piece,out);
+            Expr(j+1,val-last+last*cur,last*cur,path+"*"+piece,out);
+        }
+        if (num[i]=='0') break;
+    }
+}`,
+  ),
 };

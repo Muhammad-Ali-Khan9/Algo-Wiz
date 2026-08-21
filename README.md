@@ -500,7 +500,24 @@ Every algorithm below is **playable**, with multi-language code, shuffleable inp
 | Word Search   | O(m·n·4ᴸ) | Match a word by adjacent letters without reusing cells   |
 | Flood Fill    | O(m·n)    | DFS paint-bucket on 4-connected same-color region        |
 
-Size stays small (roughly 3–6 candidates / 4–5 board) so frame counts stay playable. Combinations expose `n · k`; combination sum shows `T` (target); CSP / grid algos show board / node counts.
+#### Graph Backtracking
+
+| Algorithm         | Average | Notes                                                 |
+| ----------------- | ------- | ----------------------------------------------------- |
+| Hamiltonian Path  | O(n!)   | Visit every vertex exactly once                       |
+| Hamiltonian Cycle | O(n!)   | Same, then close the tour back to the start           |
+| TSP               | O(n!)   | Complete-graph tour search with cost pruning (tiny n) |
+
+#### String Backtracking
+
+| Algorithm               | Average    | Notes                                         |
+| ----------------------- | ---------- | --------------------------------------------- |
+| Palindrome Partitioning | O(n · 2ⁿ)  | Cut the string so every piece is a palindrome |
+| Generate Parentheses    | O(4ⁿ / √n) | All valid strings with n pairs                |
+| Letter Combinations     | O(4ⁿ)      | Phone keypad digits → letter strings          |
+| Expression Generation   | O(3ⁿ)      | Insert +/−/∗ between digits to hit a target   |
+
+Size stays small (roughly 3–6 candidates / 4–5 board) so frame counts stay playable. Combinations expose `n · k`; combination sum shows `T` (target); CSP / grid / graph / string algos show board / node / input sizes.
 
 ---
 
@@ -524,7 +541,7 @@ lib/pathfinding/    shortest-path runners (reuses graph types / BFS)
 lib/trees/          binary, BST, AVL, RB, heaps, tries, segment, specialized
 lib/dp/             1D, grid, knapsack, string, sequence, interval,
                     tree, graph, bitmask, game + shared trace / random
-lib/backtracking/   combinatorial + constraint + grid-maze runners + shared trace / random
+lib/backtracking/   combinatorial + constraint + grid-maze + graph-bt + string-bt + shared trace / random
 ```
 
 Playback is speed-gated `setTimeout` stepping; Space / arrows / `R` match sorting.

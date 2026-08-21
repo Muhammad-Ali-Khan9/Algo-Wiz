@@ -12,7 +12,14 @@ export type BacktrackingAlgoId =
   | "rat-in-a-maze"
   | "maze-solver"
   | "word-search"
-  | "flood-fill";
+  | "flood-fill"
+  | "hamiltonian-path"
+  | "hamiltonian-cycle"
+  | "tsp"
+  | "palindrome-partition"
+  | "generate-parentheses"
+  | "letter-combinations"
+  | "expression-generation";
 
 export type BtRole =
   "idle" | "current" | "choose" | "skip" | "backtrack" | "solution" | "fixed";
@@ -66,8 +73,10 @@ export interface BacktrackingInput {
   grid?: string[][];
   /** Crossword word bank, word-search target, or flood-fill replacement color. */
   words?: string[];
-  /** Graph coloring undirected edges as [u, v] pairs. */
+  /** Graph coloring / Hamiltonian undirected edges as [u, v] pairs. */
   pairs?: [number, number][];
+  /** TSP edge weights (n×n); ignored entries can be 0. */
+  weights?: number[][];
   /** Flood fill / word-search start row (optional; else inferred). */
   startRow?: number;
   /** Flood fill / word-search start column (optional; else inferred). */
