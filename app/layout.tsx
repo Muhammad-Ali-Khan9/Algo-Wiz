@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Poppins } from "next/font/google";
 import { AppShell } from "@/components/nav/AppShell";
-import Script from "next/script";
 import "./styles/tailwind.css";
 import "./globals.scss";
 
@@ -30,6 +29,10 @@ export const metadata: Metadata = {
   },
 };
 
+/** Runs before paint so the saved theme applies without a flash. */
+const THEME_BOOT =
+  "(function(){try{var t=localStorage.getItem('algo-wiz-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t)}catch(e){}})();";
+
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
@@ -38,15 +41,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} ${poppins.variable} h-full antialiased`}
     >
-      <body className="min-h-full">
-        <Script
-          id="algo-wiz-theme"
-          strategy="beforeInteractive"
-          dangerouslySetInnerHTML={{
-            __html:
-              "(function(){try{var t=localStorage.getItem('algo-wiz-theme');if(t==='light'||t==='dark')document.documentElement.dataset.theme=t}catch(e){}})();",
-          }}
-        />
+      <body className="min-h-full" suppressHydrationWarning>
+        <script dangerouslySetInnerHTML={{ __html: THEME_BOOT }} />
         <AppShell>{children}</AppShell>
       </body>
     </html>

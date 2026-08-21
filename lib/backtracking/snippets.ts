@@ -552,4 +552,264 @@ int nQueens(int n, int row, vector<int>& cols, vector<int>& col, vector<int>& d1
     return false;
 }`,
   ),
+
+  "rat-in-a-maze": snippets(
+    `int solve(int r, int c, char* path, int d) {
+    if (r == n-1 && c == n-1) { path[d]=0; return 1; }
+    visited[r][c]=1;
+    const int dr[]={1,0,0,-1}, dc[]={0,-1,1,0}; const char* mv="DLRU";
+    for (int i=0;i<4;i++) {
+        int nr=r+dr[i], nc=c+dc[i];
+        if (nr<0||nc<0||nr>=n||nc>=n||!maze[nr][nc]||visited[nr][nc]) continue;
+        path[d]=mv[i];
+        if (solve(nr,nc,path,d+1)) return 1;
+    }
+    visited[r][c]=0; return 0;
+}`,
+    `bool solve(int r, int c, string& path, vector<vector<int>>& vis) {
+    if (r==n-1 && c==n-1) return true;
+    vis[r][c]=1;
+    const int dr[]={1,0,0,-1}, dc[]={0,-1,1,0}; string mv="DLRU";
+    for (int i=0;i<4;i++) {
+        int nr=r+dr[i], nc=c+dc[i];
+        if (nr<0||nc<0||nr>=n||nc>=n||!maze[nr][nc]||vis[nr][nc]) continue;
+        path.push_back(mv[i]);
+        if (solve(nr,nc,path,vis)) return true;
+        path.pop_back();
+    }
+    vis[r][c]=0; return false;
+}`,
+    `def rat_maze(maze):
+    n, path, vis = len(maze), [], [[False]*n for _ in range(n)]
+    def dfs(r, c) -> bool:
+        if (r, c) == (n-1, n-1): return True
+        vis[r][c] = True
+        for d, dr, dc in (("D",1,0),("L",0,-1),("R",0,1),("U",-1,0)):
+            nr, nc = r+dr, c+dc
+            if 0<=nr<n and 0<=nc<n and maze[nr][nc] and not vis[nr][nc]:
+                path.append(d)
+                if dfs(nr, nc): return True
+                path.pop()
+        vis[r][c] = False
+        return False
+    return "".join(path) if dfs(0, 0) else ""`,
+    `static boolean solve(int r, int c, StringBuilder path, boolean[][] vis) {
+    if (r==n-1 && c==n-1) return true;
+    vis[r][c]=true;
+    int[] dr={1,0,0,-1}, dc={0,-1,1,0}; char[] mv={'D','L','R','U'};
+    for (int i=0;i<4;i++) {
+        int nr=r+dr[i], nc=c+dc[i];
+        if (nr<0||nc<0||nr>=n||nc>=n||maze[nr][nc]==0||vis[nr][nc]) continue;
+        path.append(mv[i]);
+        if (solve(nr,nc,path,vis)) return true;
+        path.deleteCharAt(path.length()-1);
+    }
+    vis[r][c]=false; return false;
+}`,
+    `function ratMaze(maze: number[][]): string {
+  const n = maze.length, path: string[] = [];
+  const vis = Array.from({ length: n }, () => Array(n).fill(false));
+  const dirs = [["D",1,0],["L",0,-1],["R",0,1],["U",-1,0]] as const;
+  function dfs(r: number, c: number): boolean {
+    if (r===n-1 && c===n-1) return true;
+    vis[r]![c] = true;
+    for (const [d,dr,dc] of dirs) {
+      const nr=r+dr, nc=c+dc;
+      if (nr<0||nc<0||nr>=n||nc>=n||!maze[nr]![nc]||vis[nr]![nc]) continue;
+      path.push(d); if (dfs(nr,nc)) return true; path.pop();
+    }
+    vis[r]![c] = false; return false;
+  }
+  return dfs(0,0) ? path.join("") : "";
+}`,
+    `static bool Solve(int r, int c, StringBuilder path, bool[,] vis) {
+    if (r==n-1 && c==n-1) return true;
+    vis[r,c]=true;
+    int[] dr={1,0,0,-1}, dc={0,-1,1,0}; char[] mv={'D','L','R','U'};
+    for (int i=0;i<4;i++) {
+        int nr=r+dr[i], nc=c+dc[i];
+        if (nr<0||nc<0||nr>=n||nc>=n||maze[nr,nc]==0||vis[nr,nc]) continue;
+        path.Append(mv[i]);
+        if (Solve(nr,nc,path,vis)) return true;
+        path.Length--;
+    }
+    vis[r,c]=false; return false;
+}`,
+  ),
+
+  "maze-solver": snippets(
+    `int solve(int r, int c) {
+    if (r==er && c==ec) return 1;
+    visited[r][c]=1;
+    int dr[]={1,0,0,-1}, dc[]={0,-1,1,0};
+    for (int i=0;i<4;i++) {
+        int nr=r+dr[i], nc=c+dc[i];
+        if (nr<0||nc<0||nr>=R||nc>=C||grid[nr][nc]=='#'||visited[nr][nc]) continue;
+        if (solve(nr,nc)) return 1;
+    }
+    visited[r][c]=0; return 0;
+}`,
+    `bool solve(int r, int c, vector<vector<char>>& g, vector<vector<int>>& vis) {
+    if (r==er && c==ec) return true;
+    vis[r][c]=1;
+    int dr[]={1,0,0,-1}, dc[]={0,-1,1,0};
+    for (int i=0;i<4;i++) {
+        int nr=r+dr[i], nc=c+dc[i];
+        if (nr<0||nc<0||nr>=R||nc>=C||g[nr][nc]=='#'||vis[nr][nc]) continue;
+        if (solve(nr,nc,g,vis)) return true;
+    }
+    vis[r][c]=0; return false;
+}`,
+    `def maze_solver(grid, s, e):
+    R, C = len(grid), len(grid[0])
+    vis = [[False]*C for _ in range(R)]
+    def dfs(r, c) -> bool:
+        if (r, c) == e: return True
+        vis[r][c] = True
+        for dr, dc in ((1,0),(0,-1),(0,1),(-1,0)):
+            nr, nc = r+dr, c+dc
+            if 0<=nr<R and 0<=nc<C and grid[nr][nc] != "#" and not vis[nr][nc]:
+                if dfs(nr, nc): return True
+        vis[r][c] = False
+        return False
+    return dfs(*s)`,
+    `static boolean solve(int r, int c, char[][] g, boolean[][] vis) {
+    if (r==er && c==ec) return true;
+    vis[r][c]=true;
+    int[] dr={1,0,0,-1}, dc={0,-1,1,0};
+    for (int i=0;i<4;i++) {
+        int nr=r+dr[i], nc=c+dc[i];
+        if (nr<0||nc<0||nr>=R||nc>=C||g[nr][nc]=='#'||vis[nr][nc]) continue;
+        if (solve(nr,nc,g,vis)) return true;
+    }
+    vis[r][c]=false; return false;
+}`,
+    `function mazeSolver(grid: string[][], s: [number,number], e: [number,number]) {
+  const R=grid.length, C=grid[0]!.length;
+  const vis=Array.from({length:R},()=>Array(C).fill(false));
+  function dfs(r:number,c:number): boolean {
+    if (r===e[0] && c===e[1]) return true;
+    vis[r]![c]=true;
+    for (const [dr,dc] of [[1,0],[0,-1],[0,1],[-1,0]]) {
+      const nr=r+dr, nc=c+dc;
+      if (nr<0||nc<0||nr>=R||nc>=C||grid[nr]![nc]==="#"||vis[nr]![nc]) continue;
+      if (dfs(nr,nc)) return true;
+    }
+    vis[r]![c]=false; return false;
+  }
+  return dfs(s[0], s[1]);
+}`,
+    `static bool Solve(int r, int c, char[,] g, bool[,] vis) {
+    if (r==er && c==ec) return true;
+    vis[r,c]=true;
+    int[] dr={1,0,0,-1}, dc={0,-1,1,0};
+    for (int i=0;i<4;i++) {
+        int nr=r+dr[i], nc=c+dc[i];
+        if (nr<0||nc<0||nr>=R||nc>=C||g[nr,nc]=='#'||vis[nr,nc]) continue;
+        if (Solve(nr,nc,g,vis)) return true;
+    }
+    vis[r,c]=false; return false;
+}`,
+  ),
+
+  "word-search": snippets(
+    `int dfs(char** b, int r, int c, char* w, int k) {
+    if (!w[k]) return 1;
+    if (r<0||c<0||r>=R||c>=C||b[r][c]!=w[k]) return 0;
+    char t=b[r][c]; b[r][c]='#';
+    int ok=dfs(b,r+1,c,w,k+1)||dfs(b,r-1,c,w,k+1)||dfs(b,r,c+1,w,k+1)||dfs(b,r,c-1,w,k+1);
+    b[r][c]=t; return ok;
+}`,
+    `bool dfs(vector<vector<char>>& b, int r, int c, const string& w, int k) {
+    if (k==(int)w.size()) return true;
+    if (r<0||c<0||r>=R||c>=C||b[r][c]!=w[k]) return false;
+    char t=b[r][c]; b[r][c]='#';
+    bool ok=dfs(b,r+1,c,w,k+1)||dfs(b,r-1,c,w,k+1)||dfs(b,r,c+1,w,k+1)||dfs(b,r,c-1,w,k+1);
+    b[r][c]=t; return ok;
+}`,
+    `def word_search(board, word):
+    R, C = len(board), len(board[0])
+    def dfs(r, c, k) -> bool:
+        if k == len(word): return True
+        if not (0<=r<R and 0<=c<C) or board[r][c] != word[k]: return False
+        board[r][c] = "#"
+        ok = any(dfs(r+dr, c+dc, k+1) for dr,dc in ((1,0),(-1,0),(0,1),(0,-1)))
+        board[r][c] = word[k]
+        return ok
+    return any(dfs(r, c, 0) for r in range(R) for c in range(C))`,
+    `static boolean dfs(char[][] b, int r, int c, String w, int k) {
+    if (k==w.length()) return true;
+    if (r<0||c<0||r>=R||c>=C||b[r][c]!=w.charAt(k)) return false;
+    char t=b[r][c]; b[r][c]='#';
+    boolean ok=dfs(b,r+1,c,w,k+1)||dfs(b,r-1,c,w,k+1)||dfs(b,r,c+1,w,k+1)||dfs(b,r,c-1,w,k+1);
+    b[r][c]=t; return ok;
+}`,
+    `function wordSearch(board: string[][], word: string): boolean {
+  const R=board.length, C=board[0]!.length;
+  function dfs(r:number,c:number,k:number): boolean {
+    if (k===word.length) return true;
+    if (r<0||c<0||r>=R||c>=C||board[r]![c]!==word[k]) return false;
+    const t=board[r]![c]!; board[r]![c]="#";
+    const ok=[[1,0],[-1,0],[0,1],[0,-1]].some(([dr,dc])=>dfs(r+dr,c+dc,k+1));
+    board[r]![c]=t; return ok;
+  }
+  for (let r=0;r<R;r++) for (let c=0;c<C;c++) if (dfs(r,c,0)) return true;
+  return false;
+}`,
+    `static bool Dfs(char[,] b, int r, int c, string w, int k) {
+    if (k==w.Length) return true;
+    if (r<0||c<0||r>=R||c>=C||b[r,c]!=w[k]) return false;
+    char t=b[r,c]; b[r,c]='#';
+    bool ok=Dfs(b,r+1,c,w,k+1)||Dfs(b,r-1,c,w,k+1)||Dfs(b,r,c+1,w,k+1)||Dfs(b,r,c-1,w,k+1);
+    b[r,c]=t; return ok;
+}`,
+  ),
+
+  "flood-fill": snippets(
+    `void fill(int r, int c, char oldc, char newc) {
+    if (r<0||c<0||r>=R||c>=C||grid[r][c]!=oldc) return;
+    grid[r][c]=newc;
+    fill(r+1,c,oldc,newc); fill(r-1,c,oldc,newc);
+    fill(r,c+1,oldc,newc); fill(r,c-1,oldc,newc);
+}`,
+    `void fill(vector<vector<char>>& g, int r, int c, char oldc, char newc) {
+    if (r<0||c<0||r>=R||c>=C||g[r][c]!=oldc) return;
+    g[r][c]=newc;
+    fill(g,r+1,c,oldc,newc); fill(g,r-1,c,oldc,newc);
+    fill(g,r,c+1,oldc,newc); fill(g,r,c-1,oldc,newc);
+}`,
+    `def flood_fill(grid, sr, sc, new):
+    old = grid[sr][sc]
+    if old == new: return
+    R, C = len(grid), len(grid[0])
+    def dfs(r, c):
+        if not (0<=r<R and 0<=c<C) or grid[r][c] != old: return
+        grid[r][c] = new
+        for dr, dc in ((1,0),(-1,0),(0,1),(0,-1)):
+            dfs(r+dr, c+dc)
+    dfs(sr, sc)`,
+    `static void fill(char[][] g, int r, int c, char oldc, char newc) {
+    if (r<0||c<0||r>=R||c>=C||g[r][c]!=oldc) return;
+    g[r][c]=newc;
+    fill(g,r+1,c,oldc,newc); fill(g,r-1,c,oldc,newc);
+    fill(g,r,c+1,oldc,newc); fill(g,r,c-1,oldc,newc);
+}`,
+    `function floodFill(grid: string[][], sr: number, sc: number, neu: string) {
+  const old = grid[sr]![sc]!;
+  if (old === neu) return;
+  const R=grid.length, C=grid[0]!.length;
+  function dfs(r:number,c:number) {
+    if (r<0||c<0||r>=R||c>=C||grid[r]![c]!==old) return;
+    grid[r]![c]=neu;
+    for (const [dr,dc] of [[1,0],[-1,0],[0,1],[0,-1]]) dfs(r+dr,c+dc);
+  }
+  dfs(sr, sc);
+}`,
+    `static void Fill(char[,] g, int r, int c, char oldc, char newc) {
+    if (r<0||c<0||r>=R||c>=C||g[r,c]!=oldc) return;
+    g[r,c]=newc;
+    Fill(g,r+1,c,oldc,newc); Fill(g,r-1,c,oldc,newc);
+    Fill(g,r,c+1,oldc,newc); Fill(g,r,c-1,oldc,newc);
+}`,
+  ),
 };

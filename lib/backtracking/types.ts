@@ -8,7 +8,11 @@ export type BacktrackingAlgoId =
   | "n-queens"
   | "sudoku"
   | "graph-coloring"
-  | "crossword";
+  | "crossword"
+  | "rat-in-a-maze"
+  | "maze-solver"
+  | "word-search"
+  | "flood-fill";
 
 export type BtRole =
   "idle" | "current" | "choose" | "skip" | "backtrack" | "solution" | "fixed";
@@ -58,12 +62,16 @@ export interface BacktrackingInput {
   k: number;
   target: number;
   n: number;
-  /** Sudoku / crossword starting grid (row-major strings; "." / "" empty; "#" blocked). */
+  /** Sudoku / crossword / maze / word-search / flood-fill grid. */
   grid?: string[][];
-  /** Crossword word bank. */
+  /** Crossword word bank, word-search target, or flood-fill replacement color. */
   words?: string[];
   /** Graph coloring undirected edges as [u, v] pairs. */
   pairs?: [number, number][];
+  /** Flood fill / word-search start row (optional; else inferred). */
+  startRow?: number;
+  /** Flood fill / word-search start column (optional; else inferred). */
+  startCol?: number;
 }
 
 export interface BacktrackingMeta {

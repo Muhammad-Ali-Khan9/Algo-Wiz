@@ -30,7 +30,7 @@
 }
 
 .chips {
-  @include tw("flex min-h-[2.4rem] flex-wrap items-center gap-[0.45rem]");
+  @include tw("flex min-h-[2.4rem] flex-row flex-wrap items-center gap-[0.45rem]");
 }
 
 .chip {
@@ -103,7 +103,28 @@
     @include tw("min-h-[280px] p-[0.85rem]");
   }
 
+  .chips,
+  .solutions {
+    @include tw(
+      "flex-row flex-nowrap items-center gap-[0.4rem] overflow-x-auto overflow-y-hidden"
+    );
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+
   .chip {
-    @include tw("h-8 min-w-8 text-[0.88rem]");
+    @include tw("h-8 min-w-8 flex-none text-[0.88rem]");
+  }
+
+  .sol {
+    @include tw("flex-none whitespace-nowrap");
+  }
+
+  .board {
+    @include tw("w-full max-w-none");
+  }
+
+  .cell {
+    @include tw("min-h-[1.7rem] text-[0.82rem]");
   }
 }

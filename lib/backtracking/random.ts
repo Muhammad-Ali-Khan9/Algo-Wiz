@@ -40,6 +40,163 @@ const SUDOKU_PUZZLES: string[][][] = [
   ],
 ];
 
+const RAT_MAZES_3: string[][][] = [
+  [
+    ["1", "0", "1"],
+    ["1", "1", "1"],
+    ["0", "1", "1"],
+  ],
+  [
+    ["1", "1", "0"],
+    ["0", "1", "1"],
+    ["1", "1", "1"],
+  ],
+];
+
+const RAT_MAZES_4: string[][][] = [
+  [
+    ["1", "0", "0", "0"],
+    ["1", "1", "0", "1"],
+    ["0", "1", "0", "0"],
+    ["1", "1", "1", "1"],
+  ],
+  [
+    ["1", "1", "0", "1"],
+    ["0", "1", "1", "0"],
+    ["1", "1", "0", "1"],
+    ["0", "1", "1", "1"],
+  ],
+];
+
+const RAT_MAZES_5: string[][][] = [
+  [
+    ["1", "0", "1", "1", "1"],
+    ["1", "1", "1", "0", "1"],
+    ["0", "0", "1", "0", "1"],
+    ["1", "1", "1", "1", "0"],
+    ["1", "0", "0", "1", "1"],
+  ],
+  [
+    ["1", "1", "0", "0", "1"],
+    ["0", "1", "1", "1", "1"],
+    ["1", "1", "0", "0", "1"],
+    ["1", "0", "1", "1", "1"],
+    ["1", "1", "1", "0", "1"],
+  ],
+];
+
+const SOLVER_MAZES: string[][][] = [
+  [
+    ["S", ".", "#", "."],
+    [".", ".", ".", "#"],
+    ["#", ".", "#", "."],
+    [".", ".", ".", "E"],
+  ],
+  [
+    ["S", ".", ".", "#", "."],
+    ["#", "#", ".", "#", "."],
+    [".", ".", ".", ".", "."],
+    [".", "#", "#", "#", "."],
+    [".", ".", ".", "#", "E"],
+  ],
+];
+
+const WORD_PUZZLES_3: { grid: string[][]; word: string }[] = [
+  {
+    grid: [
+      ["C", "A", "T"],
+      ["O", "R", "E"],
+      ["W", "A", "N"],
+    ],
+    word: "CARE",
+  },
+  {
+    grid: [
+      ["H", "E", "Y"],
+      ["A", "T", "E"],
+      ["P", "I", "N"],
+    ],
+    word: "HAT",
+  },
+];
+
+const WORD_PUZZLES_4: { grid: string[][]; word: string }[] = [
+  {
+    grid: [
+      ["A", "B", "C", "E"],
+      ["S", "F", "C", "S"],
+      ["A", "D", "E", "E"],
+      ["X", "Y", "Z", "W"],
+    ],
+    word: "ABCCED",
+  },
+  {
+    grid: [
+      ["A", "B", "C", "E"],
+      ["S", "F", "C", "S"],
+      ["A", "D", "E", "E"],
+      ["Q", "U", "I", "T"],
+    ],
+    word: "SEE",
+  },
+];
+
+const WORD_PUZZLES_5: { grid: string[][]; word: string }[] = [
+  {
+    grid: [
+      ["S", "T", "A", "R", "T"],
+      ["W", "O", "R", "D", "S"],
+      ["E", "A", "R", "T", "H"],
+      ["P", "L", "A", "N", "E"],
+      ["M", "O", "O", "N", "S"],
+    ],
+    word: "WORD",
+  },
+  {
+    grid: [
+      ["A", "B", "C", "D", "E"],
+      ["S", "E", "A", "R", "C"],
+      ["H", "F", "G", "H", "I"],
+      ["J", "K", "L", "M", "N"],
+      ["O", "P", "Q", "R", "S"],
+    ],
+    word: "SEARCH",
+  },
+];
+
+const FLOOD_GRIDS: { grid: string[][]; sr: number; sc: number; color: string }[] = [
+  {
+    grid: [
+      ["1", "1", "1"],
+      ["1", "1", "0"],
+      ["1", "0", "1"],
+    ],
+    sr: 1,
+    sc: 1,
+    color: "2",
+  },
+  {
+    grid: [
+      ["0", "0", "0"],
+      ["0", "1", "1"],
+      ["0", "1", "1"],
+    ],
+    sr: 0,
+    sc: 0,
+    color: "X",
+  },
+  {
+    grid: [
+      ["A", "A", "B", "A"],
+      ["A", "B", "B", "A"],
+      ["A", "A", "A", "A"],
+    ],
+    sr: 0,
+    sc: 0,
+    color: "Z",
+  },
+];
+
 export function generateBacktrackingInput(
   id: BacktrackingAlgoId,
   size: number,
@@ -112,45 +269,95 @@ export function generateBacktrackingInput(
     return { ...base, n, k, pairs };
   }
 
-  // crossword — larger open grids (4×4 / 5×5) with decoy bank words
-  const puzzles: { grid: string[][]; words: string[] }[] = [
-    {
-      grid: [
-        [".", ".", ".", "."],
-        [".", ".", ".", "."],
-        [".", ".", ".", "."],
-        [".", ".", ".", "."],
-      ],
-      // Word square: CASE / AREA / REAR / EARS (downs CARE, AREA, SEAR, EARS)
-      words: ["CASE", "AREA", "REAR", "EARS", "CARE", "SEAR", "TEAR", "SEAT"],
-    },
-    {
-      grid: [
-        [".", ".", ".", ".", "."],
-        [".", ".", ".", ".", "."],
-        [".", ".", ".", ".", "."],
-        [".", ".", ".", ".", "."],
-        [".", ".", ".", ".", "."],
-      ],
-      // Sator square — across & down: SATOR AREPO TENET OPERA ROTAS
-      words: [
-        "SATOR",
-        "AREPO",
-        "TENET",
-        "OPERA",
-        "ROTAS",
-        "RATES",
-        "STORE",
-        "TREES",
-        "NOTES",
-      ],
-    },
-  ];
-  const puzzle = size >= 10 ? puzzles[1]! : puzzles[0]!;
-  return {
-    ...base,
-    n: puzzle.grid.length,
-    grid: puzzle.grid.map((row) => row.slice()),
-    words: puzzle.words.slice(),
-  };
+  if (id === "crossword") {
+    const puzzles: { grid: string[][]; words: string[] }[] = [
+      {
+        grid: [
+          [".", ".", ".", "."],
+          [".", ".", ".", "."],
+          [".", ".", ".", "."],
+          [".", ".", ".", "."],
+        ],
+        words: ["CASE", "AREA", "REAR", "EARS", "CARE", "SEAR", "TEAR", "SEAT"],
+      },
+      {
+        grid: [
+          [".", ".", ".", ".", "."],
+          [".", ".", ".", ".", "."],
+          [".", ".", ".", ".", "."],
+          [".", ".", ".", ".", "."],
+          [".", ".", ".", ".", "."],
+        ],
+        words: [
+          "SATOR",
+          "AREPO",
+          "TENET",
+          "OPERA",
+          "ROTAS",
+          "RATES",
+          "STORE",
+          "TREES",
+          "NOTES",
+        ],
+      },
+    ];
+    const puzzle = size >= 10 ? puzzles[1]! : puzzles[0]!;
+    return {
+      ...base,
+      n: puzzle.grid.length,
+      grid: puzzle.grid.map((row) => row.slice()),
+      words: puzzle.words.slice(),
+    };
+  }
+
+  if (id === "rat-in-a-maze") {
+    // Size slider → board: ≤8 → 3×3, ≤12 → 4×4, else → 5×5
+    const n = size <= 8 ? 3 : size <= 12 ? 4 : 5;
+    const pool = n === 3 ? RAT_MAZES_3 : n === 4 ? RAT_MAZES_4 : RAT_MAZES_5;
+    const maze = pool[Math.floor(rand() * pool.length)]!;
+    return {
+      ...base,
+      n,
+      grid: maze.map((row) => row.slice()),
+    };
+  }
+
+  if (id === "maze-solver") {
+    const maze =
+      size >= 10
+        ? SOLVER_MAZES[1]!
+        : SOLVER_MAZES[Math.floor(rand() * SOLVER_MAZES.length)]!;
+    return {
+      ...base,
+      n: maze.length,
+      grid: maze.map((row) => row.slice()),
+    };
+  }
+
+  if (id === "word-search") {
+    // Size slider → board: ≤8 → 3×3, ≤12 → 4×4, else → 5×5
+    const n = size <= 8 ? 3 : size <= 12 ? 4 : 5;
+    const pool = n === 3 ? WORD_PUZZLES_3 : n === 4 ? WORD_PUZZLES_4 : WORD_PUZZLES_5;
+    const puzzle = pool[Math.floor(rand() * pool.length)]!;
+    return {
+      ...base,
+      n,
+      grid: puzzle.grid.map((row) => row.slice()),
+      words: [puzzle.word],
+    };
+  }
+
+  if (id === "flood-fill") {
+    const puzzle = FLOOD_GRIDS[Math.floor(rand() * FLOOD_GRIDS.length)]!;
+    return {
+      ...base,
+      n: puzzle.grid.length,
+      grid: puzzle.grid.map((row) => row.slice()),
+      words: [puzzle.color],
+      startRow: puzzle.sr,
+      startCol: puzzle.sc,
+    };
+  }
+
+  return base;
 }

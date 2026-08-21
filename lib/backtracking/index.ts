@@ -1,5 +1,6 @@
 import { combinationSum, combinations, permutations, subsets } from "./combinatorial";
 import { crossword, graphColoring, nQueens, sudoku } from "./constraint";
+import { floodFill, mazeSolver, ratInAMaze, wordSearch } from "./grid-maze";
 import { BACKTRACKING_CODE } from "./snippets";
 import type {
   BacktrackingAlgoId,
@@ -127,6 +128,59 @@ export const BACKTRACKING_META: BacktrackingMeta[] = [
       "Fill a 4×4 or 5×5 word square: try bank words in across slots, then require every down reading to also be in the bank.",
     usage: "Crossword generation, word squares, and interlocking constraints.",
   }),
+  meta({
+    id: "rat-in-a-maze",
+    name: "Rat in a Maze",
+    group: "Grid & Maze",
+    worst: "O(4ⁿ²)",
+    average: "O(4ⁿ²)",
+    best: "O(n²)",
+    space: "O(n²)",
+    available: true,
+    definition:
+      "Find paths from the top-left to the bottom-right of a binary maze. Try D/L/R/U, mark visited cells, and backtrack on dead ends.",
+    usage: "Path enumeration in grids, robot navigation warmups, and DFS teaching.",
+  }),
+  meta({
+    id: "maze-solver",
+    name: "Maze Solver",
+    group: "Grid & Maze",
+    worst: "O(4ⁿ²)",
+    average: "O(4ⁿ²)",
+    best: "O(n²)",
+    space: "O(n²)",
+    available: true,
+    definition:
+      "DFS from S to E through open cells. Explore neighbors, rewind when a branch hits a wall or a visited cell.",
+    usage:
+      "Maze games, grid routing, and contrasting DFS search with BFS shortest paths.",
+  }),
+  meta({
+    id: "word-search",
+    name: "Word Search",
+    group: "Grid & Maze",
+    worst: "O(m · n · 4ᴸ)",
+    average: "O(m · n · 4ᴸ)",
+    best: "O(L)",
+    space: "O(L)",
+    available: true,
+    definition:
+      "Locate a word by walking adjacent letters without reusing a cell. Match the next character, recurse, then unmark on failure.",
+    usage: "Boggle-style boards, crossword helpers, and string search on grids.",
+  }),
+  meta({
+    id: "flood-fill",
+    name: "Flood Fill",
+    group: "Grid & Maze",
+    worst: "O(m · n)",
+    average: "O(m · n)",
+    best: "O(1)",
+    space: "O(m · n)",
+    available: true,
+    definition:
+      "Recursively paint every 4-connected cell that matches the start color. Classic DFS on a grid (paint-bucket).",
+    usage: "Image editors, region labeling, and connected-component warmups.",
+  }),
 ];
 
 export const BACKTRACKING_RUNNERS: Record<BacktrackingAlgoId, BacktrackingRunner> = {
@@ -138,6 +192,10 @@ export const BACKTRACKING_RUNNERS: Record<BacktrackingAlgoId, BacktrackingRunner
   sudoku,
   "graph-coloring": graphColoring,
   crossword,
+  "rat-in-a-maze": ratInAMaze,
+  "maze-solver": mazeSolver,
+  "word-search": wordSearch,
+  "flood-fill": floodFill,
 };
 
 export function getBacktrackingAlgo(id: BacktrackingAlgoId): BacktrackingMeta {

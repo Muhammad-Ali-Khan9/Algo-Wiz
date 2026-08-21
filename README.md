@@ -491,7 +491,16 @@ Every algorithm below is **playable**, with multi-language code, shuffleable inp
 | Graph Coloring | O(kⁿ)   | Assign k colors so adjacent nodes differ                  |
 | Crossword      | O(wˢ)   | Fill 4×4 / 5×5 word squares (across slots; downs in bank) |
 
-Size stays small (roughly 3–6 candidates / 4–5 board) so frame counts stay playable. Combinations expose `n · k`; combination sum shows `T` (target); CSP algos show board / node counts.
+#### Grid & Maze
+
+| Algorithm     | Average   | Notes                                                    |
+| ------------- | --------- | -------------------------------------------------------- |
+| Rat in a Maze | O(4ⁿ²)    | Path from TL→BR with D/L/R/U; mark visited and backtrack |
+| Maze Solver   | O(4ⁿ²)    | DFS from S to E through open cells                       |
+| Word Search   | O(m·n·4ᴸ) | Match a word by adjacent letters without reusing cells   |
+| Flood Fill    | O(m·n)    | DFS paint-bucket on 4-connected same-color region        |
+
+Size stays small (roughly 3–6 candidates / 4–5 board) so frame counts stay playable. Combinations expose `n · k`; combination sum shows `T` (target); CSP / grid algos show board / node counts.
 
 ---
 
@@ -515,7 +524,7 @@ lib/pathfinding/    shortest-path runners (reuses graph types / BFS)
 lib/trees/          binary, BST, AVL, RB, heaps, tries, segment, specialized
 lib/dp/             1D, grid, knapsack, string, sequence, interval,
                     tree, graph, bitmask, game + shared trace / random
-lib/backtracking/   combinatorial + constraint runners + shared trace / random
+lib/backtracking/   combinatorial + constraint + grid-maze runners + shared trace / random
 ```
 
 Playback is speed-gated `setTimeout` stepping; Space / arrows / `R` match sorting.

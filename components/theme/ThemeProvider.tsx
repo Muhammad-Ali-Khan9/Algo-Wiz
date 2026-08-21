@@ -21,11 +21,13 @@ const ThemeContext = createContext<ThemeContextValue | null>(null);
 
 function readTheme(): Theme {
   if (typeof document === "undefined") return "dark";
-  return document.documentElement.dataset.theme === "light" ? "light" : "dark";
+  return document.documentElement.getAttribute("data-theme") === "light"
+    ? "light"
+    : "dark";
 }
 
 function persistTheme(theme: Theme) {
-  document.documentElement.dataset.theme = theme;
+  document.documentElement.setAttribute("data-theme", theme);
   try {
     localStorage.setItem(STORAGE_KEY, theme);
   } catch {
@@ -41,18 +43,8 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const setTheme = useCallback((next: Theme) => {
-    const apply = () => {
-      persistTheme(next);
-      setThemeState(next);
-    };
-
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (!reduceMotion && typeof document.startViewTransition === "function") {
-      document.startViewTransition(apply);
-      return;
-    }
-
-    apply();
+    persistTheme(next);
+    setThemeState(next);
   }, []);
 
   const value = useMemo(() => ({ theme, setTheme }), [theme, setTheme]);

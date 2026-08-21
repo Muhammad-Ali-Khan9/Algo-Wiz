@@ -190,6 +190,14 @@ export function BacktrackingWiz() {
     algorithmId === "graph-coloring" ||
     algorithmId === "crossword";
 
+  const isGridMaze =
+    algorithmId === "rat-in-a-maze" ||
+    algorithmId === "maze-solver" ||
+    algorithmId === "word-search" ||
+    algorithmId === "flood-fill";
+
+  const isBoardAlgo = isCsp || isGridMaze;
+
   const sizeLabel =
     algorithmId === "combinations"
       ? "n / k"
@@ -201,9 +209,11 @@ export function BacktrackingWiz() {
             ? "Puzzle"
             : algorithmId === "graph-coloring"
               ? "Nodes"
-              : algorithmId === "crossword"
-                ? "Grid"
-                : "n";
+              : algorithmId === "rat-in-a-maze" || algorithmId === "word-search"
+                ? "Board"
+                : algorithmId === "crossword" || isGridMaze
+                  ? "Grid"
+                  : "n";
 
   const sizeDisplay =
     algorithmId === "combinations"
@@ -212,8 +222,9 @@ export function BacktrackingWiz() {
         ? `${input.values.length} · T=${input.target}`
         : algorithmId === "n-queens" ||
             algorithmId === "sudoku" ||
-            algorithmId === "crossword"
-          ? `${input.n}×${input.n}`
+            algorithmId === "crossword" ||
+            isGridMaze
+          ? `${input.grid?.length ?? input.n}×${input.grid?.[0]?.length ?? input.n}`
           : algorithmId === "graph-coloring"
             ? `${input.n} · k=${input.k}`
             : input.values.length;
@@ -235,10 +246,29 @@ export function BacktrackingWiz() {
   const edges = frame?.edges;
   const nodeRoles = frame?.nodeRoles;
   const isGraph = Boolean(nodes?.length);
+  const DIR_LABELS = ["D", "L", "R", "U"];
   const candidateValues =
     algorithmId === "crossword" && input.words?.length
       ? input.words
-      : (frame?.candidates ?? input.values);
+      : algorithmId === "word-search" && input.words?.[0]
+        ? input.words[0].split("")
+        : algorithmId === "flood-fill" && input.words?.[0]
+          ? [input.words[0]]
+          : algorithmId === "rat-in-a-maze" || algorithmId === "maze-solver"
+            ? DIR_LABELS
+            : (frame?.candidates ?? input.values);
+
+  const pathLabels =
+    algorithmId === "rat-in-a-maze"
+      ? (frame?.path ?? []).map((v) => DIR_LABELS[v] ?? String(v))
+      : algorithmId === "maze-solver" ||
+          algorithmId === "word-search" ||
+          algorithmId === "flood-fill"
+        ? (frame?.path ?? []).map((v) => {
+            const cols = board?.[0]?.length ?? input.grid?.[0]?.length ?? 1;
+            return `(${Math.floor(v / cols)},${v % cols})`;
+          })
+        : (frame?.path ?? []).map(String);
 
   return (
     <div className={styles.shell}>
@@ -420,7 +450,14 @@ export function BacktrackingWiz() {
                       row.map((cell, c) => {
                         const role = boardRoles?.[r]?.[c] ?? "idle";
                         const color = ROLE_COLORS[role];
-                        const blocked = cell === "#";
+                        const blocked = cell === "#" || cell === "0";
+                        const label =
+                          typeof cell === "string" &&
+                          (cell.startsWith("*") ||
+                            cell.startsWith("?") ||
+                            cell.startsWith("·"))
+                            ? cell.slice(1)
+                            : cell;
                         return (
                           <span
                             key={`${r}-${c}`}
@@ -437,7 +474,7 @@ export function BacktrackingWiz() {
                                   }
                             }
                           >
-                            {blocked ? "" : (cell ?? "")}
+                            {blocked ? "" : (label ?? "")}
                           </span>
                         );
                       }),
@@ -446,10 +483,19 @@ export function BacktrackingWiz() {
                 </div>
               ) : null}
 
-              {!isCsp || algorithmId === "crossword" || !board ? (
+              {!isBoardAlgo || algorithmId === "crossword" || isGridMaze || !board ? (
                 <div className={btStyles.panel}>
                   <p className={btStyles.panelLabel}>
-                    {algorithmId === "crossword" ? "Word bank" : "Candidates"}
+                    {algorithmId === "crossword"
+                      ? "Word bank"
+                      : algorithmId === "word-search"
+                        ? "Word"
+                        : algorithmId === "flood-fill"
+                          ? "Fill"
+                          : algorithmId === "rat-in-a-maze" ||
+                              algorithmId === "maze-solver"
+                            ? "Moves"
+                            : "Candidates"}
                   </p>
                   <div className={btStyles.chips}>
                     {candidateValues.length === 0 ? (
@@ -479,22 +525,22 @@ export function BacktrackingWiz() {
                 </div>
               ) : null}
 
-              {!isCsp ? (
+              {!isCsp || isGridMaze ? (
                 <div className={btStyles.panel}>
                   <p className={btStyles.panelLabel}>
                     Path
                     {frame ? ` · depth ${frame.depth}` : ""}
                   </p>
                   <div className={btStyles.chips}>
-                    {(frame?.path ?? []).length === 0 ? (
+                    {pathLabels.length === 0 ? (
                       <span className={btStyles.empty}>∅</span>
                     ) : (
-                      (frame?.path ?? []).map((value, i) => {
+                      pathLabels.map((label, i) => {
                         const role = frame?.pathRoles[i] ?? "choose";
                         const color = ROLE_COLORS[role];
                         return (
                           <span
-                            key={`p-${i}-${value}`}
+                            key={`p-${i}-${label}`}
                             className={btStyles.chip}
                             data-role={role}
                             style={{
@@ -503,7 +549,7 @@ export function BacktrackingWiz() {
                               color,
                             }}
                           >
-                            {value}
+                            {label}
                           </span>
                         );
                       })
