@@ -11,8 +11,6 @@ import {
   type ReactNode,
 } from "react";
 import { AlgoMark } from "@/components/brand/AlgoMark";
-import { usePortraitIntegrity } from "@/components/integrity/PortraitGuard";
-import { PORTRAIT_ATTR_VALUE, PORTRAIT_SRC } from "@/lib/integrity/portrait";
 import styles from "./home-hero.module.scss";
 
 function IconLinkedIn() {
@@ -248,12 +246,6 @@ export function HomeHero() {
   const pageRef = useRef<HTMLDivElement>(null);
   const frame = useRef(0);
   const [progress, setProgress] = useState(0);
-  const { setHeroMounted } = usePortraitIntegrity();
-
-  useEffect(() => {
-    setHeroMounted(true);
-    return () => setHeroMounted(false);
-  }, [setHeroMounted]);
 
   const updateProgress = useCallback(() => {
     const node = pageRef.current;
@@ -301,7 +293,7 @@ export function HomeHero() {
               <aside className={styles.portrait}>
                 <p className={styles.madeBy}>Made By:</p>
                 <Image
-                  src={PORTRAIT_SRC}
+                  src="/personal-portrait.svg"
                   alt="Muhammad Ali Khan"
                   width={173}
                   height={405}
@@ -310,8 +302,6 @@ export function HomeHero() {
                   loading="eager"
                   priority
                   unoptimized
-                  data-algo-integrity={PORTRAIT_ATTR_VALUE}
-                  data-portrait-role="hero"
                 />
                 <p className={styles.portraitName}>Muhammad Ali Khan</p>
                 <p className={styles.portraitBio}>
