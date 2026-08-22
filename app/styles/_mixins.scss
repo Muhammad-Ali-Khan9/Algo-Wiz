@@ -16,7 +16,7 @@
   @apply #{$utilities};
 }
 
-@mixin theme-color-shift($duration: 0.55s) {
+@mixin theme-color-shift($duration: 0.4s) {
   transition:
     background-color $duration ease,
     background-image $duration ease,
@@ -106,14 +106,14 @@
     @apply h-4 w-4 appearance-none;
     background: var(--accent);
     border-radius: 999px;
-    transition: background-color 0.55s ease;
+    transition: background-color 0.4s ease;
   }
 
   &::-moz-range-thumb {
     @apply h-4 w-4 border-0;
     background: var(--accent);
     border-radius: 999px;
-    transition: background-color 0.55s ease;
+    transition: background-color 0.4s ease;
   }
 }
 

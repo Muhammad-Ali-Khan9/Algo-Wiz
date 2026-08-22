@@ -45,7 +45,7 @@
     "mt-0 mb-[0.15rem] font-mono text-[0.58rem] font-semibold uppercase tracking-[0.16em]"
   );
   color: var(--rail-label);
-  transition: color 0.55s ease;
+  transition: color 0.4s ease;
 }
 
 .btn {
@@ -117,7 +117,7 @@
   box-shadow: 0 0 0 1px rgb(0 0 0 / 0.08);
   transition:
     transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
-    background-color 0.55s ease;
+    background-color 0.4s ease;
 }
 
 .themeCapsule[data-mode="dark"] .themeThumb {

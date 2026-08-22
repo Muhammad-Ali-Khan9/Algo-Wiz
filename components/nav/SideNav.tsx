@@ -110,6 +110,7 @@ export function SideNav() {
                 width={18}
                 height={18}
                 className={styles.icon}
+                loading="eager"
                 unoptimized
               />
             </Link>
@@ -139,6 +140,7 @@ export function SideNav() {
               width={15}
               height={15}
               className={styles.themeIcon}
+              loading="eager"
               unoptimized
             />
           </button>
@@ -158,6 +160,7 @@ export function SideNav() {
               width={15}
               height={15}
               className={styles.themeIcon}
+              loading="eager"
               unoptimized
             />
           </button>

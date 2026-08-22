@@ -3,6 +3,7 @@
 @reference "tailwindcss";
 
 .graphStage {
+  @include theme-color-shift;
   @include tw(
     "relative box-border h-[min(58vh,32rem)] min-h-80 w-full overflow-hidden rounded-2xl border"
   );
@@ -26,11 +27,13 @@
 .edgeWeight {
   @include tw("pointer-events-none text-center font-mono font-bold");
   fill: var(--foreground);
+  transition: fill 0.4s ease;
 }
 
 .edgeWeightBg {
   fill: var(--stage);
   stroke: none;
+  transition: fill 0.4s ease;
 }
 
 .node {
@@ -57,6 +60,7 @@
 .distLabel {
   @include tw("pointer-events-none font-mono font-semibold");
   fill: var(--foreground);
+  transition: fill 0.4s ease;
 }
 
 .frontierStrip {
@@ -64,6 +68,7 @@
 }
 
 .frontierChip {
+  @include theme-color-shift;
   @include tw("rounded-full border px-2.5 py-1 font-mono text-[0.68rem]");
   border-color: var(--border);
   background: var(--surface);
@@ -125,6 +130,7 @@
 }
 
 .typeMenu {
+  @include theme-color-shift;
   @include tw(
     "absolute top-[calc(100%+0.35rem)] right-0 left-0 z-[1] m-0 list-none overflow-hidden rounded-xl border-2 p-1.5"
   );

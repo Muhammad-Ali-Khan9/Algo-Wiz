@@ -17,6 +17,7 @@
 
 .intro,
 .panel {
+  @include theme-color-shift;
   @include tw("sticky top-0 box-border w-full min-h-0 overflow-hidden");
   isolation: isolate;
   height: calc(100% / var(--slides, 9));
@@ -40,8 +41,8 @@
   @include tw("absolute inset-0");
   background-color: var(--accent);
   transition:
-    background-color 0.55s ease,
-    opacity 0.55s ease;
+    background-color 0.4s ease,
+    opacity 0.4s ease;
 }
 
 .bgGrid {
@@ -88,7 +89,7 @@
     transparent 18%,
     color-mix(in srgb, var(--background) 68%, transparent) 78%
   );
-  transition: background 0.55s ease;
+  transition: background 0.4s ease;
 }
 
 .panelVignette {
@@ -124,11 +125,13 @@
 .madeBy {
   @include tw("m-0 font-mono text-[0.72rem] uppercase tracking-[0.2em]");
   color: var(--accent-hover);
-  transition: color 0.55s ease;
+  transition: color 0.4s ease;
 }
 
 .portraitArt {
-  @include tw("block h-auto max-h-[min(72vh,34rem)] w-full object-contain");
+  @include tw("block max-h-[min(72vh,34rem)] max-w-full object-contain");
+  width: auto;
+  height: auto;
   filter: drop-shadow(0 8px 18px rgb(0 0 0 / 0.35));
 }
 
@@ -142,13 +145,13 @@
   );
   font-family: var(--font-poppins), sans-serif;
   color: var(--foreground);
-  transition: color 0.55s ease;
+  transition: color 0.4s ease;
 }
 
 .portraitBio {
   @include tw("m-0 max-w-60 text-[0.8rem] leading-[1.45]");
   color: var(--muted);
-  transition: color 0.55s ease;
+  transition: color 0.4s ease;
 }
 
 .socials {
@@ -193,7 +196,7 @@
 .kicker {
   @include tw("font-mono text-[0.75rem] uppercase tracking-[0.22em]");
   color: var(--accent-hover);
-  transition: color 0.55s ease;
+  transition: color 0.4s ease;
 }
 
 .title {
@@ -201,19 +204,19 @@
     "m-0 text-[clamp(2.6rem,7vw,5.6rem)] font-bold tracking-[-0.06em] leading-[0.95]"
   );
   color: var(--foreground);
-  transition: color 0.55s ease;
+  transition: color 0.4s ease;
 }
 
 .subtitle {
   @include tw("m-0 max-w-xl text-lg leading-8 sm:text-xl");
   color: var(--muted);
-  transition: color 0.55s ease;
+  transition: color 0.4s ease;
 }
 
 .lead {
   @include tw("mt-[0.15rem] mb-0 max-w-2xl text-sm leading-7 sm:text-base sm:leading-7");
   color: var(--muted);
-  transition: color 0.55s ease;
+  transition: color 0.4s ease;
 }
 
 .points {
@@ -230,19 +233,19 @@
 .pointTitle {
   @include tw("m-0 text-sm font-semibold");
   color: var(--foreground);
-  transition: color 0.55s ease;
+  transition: color 0.4s ease;
 }
 
 .pointBody {
   @include tw("mt-[0.4rem] mb-0 text-sm leading-6");
   color: var(--muted);
-  transition: color 0.55s ease;
+  transition: color 0.4s ease;
 }
 
 .mapLabel {
   @include tw("mt-[1.15rem] mb-0 font-mono text-[0.68rem] uppercase tracking-[0.18em]");
   color: var(--accent-hover);
-  transition: color 0.55s ease;
+  transition: color 0.4s ease;
 }
 
 .map {
@@ -256,9 +259,9 @@
     background: var(--surface);
     color: var(--foreground);
     transition:
-      background-color 0.55s ease,
-      border-color 0.55s ease,
-      color 0.55s ease;
+      background-color 0.4s ease,
+      border-color 0.4s ease,
+      color 0.4s ease;
   }
 }
 
@@ -336,13 +339,13 @@
     "m-0 text-[clamp(2.4rem,6vw,4.6rem)] font-bold tracking-[-0.05em] leading-[0.95]"
   );
   color: var(--foreground);
-  transition: color 0.55s ease;
+  transition: color 0.4s ease;
 }
 
 .panelBody {
   @include tw("m-0 max-w-lg text-base leading-7 sm:text-lg sm:leading-8");
   color: var(--muted);
-  transition: color 0.55s ease;
+  transition: color 0.4s ease;
 }
 
 .cta {

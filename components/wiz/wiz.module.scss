@@ -87,12 +87,16 @@
 }
 
 .main {
+  @include theme-color-shift;
   @include tw("h-full min-h-0 min-w-0 overflow-x-hidden overflow-y-auto");
   scrollbar-width: thin;
   scrollbar-color: var(--scrollbar) transparent;
+  background-color: var(--background);
+  color: var(--foreground);
 }
 
 .page {
+  @include theme-color-shift;
   @include tw("box-border w-full pt-6 pr-7 pb-[3.25rem] pl-5");
 }
 
@@ -111,7 +115,7 @@
 .kicker {
   @include tw("mt-0 mb-[0.35rem] font-mono text-[0.7rem] uppercase tracking-[0.18em]");
   color: var(--muted);
-  transition: color 0.55s ease;
+  transition: color 0.4s ease;
 }
 
 .title {
@@ -119,7 +123,7 @@
     "m-0 text-[clamp(1.85rem,3.4vw,2.6rem)] font-bold tracking-[-0.04em] leading-[1.1]"
   );
   color: var(--foreground);
-  transition: color 0.55s ease;
+  transition: color 0.4s ease;
 }
 
 .controls {
@@ -255,13 +259,13 @@
   @include tw("mb-[0.45rem] font-mono text-[0.72rem] uppercase tracking-[0.16em]");
   margin-top: 0;
   color: var(--accent-hover);
-  transition: color 0.55s ease;
+  transition: color 0.4s ease;
 }
 
 .detailBody {
   @include tw("m-0 max-w-2xl text-[0.98rem] leading-[1.7]");
   color: var(--muted);
-  transition: color 0.55s ease;
+  transition: color 0.4s ease;
 }
 
 .complexity {

@@ -3,6 +3,7 @@
 @reference "tailwindcss";
 
 .stageNote {
+  @include theme-color-shift;
   @include tw("m-0 font-mono text-[0.68rem] uppercase tracking-[0.14em]");
   color: var(--muted);
 }
@@ -12,6 +13,7 @@
 }
 
 .rbSwatch {
+  @include theme-color-shift;
   @include tw("inline-flex items-center gap-1.5 font-mono text-[0.68rem]");
   color: var(--muted);
 

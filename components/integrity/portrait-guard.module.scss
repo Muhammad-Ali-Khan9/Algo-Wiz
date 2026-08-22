@@ -1,0 +1,49 @@
+@use "../../app/styles/mixins" as *;
+
+@reference "tailwindcss";
+
+.lockout {
+  @include theme-color-shift;
+  @include tw(
+    "box-border flex min-h-dvh w-full flex-col items-center justify-center gap-4 px-6 py-10 text-center"
+  );
+  background:
+    radial-gradient(
+      80% 60% at 50% 0%,
+      color-mix(in oklab, #ef4444 18%, transparent),
+      transparent 55%
+    ),
+    var(--background);
+  color: var(--foreground);
+}
+
+.kicker {
+  @include tw("m-0 font-mono text-[0.72rem] font-semibold uppercase tracking-[0.14em]");
+  color: #ef4444;
+}
+
+.title {
+  @include theme-color-shift;
+  @include tw(
+    "m-0 max-w-[22rem] text-[clamp(1.6rem,4vw,2.4rem)] font-bold leading-tight"
+  );
+  font-family: var(--font-poppins), sans-serif;
+  color: var(--foreground);
+}
+
+.body {
+  @include theme-color-shift;
+  @include tw("m-0 max-w-[28rem] text-[0.95rem] leading-relaxed");
+  color: var(--muted);
+
+  code {
+    @include tw("rounded px-1 py-0.5 font-mono text-[0.85em]");
+    background: color-mix(in oklab, var(--foreground) 8%, transparent);
+    color: var(--foreground);
+  }
+}
+
+.sentinel {
+  @include tw("pointer-events-none fixed -left-[9999px] top-0 size-px opacity-0");
+  position: fixed !important;
+}

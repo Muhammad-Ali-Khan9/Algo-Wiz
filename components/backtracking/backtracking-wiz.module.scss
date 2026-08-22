@@ -16,16 +16,18 @@
 }
 
 .panel {
+  @include theme-color-shift;
   @include tw("grid gap-[0.55rem]");
 }
 
 .panelLabel {
+  @include theme-color-shift;
   @include tw("m-0 text-[0.72rem] uppercase tracking-[0.08em]");
   color: var(--muted);
 
   b {
     @include tw("font-semibold tracking-normal normal-case");
-    color: var(--ink);
+    color: var(--foreground);
   }
 }
 
